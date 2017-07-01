@@ -1,0 +1,66 @@
+grammar
+
+cdb, ic {{tex \iota_\Gamma }} :: 'cdb_' ::= {{com deBruijn indices for contexts }}
+  | zeroc                ::   :: zero  
+  | succ cdb            ::   :: succ
+
+pdb, ip {{tex \iota_\Pi }} :: 'pdb_' ::= {{com deBruijn indices for pi types }}
+  | zerop                ::   :: zero  
+  | sucp pdb            ::   :: succ
+
+
+nK :: 'kind_nl_' ::= {{ com Kinds }}
+  | typeK              ::   :: type                          {{ com kind of all types }} 
+  | Pi nTy . nK          ::   :: pi_intro                      {{ com kind of dependente functions }}
+%  | K [ te / var ]     :: M :: subst                         {{ com substitution }}
+%     {{ coq (tsubst_K [[te]] [[var]] [[K]]) }}
+%     {{ ocaml int }}
+%     {{ tex [[K]] [ [[te]] / [[var]] ] }} 
+
+%% we include 'a' since its used to generate ocaml variables
+%% hence we need lowercase
+nTy, na , C, D :: 'type_nl_' ::= {{ com Types }}
+  | tcon                 ::   :: tcon                          {{ com type constante }}
+  | nTy nte              ::   :: pi_elim                        {{ com application of a type former }}
+  | Pi nTy . nTy'        ::   :: pi_intro                       {{ com type of dependente functions }}
+  | ( nTy )            :: S :: paren                        
+     {{ coq [[nTy]] }}
+     {{ ocaml nTy }}
+%  | Ty [ te / var ]    :: M :: subst                          {{ com substitution }}
+%     {{ coq ( tsubst_Ty [[te]] [[var]] [[Ty]] ) }}
+%     {{ ocaml int }}
+%     {{ tex [[Ty]] [ [[te]] / [[var]] ] }}
+
+%% we include 'm' since its used to generate ocaml variables
+%% hence we need lowercase
+nte, nm , O, P, Q :: 'term_nl_' ::= {{ com Terms }}
+  | cdb                ::   :: cdb                    {{ com indices left of $\vdash$ (context) }} 
+  | pdb                ::   :: pdb                    {{ com indices right of $\vdash$ ($\Pi$ and $\Sigma$ types) }} 
+  | con                ::   :: con                          {{ com term constants }} 
+  | \ nTy . nte        ::   :: pi_intro                      {{ com formation of $\Pi$ type }}
+  | nte nte'           ::   :: pi_elim                       {{ com application }}
+  | ( nte )            :: S :: paren                        
+     {{ coq [[nte]] }}
+     {{ ocaml nte }}
+%  | te [ te' / var ]   :: M :: subst                         {{ com substitution of term}}
+%     {{ coq ( tsubst_te [[te']] [[var]] [[te]] ) }}
+%     {{ ocaml int }}
+%     {{ tex [[te]] [ [[te']] / [[var]] ] }}
+
+nsgn {{ tex \mathcal{S}^n }} :: 'signature_nl_' ::= {{ com signature }}
+    {{ coq list (con*nTy+tcon*nK) }}
+%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+  | nsigempty     ::   :: empty             {{ com empty signature }}
+     {{ coq nsigempty }}
+  | nsgn , con : nTy  ::   :: con
+     {{ coq (cons (inl([[con]],[[nTy]])) [[nsgn]]) }}
+  | nsgn , tcon : nK  ::   :: sigtcon
+     {{ coq (cons (inr([[tcon]],[[nK]])) [[nsgn]]) }}
+
+nctx {{ tex \Gamma^n }} :: 'context_nl_' ::= {{ com context }}
+    {{ coq list (nTy) }}
+  | nctxempty    ::   :: nctxempty              {{ com empty context }}
+     {{ coq nctxempty }}
+  | nctx , nTy  ::   :: ctxvar
+     {{ coq (cons [[nTy]] [[nctx]]) }}
+

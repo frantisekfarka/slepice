@@ -41,8 +41,8 @@ T, A, B :: 'type_' ::= {{ com Types }}
 %  | T [ t / pdb ] ::   :: substp {{ tex [[T]] [ [[t]] / [[pdb]] ] }} {{ com substitution on type }}
 
 t, M, N :: 'term_' ::= {{ com Terms }}
-  | cdb           ::   :: cdb                    {{ com indices }} 
-  | pdb           ::   :: pdb                    {{ com indices }} 
+  | cdb           ::   :: cdb                    {{ com indices left of $\vdash$ (context) }} 
+  | pdb           ::   :: pdb                    {{ com indices right of $\vdash$ ($\Pi$ and $\Sigma$ types) }} 
   | con           ::   :: const                 {{ com term constants }} 
   | \ T . t       ::   :: lam                   {{ com formation of $\Pi$ type }}
   | t t'          ::   :: app                   {{ com application }}
@@ -95,27 +95,43 @@ formula :: formula_ ::=
 funs
   Pinc ::= 
 fun
-  pinc pdb1 :: pdb :: pinc {{ com index increment }}
+  pincK K1 :: K :: pincK {{ tex \uparrow [[K1]] }} {{ com type index increment $\Gamma \to \Pi$}}
 by
-  pinc ip === sucp ip
+  pincK typeK  === typeK
+  pincK Pi T . K  === Pi pincTy T . pincK K
+fun
+  pincTy T1 :: T :: pincTy {{ tex \uparrow [[T1]] }} {{ com type index increment $\Gamma \to \Pi$}}
+by
+  pincTy alpha === alpha
+  pincTy T t   === pincTy T pincte t
+  pincTy Pi T . T'  === Pi pincTy T  . pincTy T'
+fun
+  pincte t1 :: t :: pincte {{ tex \uparrow [[t1]] }} {{ com type index increment $\Gamma \to \Pi$}}
+by
+  pincte zeroc    === zerop
+  pincte sucp ip  === ip
+  pincte ip       === sucp ip
+  pincte c        === c
+  pincte \ T . t' === \ pincTy T . pincte t' 
+  pincte t1 t2    === pincte t1 pincte t2 
 
 funs
   Psubst ::= 
 fun
-  psubsK ( K1 ) t :: K :: psubsK {{ tex ( [[K1]] ) [ [[t]] ] }} {{ com substitute $\Pi$ binder }}
+  psubsK ( K1 ) t :: K :: psubsK {{ tex ( [[K1]] ) [ [[t]] ] }} {{ com substitute under  $\Pi$ binder }}
 by
   psubsK ( typeK ) t  === typeK
   psubsK ( Pi T . K ) t  === Pi psubsTy (T) t . psubsK (K) t
 
 fun
-  psubsTy ( T1 ) t :: T :: psubsTy {{tex ( [[T1]] ) [ [[t]] ] ) }} {{ com substitute $\Pi$ binder }}
+  psubsTy ( T1 ) t :: T :: psubsTy {{tex ( [[T1]] ) [ [[t]] ]  }} {{ com substitute under  $\Pi$ binder }}
 by
   psubsTy ( alpha ) t  === alpha
   psubsTy ( T t') t   === psubsTy (T) t psubste (t') t
   psubsTy ( Pi T . T') t   === Pi psubsTy (T) t  . psubsTy (T') t
 
 fun
-  psubste ( t1 ) t2 :: t :: psubste {{ tex ( [[t1]] ) [ [[t2]] ] }} {{ com substitute $\Pi$ binder }}
+  psubste ( t1 ) t2 :: t :: psubste {{ tex ( [[t1]] ) [ [[t2]] ] }} {{ com substitute under $\Pi$ binder }}
 by
   psubste ( ic ) t  === ic
   psubste ( zerop ) t  === t
@@ -179,53 +195,35 @@ Jwellformed :: '' ::=
     sig |-ctx ctx,A
 
   defn
-  sig ; ctx |- K : kindS :: ::wfkind::'wfkind_' {{tex [[sig]] ; [[ctx]] \vdash [[K]] : [[kindS]]}} by
+  sig ; ctx |- K : kindS :: ::wfkind::'k_' {{tex [[sig]] ; [[ctx]] \vdash [[K]] : [[kindS]]}} by
 
     sig |-ctx ctx
     -----------------------------  :: type
     sig ; ctx |- typeK : kindS
 
     sig ; ctx,A |- K : kindS
-    ----------------------------- :: pi_k_intro
-    sig ; ctx |- Pi A.K : kindS
+    ----------------------------- :: pi_intro
+    sig ; ctx |- Pi A. pincK K : kindS
 
   defn
-  sig ; ctx |- A : K  :: ::wftype::'wftype_' {{tex [[sig]] ; [[ctx]] \vdash [[A]] : [[K]]}} by
+  sig ; ctx |- A : K  :: ::wftype::'ty_' {{tex [[sig]] ; [[ctx]] \vdash [[A]] : [[K]]}} by
 
     sig |-ctx ctx
     alpha : K in sig
-    ------------------  :: tvar_z
+    ------------------  :: tconst
     sig,alpha:K ; ctx |- alpha : K
 
-%    |-sig sig,b:K
-%    sig,b:K |-ctx ctx
-%    ------------------  :: tvar_z
-%    sig,b:K ; ctx |- b : K
-
-%    |-sig sig,b:K
-%    sig ; ctx |- b' : K'
-%    ------------------  :: tvar_s
-%    sig,b:K ; ctx |- b' : K'
-
-%    sig ; ctx |- A : K
-%    sig ; ctx |- K : kindS
-%    sig ; ctx |- K is K' : kindS 
-%    ---------------------------- :: t_eq
-%    sig ; ctx |- T : K
-
     sig ; ctx,A |- B : typeK
-    %K
-    ----------------------------------------- :: pi_t_intro
-    sig ; ctx |- Pi A . B : typeK 
-    % Pi x : T . K
+    ----------------------------------------- :: pi_intro
+    sig ; ctx |- Pi A . pincTy B : typeK 
 
     sig ; ctx |- A : Pi B . K
     sig ; ctx |- M : B
-    ----------------------------------------- :: pi_t_elim
+    ----------------------------------------- :: pi_elim
     sig ; ctx |- A M : psubsK (K) M
 
   defn
-  sig ; ctx |- t : T  :: ::wfterm::'wfterm_' {{tex [[sig]] ; [[ctx]] \vdash [[t]] : [[T]]}} by
+  sig ; ctx |- t : T  :: ::wfterm::'te_' {{tex [[sig]] ; [[ctx]] \vdash [[t]] : [[T]]}} by
 
     sig |-ctx ctx
     c : A in sig
@@ -243,8 +241,7 @@ Jwellformed :: '' ::=
 
     sig ; ctx,A |- M : B 
     ---------------------------------- :: pi_intro
-    sig ; ctx |- \A.M : Pi A.B 
-    % Pi x : T . K
+    sig ; ctx |- \A. pincte M : Pi A. pincTy B 
 
     sig ; ctx |- M : Pi A . B 
     sig ; ctx |- N : A

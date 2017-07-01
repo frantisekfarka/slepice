@@ -1,0 +1,53 @@
+grammar
+K :: 'kind_' ::= {{ com Kinds }}
+  | typeK              ::   :: type                          {{ com kind of all types }} 
+  | Pi var : Ty . K    ::   :: pi_intro (+ bind var in K +)  {{ com kind of dependente functions }}
+  | K [ te / var ]     :: M :: subst                         {{ com substitution }}
+     {{ coq (tsubst_K [[te]] [[var]] [[K]]) }}
+     {{ ocaml int }}
+     {{ tex [[K]] [ [[te]] / [[var]] ] }} 
+
+%% we include 'a' since its used to generate ocaml variables
+%% hence we need lowercase
+Ty, a , A, B :: 'type_' ::= {{ com Types }}
+  | tcon               ::   :: tcon                           {{ com type constante }}
+  | Ty te              ::   :: pi_elim                        {{ com application of a type former }}
+  | Pi var : Ty . Ty'  ::   :: pi_intro (+ bind var in Ty +)  {{ com type of dependente functions }}
+  | Ty [ te / var ]    :: M :: subst                          {{ com substitution }}
+     {{ coq ( tsubst_Ty [[te]] [[var]] [[Ty]] ) }}
+     {{ ocaml int }}
+     {{ tex [[Ty]] [ [[te]] / [[var]] ] }}
+
+%% we include 'm' since its used to generate ocaml variables
+%% hence we need lowercase
+te, m , M, N :: 'term_' ::= {{ com Terms }}
+  | var                ::   :: var                           {{ com variables }} 
+  | con                ::   :: con                           {{ com term constants }} 
+  | \ var : Ty . te    ::   :: pi_intro (+ bind var in te +) {{ com formation of $\Pi$ type }}
+  | te te'             ::   :: pi_elim                       {{ com application }}
+  | ( te )             :: S :: paren                        
+     {{ coq [[te]] }}
+     {{ ocaml te }}
+  | te [ te' / var ]   :: M :: subst                         {{ com substitution of term}}
+     {{ coq ( tsubst_te [[te']] [[var]] [[te]] ) }}
+     {{ ocaml int }}
+     {{ tex [[te]] [ [[te']] / [[var]] ] }}
+
+sgn {{ tex \mathcal{S} }} :: 'signature_' ::= {{ com signature }}
+    {{ coq list (con*Ty+tcon*K) }}
+%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+  | sigempty     ::   :: empty             {{ com empty signature }}
+     {{ coq sigempty }}
+  | sgn , con : Ty  ::   :: con
+     {{ coq (cons (inl([[con]],[[Ty]])) [[sgn]]) }}
+  | sgn , tcon : K  ::   :: sigtcon
+     {{ coq (cons (inr([[tcon]],[[K]])) [[sgn]]) }}
+
+ctx {{ tex \Gamma }} :: 'context_' ::= {{ com contexte }}
+    {{ coq list (var*Ty) }}
+  | ctxempty    ::   :: ctxempty              {{ com empty contexte }}
+     {{ coq ctxempty }}
+  | ctx , var : Ty  ::   :: ctxvar
+     {{ coq (cons ([[var]],[[Ty]]) [[ctx]]) }}
+
+

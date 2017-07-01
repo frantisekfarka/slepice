@@ -1,0 +1,283 @@
+%%
+%% needs:
+%%    fodtt-syntax.ott
+%%    fodtt-flas_{nl,both}.ott
+%%
+
+embed
+{{ coq
+Notation nsigempty := (@nil (con*nTy+tcon*nK)).
+Notation nctxempty := (@nil (nTy)).
+
+Definition fstSig (e : (con*nTy)+(tcon*nK) ) := match e with
+    | inl (c, ty) => inl c
+    | inr (alpha, k) => inr alpha
+  end.
+
+Definition boundCon c T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inl(c,T0)) S2)) /\
+    ~In (inl(c)) (List.map (fstSig) S1).
+
+Definition boundTCon alpha T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
+    ~In (inr(alpha)) (List.map (fstSig) S1).
+
+Definition indomCon c S :=
+  exists T0,
+    boundCon c T0 S.
+
+Definition indomTCon alpha S :=
+  exists T0,
+    boundCon alpha T0 S.
+
+}}
+embed
+{{ ocaml 
+type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
+}}
+
+
+subrules
+
+freevars
+% due to recursive definition of Ty and K the fv_Ty and fk_K are also generated
+%  Ty x :: tyfv
+%  teN x :: fv
+
+substitutions
+%  single K x :: tsubst
+%  single Ty x :: tsubst
+%  single teN x :: subst
+
+funs
+  PincteTy ::= 
+fun
+  pincTy C :: nTy :: pincTy {{ tex \uparrow [[C]] }} {{ com type index increment $\Gamma \to \Pi$}}
+by
+  pincTy alpha === alpha
+  pincTy C P   === (pincTy C) (pincte P)
+  pincTy Pi C . D  === Pi pincTy C  . pincTy D
+fun
+  pincte P :: nte :: pincte {{ tex \uparrow [[P]] }} {{ com type index increment $\Gamma \to \Pi$}}
+by
+  pincte zeroc    === zerop
+  pincte succ ic  === ic
+  pincte ip       === sucp ip
+  pincte c        === c
+  pincte \ C . P === \ pincTy C . pincte P 
+  pincte Q P    === (pincte Q) (pincte P)
+
+%
+% PincK is separete in order to convince Coq that it's terminating wrt. PincteTy
+funs
+  PincK ::=
+fun
+  pincK nK1 :: nK :: pincK {{ tex \uparrow [[nK1]] }} {{ com type index increment $\Gamma \to \Pi$}}
+by
+  pincK typeK  === typeK
+  pincK Pi C . nK  === Pi pincTy C . pincK nK
+
+funs
+  Psubst ::= 
+
+fun
+  psubsTy ( C ) Q :: nTy :: psubsTy {{tex ( [[C]] ) [ [[Q]]  ]  }} {{ com substitute under  $\Pi$ binder }}
+by
+  psubsTy ( alpha ) Q  === alpha
+  psubsTy ( C P) Q   === (psubsTy (C) Q) (psubste (P) Q)
+  psubsTy ( Pi C . D) Q   === Pi psubsTy (C) Q  . psubsTy (D) Q
+
+fun
+  psubste ( Q ) P :: nte :: psubste {{ tex ( [[Q]]  ) [ [[P]] ] }} {{ com substitute under $\Pi$ binder }}
+by
+  psubste ( ic ) Q  === ic
+  psubste ( zerop ) Q  === Q
+  psubste ( sucp ip ) Q  === ip
+  psubste ( c ) Q  === c
+  psubste ( \ C . P ) Q  === \ psubsTy (C) Q . psubste ( P ) Q
+  psubste ( P1 P2) Q === (psubste (P1) Q) (psubste (P2) Q)
+
+funs
+  PsubsK ::=    
+fun
+  psubsK ( nK1 ) nte :: nK :: psubsK {{ tex ( [[nK1]] ) [ [[nte]] ] }} {{ com substitute under  $\Pi$ binder }}
+by
+  psubsK ( typeK ) Q  === typeK
+  psubsK ( Pi C . nK ) Q  === Pi psubsTy (C) Q . psubsK (nK) Q
+
+defns
+Jwfnl :: '' ::=
+
+
+  defn
+  |-sig nsgn :: ::wfsig_nl::'sig_nl_' {{ tex \vdash [[nsgn]] \text{ sig} }} by
+
+    ---------------  :: empty
+    |-sig nsigempty
+
+    |-sig nsgn
+    nsgn ; nctxempty |- nK : kindS
+    alpha notin dom(nsgn)
+    -------------------------- :: tcon
+    |-sig nsgn,alpha:nK
+
+    |-sig nsgn
+    nsgn ; nctxempty |- C : typeK
+    c notin dom(nsgn) 
+    -------------------------- :: con
+    |-sig nsgn,c:C
+
+  defn
+  nsgn |-ctx nctx :: ::wfctx_nl::'ctx_nl_' {{tex [[nsgn]] \vdash [[nctx]] \text{ ctx} }} by
+   
+    |-sig nsgn
+    --------------------  :: empty
+    nsgn |-ctx nctxempty
+
+    nsgn |-ctx nctx
+    nsgn ; nctx |- C : typeK
+    -------------------------- :: var
+    nsgn |-ctx nctx,C
+
+  defn
+  nsgn ; nctx |- nK : kindS :: ::wfkind_nl::'k_nl_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nK]] : [[kindS]]}} by
+
+    nsgn |-ctx nctx
+    -----------------------------  :: type
+    nsgn ; nctx |- typeK : kindS
+
+    nsgn ; nctx,C |- nK : kindS
+    ----------------------------- :: pi_intro
+    nsgn ; nctx |- Pi C.nK : kindS
+
+  defn
+  nsgn ; nctx |- C : nK  :: ::wftype_nl::'ty_nl_' {{tex [[nsgn]] ; [[nctx]] \vdash [[C]] : [[nK]]}} by
+
+    nsgn |-ctx nctx
+    alpha : nK in nsgn
+    ------------------  :: tcon
+    nsgn ; nctx |- alpha : nK
+
+
+    nsgn ; nctx,C |- D : typeK
+    ----------------------------------------- :: pi_intro
+    nsgn ; nctx |- Pi C . D : typeK 
+
+    nsgn ; nctx |- C : Pi D . nK
+    nsgn ; nctx |- Q : D
+    ----------------------------------------- :: pi_elim
+    nsgn ; nctx |- C Q : psubsK (nK) Q 
+
+  defn
+  nsgn ; nctx |- Q : C  :: ::wfterm_nl::'te_nl_' {{tex [[nsgn]] ; [[nctx]] \vdash [[Q]]  : [[C]]}} by
+
+    nsgn |-ctx nctx
+    c : C in nsgn
+    ----------------------  :: con
+    nsgn ; nctx |- c : C
+
+    nsgn |-ctx nctx,C
+    ----------------------  :: var_z
+    nsgn ; nctx |- zeroc : C
+
+    nsgn |-ctx nctx,C
+    nsgn ; nctx |- ic : D
+    ----------------------  :: var
+    nsgn ; nctx |- succ ic : D
+
+    nsgn ; nctx,C |- Q : D
+    ---------------------------------- :: pi_intro
+    nsgn ; nctx |- \C. pincte Q : Pi C . pincTy D
+
+    nsgn ; nctx |- Q : Pi C . D
+    nsgn ; nctx |- P : C
+    ------------------------------ :: pi_elim
+    nsgn ; nctx |- Q P : psubsTy (D) P 
+
+    nsgn ; nctx |- Q : C
+    nsgn ; nctx |- C' : typeK
+    nsgn ; nctx |- C is C' : typeK
+    ------------------------------ :: conv
+    nsgn ; nctx |- Q : C' 
+
+%  defn 
+%  sgn ; ctx |- K is K' ::  :: substapkind_nl :: 'eqK_nl' {{tex [[sgn]] ; [[ctx]] \vdash [[K]] \equiv [[K']] }} by
+%
+%    --------------------------- :: refl
+%    sgn ; ctx |- K is K 
+%
+%    sgn ; ctx |- K' is K 
+%    ---------------------------- :: sym
+%    sgn ; ctx |- K is K' 
+%
+%    sgn ; ctx |- K_1 is K_2
+%    sgn ; ctx |- K_2 is K_3
+%    ------------------------------- :: trans
+%    sgn ; ctx |- K_1 is K_3
+%
+%    sgn ; ctx |- A is A' 
+%    sgn ; ctx |- K is K' 
+%    ------------------------------------ :: 1
+%    sgn ; ctx |- Pi x:A.K is Pi x:A'.K' 
+
+  defn 
+  nsgn ; nctx |- C is C' : nK ::  :: substaptype_nl :: 'eqT_nl_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[C]] \equiv [[C']] : [[nK]] }} by
+
+    nsgn ; nctx |- C : nK
+    --------------------------- :: refl
+    nsgn ; nctx |- C is C : nK 
+
+    nsgn ; nctx |- C' is C : nK
+    ---------------------------- :: sym
+    nsgn ; nctx |- C is C' : nK
+
+    nsgn ; nctx |- C_1 is C_2 : nK
+    nsgn ; nctx |- C_2 is C_3 : nK
+    ------------------------------- :: trans
+    nsgn ; nctx |- C_1 is C_3 : nK
+
+    nsgn ; nctx |- C is C' : typeK
+    nsgn ; nctx |- D is D' : typeK
+    ------------------------------------------ :: 1
+    nsgn ; nctx |- Pi C.D is Pi C'.D'  : typeK
+
+    nsgn ; nctx |- C is C' : typeK
+    nsgn ; nctx |- Q is Q' : C
+    ------------------------------------ :: 2
+    nsgn ; nctx |- C Q is C' Q' : typeK
+
+  defn 
+  nsgn ; nctx |- Q is Q' : C ::  :: substapterm_nl_ :: 'eqt_nl_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[Q]]  \equiv [[Q']]  : [[C]] }} by
+
+    nsgn ; nctx |- Q : C
+    ------------------------- :: refl
+    nsgn ; nctx |- Q is Q : C 
+
+    nsgn ; nctx |- Q' is Q : C
+    -------------------------- :: sym
+    nsgn ; nctx |- Q is Q' : C
+
+    nsgn ; nctx |- Q_1 is Q_2 : C
+    nsgn ; nctx |- Q_2 is Q_3 : C
+    ----------------------------- :: trans
+    nsgn ; nctx |- Q_1 is Q_3 : C
+
+    nsgn ; nctx |- Q is Q' : C
+    nsgn ; nctx |- P is P' : D
+    ----------------------------------------------------------- :: 1
+    nsgn ; nctx |- (\C.Q) P is psubste (Q') P' : psubsTy (C) P'
+
+    nsgn ; nctx |- Q is Q' : Pi C . D
+    nsgn ; nctx |- P is P' : C
+    -------------------------------------------- :: 2
+    nsgn ; nctx |- Q P is Q' P'  : psubsTy (C) P
+
+    nsgn ; nctx |- C is C' : typeK
+    nsgn ; nctx |- Q is Q' : D
+    ---------------------------------------- :: 3
+    nsgn ; nctx |- \C.Q is \C'.Q' : Pi C . D
+
+
+
