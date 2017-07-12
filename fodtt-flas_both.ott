@@ -25,16 +25,16 @@ formula :: formula_ ::=
 
 %formula :: formula_ ::=          
   | c notin dom ( nsgn )                            :: :: cnotinsig_nl
-     {{ coq (not (indomCon [[c]] [[nsgn]])) }}
+     {{ coq (not (indomnCon [[c]] [[nsgn]])) }}
      {{ tex [[c]] \not\in \dom([[nsgn]]) }}
   | alpha notin dom ( nsgn )                        :: :: bnotinsig_nl
-     {{ coq (not (indomTCon [[alpha]] [[nsgn]])) }}
+     {{ coq (not (indomnTCon [[alpha]] [[nsgn]])) }}
      {{ tex [[alpha]] \not\in \dom([[nsgn]]) }}
   | c : C in nsgn                                   :: :: cinsig_nl
-     {{ coq (boundCon [[c]] [[C]] [[nsgn]]) }}
+     {{ coq (boundnCon [[c]] [[C]] [[nsgn]]) }}
      {{ tex [[c]] : [[C]] \in [[nsgn]] }}
   | alpha : nK in nsgn                              :: :: binsig_nl
-     {{ coq (boundTCon [[alpha]] [[nK]] [[nsgn]]) }}
+     {{ coq (boundnTCon [[alpha]] [[nK]] [[nsgn]]) }}
      {{ tex [[alpha]] : [[nK]] \in [[nsgn]] }}
 
 

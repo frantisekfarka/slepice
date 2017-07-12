@@ -9,34 +9,50 @@ embed
 Notation nsigempty := (@nil (con*nTy+tcon*nK)).
 Notation nctxempty := (@nil (nTy)).
 
-Definition fstSig (e : (con*nTy)+(tcon*nK) ) := match e with
-    | inl (c, ty) => inl c
-    | inr (alpha, k) => inr alpha
+Definition fstnSig (e : (con*nTy)+(tcon*nK) ) := match e with
+    | inl (c, nty) => inl c
+    | inr (beta, nk) => inr beta
   end.
 
-Definition boundCon c T0 S :=
+
+Definition boundnCon c T0 S :=
   exists S1, exists S2,
     (S = List.app S1 (List.cons (inl(c,T0)) S2)) /\
-    ~In (inl(c)) (List.map (fstSig) S1).
+    ~In (inl(c)) (List.map (fstnSig) S1).
 
-Definition boundTCon alpha T0 S :=
+Definition boundnTCon alpha T0 S :=
   exists S1, exists S2,
     (S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
-    ~In (inr(alpha)) (List.map (fstSig) S1).
+    ~In (inr(alpha)) (List.map (fstnSig) S1).
 
-Definition indomCon c S :=
-  exists T0,
-    boundCon c T0 S.
+(*
+Definition boundVar x T0 G :=
+  exists G1, exists G2,
+    (G = List.app G1 (List.cons (x,T0) G2)) /\
+    ~In x (List.map (@fst var Ty) G1).
+*)
 
-Definition indomTCon alpha S :=
+Definition indomnCon c S :=
   exists T0,
-    boundCon alpha T0 S.
+    boundnCon c T0 S.
+
+Definition indomnTCon alpha S :=
+  exists T0,
+    boundnTCon alpha T0 S.
+
+(*
+Definition indomVar x S :=
+  exists T0,
+    boundVar x T0 S.
+*)
 
 }}
 embed
 {{ ocaml 
-type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
+type ('a, 'b) nsgn_el_type = Inl of 'a | Inr of 'b
 }}
+
+
 
 
 subrules
@@ -78,6 +94,36 @@ fun
 by
   pincK typeK  === typeK
   pincK Pi C . nK  === Pi pincTy C . pincK nK
+
+funs
+  PdecteTy ::= 
+fun
+  pdecTy C :: nTy :: pdecTy {{ tex \downarrow [[C]] }} {{ com type index decrement $\Gamma \to \Pi$}}
+by
+  pdecTy alpha === alpha
+  pdecTy C P   === (pdecTy C) (pdecte P)
+  pdecTy Pi C . D  === Pi pdecTy C  . pdecTy D
+fun
+  pdecte P :: nte :: pdecte {{ tex \downarrow [[P]] }} {{ com type index decrement $\Gamma \to \Pi$}}
+by
+  pdecte ic       === succ ic
+  pdecte zerop    === zeroc
+  pdecte sucp ip  === ip
+  pdecte c        === c
+  pdecte \ C . P === \ pdecTy C . pdecte P 
+  pdecte Q P    === (pdecte Q) (pdecte P)
+
+%
+% PdecK is separete in order to convdece Coq that it's terminating wrt. PdecteTy
+funs
+  PdecK ::=
+fun
+  pdecK nK1 :: nK :: pdecK {{ tex \downarrow [[nK1]] }} {{ com type index decrement $\Gamma \to \Pi$}}
+by
+  pdecK typeK  === typeK
+  pdecK Pi C . nK  === Pi pdecTy C . pdecK nK
+
+
 
 funs
   Psubst ::= 
@@ -180,12 +226,12 @@ Jwfnl :: '' ::=
 
     nsgn |-ctx nctx,C
     ----------------------  :: var_z
-    nsgn ; nctx |- zeroc : C
+    nsgn ; nctx,C |- zeroc : C
 
     nsgn |-ctx nctx,C
     nsgn ; nctx |- ic : D
     ----------------------  :: var
-    nsgn ; nctx |- succ ic : D
+    nsgn ; nctx,C |- succ ic : D
 
     nsgn ; nctx,C |- Q : D
     ---------------------------------- :: pi_intro

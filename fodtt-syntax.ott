@@ -3,7 +3,7 @@ K :: 'kind_' ::= {{ com Kinds }}
   | typeK              ::   :: type                          {{ com kind of all types }} 
   | Pi var : Ty . K    ::   :: pi_intro (+ bind var in K +)  {{ com kind of dependente functions }}
   | K [ te / var ]     :: M :: subst                         {{ com substitution }}
-     {{ coq (tsubst_K [[te]] [[var]] [[K]]) }}
+     {{ coq (subst_K [[te]] [[var]] [[K]]) }}
      {{ ocaml int }}
      {{ tex [[K]] [ [[te]] / [[var]] ] }} 
 
@@ -14,7 +14,7 @@ Ty, a , A, B :: 'type_' ::= {{ com Types }}
   | Ty te              ::   :: pi_elim                        {{ com application of a type former }}
   | Pi var : Ty . Ty'  ::   :: pi_intro (+ bind var in Ty +)  {{ com type of dependente functions }}
   | Ty [ te / var ]    :: M :: subst                          {{ com substitution }}
-     {{ coq ( tsubst_Ty [[te]] [[var]] [[Ty]] ) }}
+     {{ coq ( subst_Ty [[te]] [[var]] [[Ty]] ) }}
      {{ ocaml int }}
      {{ tex [[Ty]] [ [[te]] / [[var]] ] }}
 
@@ -29,7 +29,7 @@ te, m , M, N :: 'term_' ::= {{ com Terms }}
      {{ coq [[te]] }}
      {{ ocaml te }}
   | te [ te' / var ]   :: M :: subst                         {{ com substitution of term}}
-     {{ coq ( tsubst_te [[te']] [[var]] [[te]] ) }}
+     {{ coq ( subst_te [[te']] [[var]] [[te]] ) }}
      {{ ocaml int }}
      {{ tex [[te]] [ [[te']] / [[var]] ] }}
 
