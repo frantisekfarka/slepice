@@ -662,21 +662,18 @@ with substapterm_nl_weakening_sgn_r:
 Proof.
   (* lem 1 *)
   intros.
-  induction G.
+  induction H0.
   apply ctx_nl_empty.
   assumption.
-  apply wfctx_nl_strenghtening in H0.
-  destruct H0.
   apply ctx_nl_var.
-  apply IHG.
+  apply IHwfctx_nl.
   assumption.
-  apply wftype_nl_weakening_sgn_r.
+  apply wftype_nl_weakening_sgn_r. (* type_kind only *)
   assumption.
   assumption.
   (* lem 2 *)
   intros.
-  induction C.
-  inversion H0.
+  induction H0.
   apply ty_nl_tcon.
   apply wfctx_nl_weakening_sgn_r.  
   assumption.
@@ -684,19 +681,15 @@ Proof.
   apply boundnTCon_weakening_r.
   assumption.
   assumption.
-  (* case ty_nl_pi_elim *)
-  inversion H0.  
-  apply ty_nl_pi_elim with D. 
-  apply wftype_nl_weakening_sgn_r.
+  (* case ty_nl_pi_intro *)
+  apply ty_nl_pi_intro.
+  apply IHwftype_nl.
   assumption.
+  (* case ty_nl_pi_elim *)
+  apply ty_nl_pi_elim with D. 
+  apply IHwftype_nl.
   assumption.
   apply wfterm_nl_weakening_sgn_r.
-  assumption.
-  assumption.
-  (* case ty_nl_pi_intro *)
-  inversion H0.
-  apply ty_nl_pi_intro.
-  apply wftype_nl_weakening_sgn_r.
   assumption.
   assumption.
   (* lem 3 *)
@@ -770,9 +763,48 @@ Proof.
   apply eqT_nl_2.
   apply IHsubstaptype_nl.
   assumption.
-
+  apply substapterm_nl_weakening_sgn_r.
+  assumption.
+  assumption.
   (* lem 5 *)
-(*
+  intros.
+  induction H0.
+  apply eqt_nl_refl.
+  apply wfterm_nl_weakening_sgn_r.
+  assumption.
+  assumption.
+  (* case sym *)
+  apply eqt_nl_sym.
+  apply IHsubstapterm_nl.
+  assumption.
+  (* case trans *)
+  apply eqt_nl_trans with (Q_2 := Q_2).
+  apply IHsubstapterm_nl1.
+  assumption.
+  apply IHsubstapterm_nl2.
+  assumption.
+  (* case pi_elim *)
+  apply eqt_nl_1 with (D := D).
+  apply IHsubstapterm_nl1.
+  assumption.
+  apply IHsubstapterm_nl2.
+  assumption.
+  (* case pi_elim *)
+  apply eqt_nl_2 with (D := D).
+  apply IHsubstapterm_nl1.
+  assumption.
+  apply IHsubstapterm_nl2.
+  assumption.
+  (* case app *)
+  apply eqt_nl_3.
+  apply substaptype_nl_weakening_sgn_r.
+  assumption.
+  assumption.
+  apply IHsubstapterm_nl.
+  assumption.
+Qed.
+
+
 Lemma wfkind_nl_weakening_sgn_r :
   forall (S : nsgn) (G : nctx) (alpha : tcon) (K L : nK),
     wfkind_nl S G L ->
@@ -795,7 +827,7 @@ Proof.
   apply IHL in H4.
   assumption.
 Qed.
- *)
+
 (*
 Lemma wfkind_nl_weakening_ctx_r :
   forall (S : nsgn) (G : nctx) (C : nTy) (L : nK),
