@@ -502,114 +502,6 @@ Proof.
   assumption.
 Qed.  
 
-  
-Lemma boundnCon_nsigempty:
-  forall (c : con ) (C : nTy),
-    ~ boundnCon c C nsigempty.
-Proof.
-  intros.
-  intro.
-  unfold boundnCon in H.
-  decompose record H.
-  apply app_cons_not_nil in H0.
-  contradiction.
-Qed.
-
-
-
-(*
-Lemma wfctx_nl_weakening_sgn_l:
-  forall (S : nsgn) (G : nctx) (c : con) (C : nTy),
-    wfctx_nl S G ->
-    wfsig_nl ( (inl (c, C)) :: S) ->
-    wfctx_nl ( (inl (c, C)) :: S) G
-with wftype_nl_weakening_sgn_l:
-  forall (S : nsgn) (G : nctx) (c : con) (L : nK) (C D : nTy),
-    wftype_nl S G C L ->
-    wfsig_nl (inl (c, D) :: S) ->
-    wftype_nl (inl (c, D) :: S) G C L
-with wfterm_nl_weakening_sgn_l:
-  forall (S : nsgn) (G : nctx) (c : con) (K : nK) (C D : nTy) (P : nte),
-    wfterm_nl S G P C ->
-    wfsig_nl (inl (c, D) :: S) ->
-    wfterm_nl (inl (c, D) :: S) G P C
-.
-Proof.
-  admit.
-  admit.
-  admit.
-Admitted.
-
-Lemma wfterm_nl_weakening_ctx:
-  forall (S : nsgn) (G : nctx) (C D : nTy) (P : nte),
-    wfterm_nl S G P C ->
-    wftype_nl S G D kind_nl_type ->
-    wfterm_nl S (D :: G) (pdecte P) (pdecTy C).
-Proof.
-(*  intros.
-  generalize dependent C.
-  induction G.
-  induction P.
-  replace (pdecte (term_nl_cdb cdb5))
-  with (term_nl_cdb (cdb_succ cdb5))
-    by (cbv; auto).
-  intros.
-  apply te_nl_var.
-  apply ctx_nl_var.
-  apply wftype_nl_wfsub in H0.
-  decompose record H0.
-  assumption.
-  assumption.
-  inversion H.
-  induction cdb5.
-  inversion H1.
-  
-  destruct C.
-  replace  (pdecTy (type_nl_tcon tcon5))
-  with (type_nl_tcon tcon5)
-    by (cbv; auto).
-  assumption.
-  inversion H.
-  
-  replace (pdecTy (type_nl_pi_elim C nte5))
-  with (type_nl_pi_elim (pdecTy C) (pdecte nte5))
-    by (cbv;cbv;auto).
-  inversion H
- *)
-  admit.
-Admitted.
- *)
-  
-Lemma wftype_nl_nsigempty:
-  forall (C : nTy) (G : nctx) (L : nK),
-    ~ wftype_nl nsigempty G C L.
-Proof.
-  intros.
-  generalize dependent L.
-  (*  induction G. *)
-  generalize dependent G.
-  induction C.
-  (* case type_nl_tcon alpha *)
-  intros.
-  intro.
-  inversion H.
-  unfold boundnTCon in H4.
-  decompose record H4.
-  apply app_cons_not_nil in H6.
-  contradiction.
-  (* case type_nl_pi_intro *)
-  intros.
-  intro.
-  inversion H.
-  destruct IHC with (G) (kind_nl_pi_intro D nK5).
-  assumption.
-  (* case type_nl_pi_intro *)
-  intros.
-  intro.
-  inversion H.
-  destruct IHC2 with (C1 :: G) (kind_nl_type).
-  assumption.
-Qed.
 
 (*
 Lemma wfterm_nl_wftype_nl:
@@ -633,6 +525,31 @@ Proof.
   apply ty_nl_pi_intro.
 *)
 
+  
+
+  
+(** weakening **)
+
+
+(*
+Lemma wfctx_nl_weakening_sgn_l:
+  forall (S : nsgn) (G : nctx) (c : con) (C : nTy),
+    wfctx_nl S G ->
+    wfsig_nl ( (inl (c, C)) :: S) ->
+    wfctx_nl ( (inl (c, C)) :: S) G
+with wftype_nl_weakening_sgn_l:
+  forall (S : nsgn) (G : nctx) (c : con) (L : nK) (C D : nTy),
+    wftype_nl S G C L ->
+    wfsig_nl (inl (c, D) :: S) ->
+    wftype_nl (inl (c, D) :: S) G C L
+with wfterm_nl_weakening_sgn_l:
+  forall (S : nsgn) (G : nctx) (c : con) (K : nK) (C D : nTy) (P : nte),
+    wfterm_nl S G P C ->
+    wfsig_nl (inl (c, D) :: S) ->
+    wfterm_nl (inl (c, D) :: S) G P C
+.
+
+*)
   
 Lemma wfctx_nl_weakening_sgn_r:
   forall (S : nsgn) (G : nctx) (alpha : tcon) (K : nK),
@@ -804,27 +721,20 @@ Proof.
   assumption.
 Qed.
 
-
 Lemma wfkind_nl_weakening_sgn_r :
   forall (S : nsgn) (G : nctx) (alpha : tcon) (K L : nK),
-    wfkind_nl S G L ->
     wfsig_nl ( (inr (alpha, K)) :: S) ->
-    wfkind_nl ( (inr (alpha, K)) :: S) G L
-.
+    wfkind_nl S G L ->
+    wfkind_nl ( (inr (alpha, K)) :: S) G L.
 Proof.
   intros.
-  generalize dependent G.
-  induction L.
-  intros.
+  induction H0.
   apply k_nl_type.  
   apply wfctx_nl_weakening_sgn_r.
-  inversion H.
   assumption.
   assumption.
-  intros.
   apply k_nl_pi_intro.
-  inversion H.
-  apply IHL in H4.
+  apply IHwfkind_nl.
   assumption.
 Qed.
 
