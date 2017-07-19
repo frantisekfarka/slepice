@@ -295,7 +295,7 @@ Jwfnl :: '' ::=
     nsgn ; nctx |- C Q is C' Q' : typeK
 
   defn 
-  nsgn ; nctx |- Q is Q' : C ::  :: substapterm_nl_ :: 'eqt_nl_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[Q]]  \equiv [[Q']]  : [[C]] }} by
+  nsgn ; nctx |- Q is Q' : C ::  :: substapterm_nl :: 'eqt_nl_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[Q]]  \equiv [[Q']]  : [[C]] }} by
 
     nsgn ; nctx |- Q : C
     ------------------------- :: refl
