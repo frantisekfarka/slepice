@@ -209,7 +209,7 @@ Jwfnl :: '' ::=
 
     nsgn ; nctx,C |- D : typeK
     ----------------------------------------- :: pi_intro
-    nsgn ; nctx |- Pi C . D : typeK 
+    nsgn ; nctx |- Pi C . pincTy D : typeK 
 
     nsgn ; nctx |- C : Pi D . nK
     nsgn ; nctx |- Q : D
