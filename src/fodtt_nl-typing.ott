@@ -6,8 +6,8 @@
 
 embed
 {{ coq
-Notation nsigempty := (@nil (con*nTy+tcon*nK)).
-Notation nctxempty := (@nil (nTy)).
+Notation empty := (@nil (con*nTy+tcon*nK)).
+Notation empty := (@nil (nTy)).
 
 Definition fstnSig (e : (con*nTy)+(tcon*nK) ) := match e with
     | inl (c, nty) => inl c
@@ -176,16 +176,16 @@ Jwfnl :: '' ::=
   |-sig nsgn :: ::wfsig_nl::'sig_nl_' {{ tex \vdash [[nsgn]] \text{ sig} }} by
 
     ---------------  :: empty
-    |-sig nsigempty
+    |-sig empty
 
     |-sig nsgn
-    nsgn ; nctxempty |- nK : kindS
+    nsgn ; empty |- nK : kindS
     alpha notin dom(nsgn)
     -------------------------- :: tcon
     |-sig nsgn,alpha:nK
 
     |-sig nsgn
-    nsgn ; nctxempty |- C : typeK
+    nsgn ; empty |- C : typeK
     c notin dom(nsgn) 
     -------------------------- :: con
     |-sig nsgn,c:C
@@ -195,7 +195,7 @@ Jwfnl :: '' ::=
    
     |-sig nsgn
     --------------------  :: empty
-    nsgn |-ctx nctxempty
+    nsgn |-ctx empty
 
     nsgn |-ctx nctx
     nsgn ; nctx |- C : typeK
@@ -440,7 +440,7 @@ Jtrans_ctx :: '' ::=
   by
 
   ----------------------------- :: empty
-  transctx (ctxempty) nctxempty
+  transctx (empty) empty
 
   transctx (ctx) nctx
   transTy A (ctx) C

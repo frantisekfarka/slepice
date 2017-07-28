@@ -87,16 +87,16 @@ extterm, tstar {{tex t^*{} }} :: 'tstar_' ::=
 %  | \ x . t      ::   :: lam                   {{ com lambda  }}
 
 signature, sig {{ tex \mathcal{S} }} :: 'signature_' ::=          
-  | sigempty    ::   :: sigempty
+  | empty    ::   :: empty
   | sig , c : T  ::   :: sigconst
   | sig , b : K  ::   :: sigtype
 
 context, ctx {{ tex \Gamma }} :: 'context_' ::=           
-  | ctxempty    ::   :: ctxempty
+  | empty    ::   :: empty
   | ctx , x : T  ::   :: ctxvar
 
 extcontext, ectx {{ tex \Gamma^*{} }} :: 'extcontext_' ::=           
-  | ctxempty    ::   :: ctxempty
+  | empty    ::   :: empty
   | ectx , x : Tstar  ::   :: ctxvar
 
 
@@ -133,8 +133,8 @@ terminals :: 'terminals_' ::=
   | \            ::   :: lambda  {{ tex \lambda }}
   | Pi           ::   :: pikindt {{ tex \Pi }}
 %  | Sigma        ::   :: sigmakindt {{ tex \Sigma }}
-  | sigempty     ::   :: sigempty {{ tex \cdot}}
-  | ctxempty     ::   :: ctxempty {{ tex \cdot}}
+  | empty     ::   :: empty {{ tex \cdot}}
+  | empty     ::   :: empty {{ tex \cdot}}
   | substempty   ::   :: substempty {{ tex \cdot}}
   | progempty    ::   :: progtempty {{ tex \cdot}}
   | <-           ::   :: hcarrow  {{ tex \leftarrow }}
@@ -380,16 +380,16 @@ Jtype :: '' ::=
  |-sig sig :: ::wfsig::'sig_' {{ tex \vdash [[sig]] \text{ sig} }} by
 
     ---------------  :: empty
-    |-sig sigempty
+    |-sig empty
 
     |-sig sig
-    sig ; ctxempty |- K : kindS
+    sig ; empty |- K : kindS
     not(b isin dom(sig)) 
     -------------------------- :: type
     |-sig sig,b:K
 
     |-sig sig
-    sig ; ctxempty |- c : T
+    sig ; empty |- c : T
     not(b isin dom(sig)) 
     -------------------------- :: con
     |-sig sig,b:K
@@ -399,7 +399,7 @@ Jtype :: '' ::=
    
     |-sig sig
     --------------------  :: empty
-    sig |-ctx ctxempty
+    sig |-ctx empty
 
     |-sig sig
     sig |-ctx ctx
@@ -564,9 +564,9 @@ Jgoal :: '' ::=
 
 
    --------------------- :: empty
-   sigempty |- progempty
+   empty |- progempty
 
    sig |- P
    --------------------------------------- :: tvar
-   sig , b : K |- P , kappa : kind(K, ctxempty) <- 
+   sig , b : K |- P , kappa : kind(K, empty) <- 
 

@@ -36,8 +36,8 @@ te, m , M, N :: 'term_' ::= {{ com Terms }}
 sgn {{ tex \mathcal{S} }} :: 'signature_' ::= {{ com signature }}
     {{ coq list (con*Ty+tcon*K) }}
 %    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
-  | sigempty     ::   :: empty             {{ com empty signature }}
-     {{ coq sigempty }}
+  | empty     ::   :: empty             {{ com empty signature }}
+     {{ coq empty }}
   | sgn , con : Ty  ::   :: con
      {{ coq (cons (inl([[con]],[[Ty]])) [[sgn]]) }}
   | sgn , tcon : K  ::   :: sigtcon
@@ -45,8 +45,8 @@ sgn {{ tex \mathcal{S} }} :: 'signature_' ::= {{ com signature }}
 
 ctx {{ tex \Gamma }} :: 'context_' ::= {{ com contexte }}
     {{ coq list (var*Ty) }}
-  | ctxempty    ::   :: ctxempty              {{ com empty contexte }}
-     {{ coq ctxempty }}
+  | empty    ::   :: empty              {{ com empty contexte }}
+     {{ coq empty }}
   | ctx , var : Ty  ::   :: ctxvar
      {{ coq (cons ([[var]],[[Ty]]) [[ctx]]) }}
 

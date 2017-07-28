@@ -51,8 +51,8 @@ nte, nm , O, P, Q :: 'term_nl_' ::= {{ com Terms }}
 nsgn {{ tex \mathcal{S}^n }} :: 'signature_nl_' ::= {{ com signature }}
     {{ coq list (con*nTy+tcon*nK) }}
 %    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
-  | nsigempty     ::   :: empty             {{ com empty signature }}
-     {{ coq nsigempty }}
+  | empty     ::   :: empty             {{ com empty signature }}
+     {{ coq empty }}
   | nsgn , con : nTy  ::   :: con
      {{ coq (cons (inl([[con]],[[nTy]])) [[nsgn]]) }}
   | nsgn , tcon : nK  ::   :: sigtcon
@@ -60,8 +60,8 @@ nsgn {{ tex \mathcal{S}^n }} :: 'signature_nl_' ::= {{ com signature }}
 
 nctx {{ tex \Gamma^n }} :: 'context_nl_' ::= {{ com context }}
     {{ coq list (nTy) }}
-  | nctxempty    ::   :: nctxempty              {{ com empty context }}
-     {{ coq nctxempty }}
+  | empty    ::   :: empty              {{ com empty context }}
+     {{ coq empty }}
   | nctx , nTy  ::   :: ctxvar
      {{ coq (cons [[nTy]] [[nctx]]) }}
 

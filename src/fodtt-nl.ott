@@ -55,12 +55,12 @@ t, M, N :: 'term_' ::= {{ com Terms }}
 %  | t [ t' / pdb  ]      ::   :: psubst {{ tex [[t]] [ [[t]] / [[pdb]] ] }} {{ com substitution of term}}
 
 sig {{ tex \mathcal{S} }} :: 'signature_' ::= {{ com signature }}
-  | sigempty     ::   :: sigempty
+  | empty     ::   :: empty
   | sig , con : T  ::   :: sigconst
   | sig , tcon : K  ::   :: sigtype
 
 ctx {{ tex \Gamma }} :: 'context_' ::= {{ com context }}
-  | ctxempty    ::   :: ctxempty
+  | empty    ::   :: empty
   | ctx , T  ::   :: ctxvar
 
 terminals :: 'terminals_' ::=
@@ -69,8 +69,8 @@ terminals :: 'terminals_' ::=
   | \            ::   :: lambda   {{ tex \lambda }}
   | Pi           ::   :: pi       {{ tex \Pi }}
 %  | Sigma        ::   :: sigma    {{ tex \Sigma }}
-  | sigempty     ::   :: sigempty {{ tex \cdot}}
-  | ctxempty     ::   :: ctxempty {{ tex \cdot}}
+  | empty     ::   :: empty {{ tex \cdot}}
+  | empty     ::   :: empty {{ tex \cdot}}
   | <            ::   :: lpar     {{ tex \langle }}
   | >            ::   :: rpar     {{ tex \rangle }}
   | c_sig        ::   :: csig     {{ tex c_\Sigma }} 
@@ -149,7 +149,7 @@ by
 % cdb islen ctx :: ::  lenctx :: 'lenctx_' {{ tex [[cdb]] \equiv \len([[ctx]])}} by 
 %
 %   ------------------- :: 1
-%   zero islen ctxempty
+%   zero islen empty
 %
 %   ic islen ctx
 %   -------------------- :: 2
@@ -168,16 +168,16 @@ Jwellformed :: '' ::=
  |-sig sig :: ::wfsig::'sig_' {{ tex \vdash [[sig]] \text{ sig} }} by
 
     ---------------  :: empty
-    |-sig sigempty
+    |-sig empty
 
     |-sig sig
-    sig ; ctxempty |- K : kindS
+    sig ; empty |- K : kindS
     alpha notin dom(sig)
     -------------------------- :: type
     |-sig sig,alpha:K
 
     |-sig sig
-    sig ; ctxempty |- A : typeK
+    sig ; empty |- A : typeK
     c notin dom(sig) 
     -------------------------- :: con
     |-sig sig,c:A
@@ -187,7 +187,7 @@ Jwellformed :: '' ::=
    
     |-sig sig
     --------------------  :: empty
-    sig |-ctx ctxempty
+    sig |-ctx empty
 
     sig |-ctx ctx
     sig ; ctx |- A : typeK

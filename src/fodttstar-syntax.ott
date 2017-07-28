@@ -40,9 +40,9 @@ ete {{ tex te^*{} }}, em , P, Q :: 'termstar_' ::= {{ com extended Terms }}
 esgn {{ tex \mathcal{S}^*{} }} :: 'sgnstar_' ::= {{ com exteded signature }}
     {{ coq list (con*eTy+tcon*eK) }}
     {{ ocaml ((con * ety , tcon*ek) esgn_el_type)  list }}
-  % this is the same sigempty as in the sgn production
-  | sigempty         ::   :: empty             {{ com empty signature }}
-     {{ coq sigempty }}
+  % this is the same empty as in the sgn production
+  | empty         ::   :: empty             {{ com empty signature }}
+     {{ coq empty }}
   | esgn , con : eTy  ::   :: con
      {{ coq (cons (inl([[con]],[[eTy]])) [[esgn]]) }}
   | esgn , tcon : eK  ::   :: tcon
@@ -50,9 +50,9 @@ esgn {{ tex \mathcal{S}^*{} }} :: 'sgnstar_' ::= {{ com exteded signature }}
 
 ectx {{ tex \Gamma^*{} }} :: 'ctxstar_' ::= {{ com extended context }}
     {{ coq list (var*eTy) }}
-  % this is the same ctxempty as in the ctx production
-  | ctxempty         ::   :: empty     {{ com empty context }}
-     {{ coq ctxempty }}
+  % this is the same empty as in the ctx production
+  | empty         ::   :: empty     {{ com empty context }}
+     {{ coq empty }}
   | ectx , var : eTy  ::   :: var
      {{ coq (cons ([[var]],[[eTy]]) [[ectx]]) }}
 

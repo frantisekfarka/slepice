@@ -6,8 +6,8 @@
 
 embed
 {{ coq
-Notation sigempty := (@nil (con*Ty+tcon*K)).
-Notation ctxempty := (@nil (var*Ty)).
+Notation empty := (@nil (con*Ty+tcon*K)).
+Notation empty := (@nil (var*Ty)).
 
 Definition fstSig (e : (con*Ty)+(tcon*K) ) := match e with
     | inl (c, ty) => inl c
@@ -68,16 +68,16 @@ Jwellformed :: '' ::=
   |-sig sgn :: ::wfsig::'sig_' {{ tex \vdash [[sgn]] \text{ sig} }} by
 
     ---------------  :: empty
-    |-sig sigempty
+    |-sig empty
 
     |-sig sgn
-    sgn ; ctxempty |- K : kindS
+    sgn ; empty |- K : kindS
     alpha notin dom(sgn)
     -------------------------- :: tcon
     |-sig sgn,alpha:K
 
     |-sig sgn
-    sgn ; ctxempty |- A : typeK
+    sgn ; empty |- A : typeK
     c notin dom(sgn) 
     -------------------------- :: con
     |-sig sgn,c:A
@@ -87,7 +87,7 @@ Jwellformed :: '' ::=
    
     |-sig sgn
     --------------------  :: empty
-    sgn |-ctx ctxempty
+    sgn |-ctx empty
 
     sgn |-ctx ctx
     sgn ; ctx |- A : typeK
