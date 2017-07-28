@@ -1,0 +1,58 @@
+grammar
+eK {{ tex K^*{} }}:: 'kindstar_' ::= {{ com extended Kinds }}
+  | typeK                ::   :: type                           {{ com kind of all types }} 
+  | Pi var : eTy . eK    ::   :: pi_intro (+ bind var in eK +)  {{ com kind of dependente functions }}
+  | eK [ ete / var ]     :: M :: subst                         {{ com substitution }}
+     {{ coq (subst_eK [[ete]] [[var]] [[eK]]) }}
+     {{ ocaml int }}
+     {{ tex [[eK]] [ [[ete]] / [[var]] ] }} 
+  | mkvar                ::   :: var                           {{ com kind metavariable }}
+
+%% we include 'a' since its used to generate ocaml variables
+%% hence we need lowercase
+eTy {{ tex Ty^*{} }}, ea , C, D :: 'typestar_' ::= {{ com extended Types }}
+  | tcon                 ::   :: tcon                            {{ com type constant }}
+  | eTy ete              ::   :: pi_elim                         {{ com application of a type former }}
+  | Pi var : eTy . eTy'  ::   :: pi_intro (+ bind var in eTy +)  {{ com type of dependente functions }}
+  | eTy [ ete / var ]    :: M :: subst                           {{ com substitution }}
+     {{ coq ( subst_Ty [[ete]] [[var]] [[eTy]] ) }}
+     {{ ocaml int }}
+     {{ tex [[eTy]] [ [[ete]] / [[var]] ] }}
+  | mtvar                ::   :: mvar                            {{ com type metavariable }}
+
+% we include 'm' since its used to generate ocaml variables
+% hence we need lowercase
+ete {{ tex te^*{} }}, em , P, Q :: 'termstar_' ::= {{ com extended Terms }}
+  | var                ::   :: var                            {{ com variables }} 
+  | con                ::   :: con                            {{ com term constants }} 
+  | \ var : eTy . ete  ::   :: pi_intro (+ bind var in ete +) {{ com formation of $\Pi$ type }}
+  | ete ete'           ::   :: pi_elim                        {{ com application }}
+  | ( ete )            :: S :: paren                        
+     {{ coq [[ete]] }}
+     {{ ocaml ete }}
+  | ete [ ete' / var ] :: M :: subst                          {{ com substitution of term}}
+     {{ coq ( subst_te [[ete']] [[var]] [[ete]] ) }}
+     {{ ocaml int }}
+     {{ tex [[ete]] [ [[ete']] / [[var]] ] }}
+  | mvar               ::   :: mvar                           {{ com term metavariable }}
+
+
+esgn {{ tex \mathcal{S}^*{} }} :: 'sgnstar_' ::= {{ com exteded signature }}
+    {{ coq list (con*eTy+tcon*eK) }}
+    {{ ocaml ((con * ety , tcon*ek) esgn_el_type)  list }}
+  % this is the same sigempty as in the sgn production
+  | sigempty         ::   :: empty             {{ com empty signature }}
+     {{ coq sigempty }}
+  | esgn , con : eTy  ::   :: con
+     {{ coq (cons (inl([[con]],[[eTy]])) [[esgn]]) }}
+  | esgn , tcon : eK  ::   :: tcon
+     {{ coq (cons (inr([[tcon]],[[eK]])) [[esgn]]) }}
+
+ectx {{ tex \Gamma^*{} }} :: 'ctxstar_' ::= {{ com extended context }}
+    {{ coq list (var*eTy) }}
+  % this is the same ctxempty as in the ctx production
+  | ctxempty         ::   :: empty     {{ com empty context }}
+     {{ coq ctxempty }}
+  | ectx , var : eTy  ::   :: var
+     {{ coq (cons ([[var]],[[eTy]]) [[ectx]]) }}
+

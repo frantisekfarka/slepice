@@ -6,8 +6,10 @@ terminals :: 'terminals_' ::=
   | Pi           ::   :: pi        {{ tex \Pi }}
   | sigempty     ::   :: sigempty  {{ tex \cdot}}
   | nsigempty    ::   :: nsigempty {{ tex \cdot}}
+  | esigempty    ::   :: esigempty {{ tex \cdot}}
   | ctxempty     ::   :: ctxempty  {{ tex \cdot}}
   | nctxempty    ::   :: nctxempty {{ tex \cdot}}
+  | ectxempty    ::   :: ectxempty {{ tex \cdot}}
   | zeroc        ::   :: zeroc     {{ tex 0_\Gamma }}
   | succ         ::   :: succ      {{ tex \sigma_\Gamma }}
   | zerop        ::   :: zerop     {{ tex 0_\Pi }}

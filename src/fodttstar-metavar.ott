@@ -1,0 +1,16 @@
+metavar mvar {{ tex ?_\mathcal{V} }}, mx {{ tex ?_x }}, my {{ tex ?_y }} ::= 
+    {{ com  term-level meta-variable }} 
+    {{ coq nat}} {{ coq-equality }}
+    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+
+metavar mtvar {{ tex ?_\mathcal{B} }}, malpha {{ tex ?_\alpha }}, mbeta {{ tex ?_\beta }} ::=
+    {{ com  type-level meta-variable }} 
+    {{ coq nat}} {{ coq-equality }}
+    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+
+metavar mkvar {{ tex ?_K }}, mL {{ tex ?_L }} ::=
+    {{ com  kind-level meta-variable }} 
+    {{ coq nat}} {{ coq-equality }}
+    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+
+

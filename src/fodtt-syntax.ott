@@ -51,3 +51,9 @@ ctx {{ tex \Gamma }} :: 'context_' ::= {{ com contexte }}
      {{ coq (cons ([[var]],[[Ty]]) [[ctx]]) }}
 
 
+subrules
+    K <:: eK
+    Ty <:: eTy
+    te <:: ete
+    sgn <:: esgn
+    ctx <:: ectx

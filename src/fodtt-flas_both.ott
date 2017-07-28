@@ -1,5 +1,4 @@
 grammar 
-grammar 
 
 formula :: formula_ ::=          
   | judgement                                       :: :: judgement

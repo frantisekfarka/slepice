@@ -53,12 +53,12 @@ subrules
 freevars
 % due to recursive definition of Ty and K the fv_Ty and fk_K are also generated
 %  Ty x :: tyfv
-  te x :: fv
+%  te x :: fv
 
 substitutions
 %  single K x :: tsubst
 %  single Ty x :: tsubst
-  single te x :: subst
+%  single te x :: subst
 
 defns
 Jwellformed :: '' ::=

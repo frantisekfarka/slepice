@@ -5,12 +5,12 @@ metavar var {{ tex \mathcal{V} }}, x, y ::= {{ com  term variable }}
     {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
     {{ tex \mathit{[[var]]} }} 
 
-metavar con {{tex \mathcal{C} }}, c ::=   {{ com  term level constante }} 
+metavar con {{tex \mathcal{C} }}, c ::=   {{ com  term level constant }} 
     {{ coq nat}} {{ coq-equality }}
     {{ ocaml string }} {{ lex alphanum}} {{ ocamllex ConAlphanum }}
     {{ tex \mathit{[[con]]} }}
 
-metavar tcon {{ tex \mathcal{B} }}, alpha {{ tex \alpha}}, beta {{ tex \beta }} ::=   {{ com  type level constants}} 
+metavar tcon {{ tex \mathcal{B} }}, alpha {{ tex \alpha}}, beta {{ tex \beta }} ::=   {{ com  type level constant}} 
     {{ coq nat}} {{ coq-equality }}
     {{ ocaml string }} {{ lex alphanum}} {{ ocamllex TConAlphanum }}
     {{ tex \mathit{[[tcon]]} }}
