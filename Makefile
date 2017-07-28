@@ -7,6 +7,9 @@ TEX_DIR=tex/
 VERB_DIR=verb/
 MAIN=exquan.tex
 
+TO_RM=coqdoc.css\
+
+
 OTT=../ott/bin/ott
 
 .PHONY: clean veryclean
@@ -25,7 +28,7 @@ exquan.tex: exquan.ott
 clean:
 	$(RM) *.aux *.xml *.bcf *.bbl *.blg *-blx.bib \
 		*.log *.nav *.out *.vrb *.snm *.toc \
-		X.tex *.bak *.pag
+		X.tex *.bak *.pag $(TO_RM)\
 
 veryclean: clean
 	$(RM) *.pdf *.dvi

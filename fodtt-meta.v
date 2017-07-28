@@ -584,7 +584,7 @@ with *) wftype_nl_weakening_ctx:
   forall (S : nsgn) (G : nctx) (L : nK) (C D : nTy),
     wfctx_nl S (D :: G) ->
     wftype_nl S G C L ->
-    wftype_nl S (D :: G) (pincTy C) L              
+    wftype_nl S (D :: G) (cincTy C) L              
 with wfterm_nl_weakening_ctx:
   forall (S : nsgn) (G : nctx) (C D : nTy) (P : nte),
     wfctx_nl S (D :: G) ->
@@ -601,7 +601,7 @@ with substapterm_nl_weakening_ctx:
     substapterm_nl S G P Q C ->
     substapterm_nl S (D :: G) P Q C.
 Proof.
-  (* lemma wftype_nl_exchange_ctx *)
+  (* (* lemma wftype_nl_exchange_ctx *)
   intros.
   remember (pincTy D2 :: D1 :: G) as G' in H0.
   remember (pincTy C) as C' in H0.
@@ -665,9 +665,27 @@ Proof.
   assumption.
   assumption.
   (* lemma wfterm_nl_exchange_ctx *)
-  (* admit. *)
- *)
+  
+   *)
+  
+  
   (* lemma wfctx_nl_weakening_ctx *)
+  intros.
+
+  induction H0.
+  replace (cincTy (type_nl_tcon alpha))
+  with (type_nl_tcon alpha)
+    by (cbv; auto).
+  apply ty_nl_tcon.
+  assumption.
+  assumption.
+  (* case pi intro *)
+  replace (cincTy (type_nl_pi_intro C (pincTy D0)))
+  with (type_nl_pi_intro (cincTy C) (cincTy (pincTy D0)))
+    by (cbv; auto).
+  
+  apply ty_nl_pi_intro.
+  
 (*  intros.
   induction G.
   (* base case *)
