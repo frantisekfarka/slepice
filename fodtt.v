@@ -445,7 +445,7 @@ with wftype_nl : nsgn -> nctx -> nTy -> nK -> Prop :=    (* defn wftype_nl *)
      wftype_nl nsgn5 nctx5 (type_nl_tcon alpha) nK5
  | ty_nl_pi_intro : forall (nsgn5:nsgn) (nctx5:nctx) (C D:nTy),
      wftype_nl nsgn5  (cons  C   nctx5 )  D kind_nl_type ->
-     wftype_nl nsgn5 nctx5 (type_nl_pi_intro C D) kind_nl_type
+     wftype_nl nsgn5 nctx5 (type_nl_pi_intro C  (pincTy D ) ) kind_nl_type
  | ty_nl_pi_elim : forall (nsgn5:nsgn) (nctx5:nctx) (C:nTy) (Q:nte) (nK5:nK) (D:nTy),
      wftype_nl nsgn5 nctx5 C (kind_nl_pi_intro D nK5) ->
      wfterm_nl nsgn5 nctx5 Q D ->
@@ -457,11 +457,11 @@ with wfterm_nl : nsgn -> nctx -> nte -> nTy -> Prop :=    (* defn wfterm_nl *)
      wfterm_nl nsgn5 nctx5 (term_nl_con c) C
  | te_nl_var_z : forall (nsgn5:nsgn) (nctx5:nctx) (C:nTy),
      wfctx_nl nsgn5  (cons  C   nctx5 )  ->
-     wfterm_nl nsgn5 nctx5 (term_nl_cdb cdb_zero) C
- | te_nl_var : forall (nsgn5:nsgn) (nctx5:nctx) (ic:cdb) (D C:nTy),
+     wfterm_nl nsgn5  (cons  C   nctx5 )  (term_nl_cdb cdb_zero) C
+ | te_nl_var : forall (nsgn5:nsgn) (nctx5:nctx) (C:nTy) (ic:cdb) (D:nTy),
      wfctx_nl nsgn5  (cons  C   nctx5 )  ->
      wfterm_nl nsgn5 nctx5 (term_nl_cdb ic) D ->
-     wfterm_nl nsgn5 nctx5 (term_nl_cdb (cdb_succ ic)) D
+     wfterm_nl nsgn5  (cons  C   nctx5 )  (term_nl_cdb (cdb_succ ic)) D
  | te_nl_pi_intro : forall (nsgn5:nsgn) (nctx5:nctx) (C:nTy) (Q:nte) (D:nTy),
      wfterm_nl nsgn5  (cons  C   nctx5 )  Q D ->
      wfterm_nl nsgn5 nctx5 (term_nl_pi_intro C  (pincte Q ) ) (type_nl_pi_intro C  (pincTy D ) )
@@ -491,30 +491,70 @@ with substaptype_nl : nsgn -> nctx -> nTy -> nTy -> nK -> Prop :=    (* defn sub
      substaptype_nl nsgn5 nctx5 (type_nl_pi_intro C D) (type_nl_pi_intro C' D') kind_nl_type
  | eqT_nl_2 : forall (nsgn5:nsgn) (nctx5:nctx) (C:nTy) (Q:nte) (C':nTy) (Q':nte),
      substaptype_nl nsgn5 nctx5 C C' kind_nl_type ->
-     substapterm_nl_ nsgn5 nctx5 Q Q' C ->
+     substapterm_nl nsgn5 nctx5 Q Q' C ->
      substaptype_nl nsgn5 nctx5 (type_nl_pi_elim C Q) (type_nl_pi_elim C' Q') kind_nl_type
-with substapterm_nl_ : nsgn -> nctx -> nte -> nte -> nTy -> Prop :=    (* defn substapterm_nl_ *)
+with substapterm_nl : nsgn -> nctx -> nte -> nte -> nTy -> Prop :=    (* defn substapterm_nl *)
  | eqt_nl_refl : forall (nsgn5:nsgn) (nctx5:nctx) (Q:nte) (C:nTy),
      wfterm_nl nsgn5 nctx5 Q C ->
-     substapterm_nl_ nsgn5 nctx5 Q Q C
+     substapterm_nl nsgn5 nctx5 Q Q C
  | eqt_nl_sym : forall (nsgn5:nsgn) (nctx5:nctx) (Q Q':nte) (C:nTy),
-     substapterm_nl_ nsgn5 nctx5 Q' Q C ->
-     substapterm_nl_ nsgn5 nctx5 Q Q' C
+     substapterm_nl nsgn5 nctx5 Q' Q C ->
+     substapterm_nl nsgn5 nctx5 Q Q' C
  | eqt_nl_trans : forall (nsgn5:nsgn) (nctx5:nctx) (Q_1 Q_3:nte) (C:nTy) (Q_2:nte),
-     substapterm_nl_ nsgn5 nctx5 Q_1 Q_2 C ->
-     substapterm_nl_ nsgn5 nctx5 Q_2 Q_3 C ->
-     substapterm_nl_ nsgn5 nctx5 Q_1 Q_3 C
+     substapterm_nl nsgn5 nctx5 Q_1 Q_2 C ->
+     substapterm_nl nsgn5 nctx5 Q_2 Q_3 C ->
+     substapterm_nl nsgn5 nctx5 Q_1 Q_3 C
  | eqt_nl_1 : forall (nsgn5:nsgn) (nctx5:nctx) (C:nTy) (Q P Q' P':nte) (D:nTy),
-     substapterm_nl_ nsgn5 nctx5 Q Q' C ->
-     substapterm_nl_ nsgn5 nctx5 P P' D ->
-     substapterm_nl_ nsgn5 nctx5 (term_nl_pi_elim  (term_nl_pi_intro C Q)  P)  (psubste Q' P' )   (psubsTy C P' ) 
+     substapterm_nl nsgn5 nctx5 Q Q' C ->
+     substapterm_nl nsgn5 nctx5 P P' D ->
+     substapterm_nl nsgn5 nctx5 (term_nl_pi_elim  (term_nl_pi_intro C Q)  P)  (psubste Q' P' )   (psubsTy C P' ) 
  | eqt_nl_2 : forall (nsgn5:nsgn) (nctx5:nctx) (Q P Q' P':nte) (C D:nTy),
-     substapterm_nl_ nsgn5 nctx5 Q Q' (type_nl_pi_intro C D) ->
-     substapterm_nl_ nsgn5 nctx5 P P' C ->
-     substapterm_nl_ nsgn5 nctx5 (term_nl_pi_elim Q P) (term_nl_pi_elim Q' P')  (psubsTy C P ) 
+     substapterm_nl nsgn5 nctx5 Q Q' (type_nl_pi_intro C D) ->
+     substapterm_nl nsgn5 nctx5 P P' C ->
+     substapterm_nl nsgn5 nctx5 (term_nl_pi_elim Q P) (term_nl_pi_elim Q' P')  (psubsTy C P ) 
  | eqt_nl_3 : forall (nsgn5:nsgn) (nctx5:nctx) (C:nTy) (Q:nte) (C':nTy) (Q':nte) (D:nTy),
      substaptype_nl nsgn5 nctx5 C C' kind_nl_type ->
-     substapterm_nl_ nsgn5 nctx5 Q Q' D ->
-     substapterm_nl_ nsgn5 nctx5 (term_nl_pi_intro C Q) (term_nl_pi_intro C' Q') (type_nl_pi_intro C D).
+     substapterm_nl nsgn5 nctx5 Q Q' D ->
+     substapterm_nl nsgn5 nctx5 (term_nl_pi_intro C Q) (term_nl_pi_intro C' Q') (type_nl_pi_intro C D).
+(** definitions *)
+
+(* defns Jtrans_teTy *)
+Inductive transte : te -> ctx -> nte -> Prop :=    (* defn transte *)
+ | transte_cdb_zero : forall (x:var) (ctx5:ctx) (A:Ty),
+     transte (term_var x)  (cons ( x , A )  ctx5 )  (term_nl_cdb cdb_zero)
+ | transte_cdb_succ : forall (y:var) (ctx5:ctx) (x:var) (A:Ty) (cdb5:cdb),
+     transte (term_var y) ctx5 (term_nl_cdb cdb5) ->
+     transte (term_var y)  (cons ( x , A )  ctx5 )  (term_nl_cdb (cdb_succ cdb5))
+ | transte_con : forall (c:con) (ctx5:ctx),
+     transte (term_con c) ctx5 (term_nl_con c)
+ | transte_pi_intro : forall (x:var) (A:Ty) (M:te) (ctx5:ctx) (C:nTy) (P:nte),
+     transTy A ctx5 C ->
+     transte M  (cons ( x , A )  ctx5 )  P ->
+     transte (term_pi_intro x A M) ctx5 (term_nl_pi_intro C  (pdecte P ) )
+ | transte_pi_elim : forall (M N:te) (ctx5:ctx) (P Q:nte),
+     transte M ctx5 P ->
+     transte N ctx5 Q ->
+     transte (term_pi_elim M N) ctx5 (term_nl_pi_elim P Q)
+with transTy : Ty -> ctx -> nTy -> Prop :=    (* defn transTy *)
+ | transty_tcon : forall (alpha:tcon) (ctx5:ctx),
+     transTy (type_tcon alpha) ctx5 (type_nl_tcon alpha)
+ | transty_pi_intro : forall (x:var) (A B:Ty) (ctx5:ctx) (C D:nTy),
+     transTy A ctx5 C ->
+     transTy B  (cons ( x , A )  ctx5 )  D ->
+     transTy (type_pi_intro x A B) ctx5 (type_nl_pi_intro C  (pdecTy D ) )
+ | transty_pi_elim : forall (A:Ty) (M:te) (ctx5:ctx) (C:nTy) (P:nte),
+     transTy A ctx5 C ->
+     transte M ctx5 P ->
+     transTy (type_pi_elim A M) ctx5 (type_nl_pi_elim C P).
+(** definitions *)
+
+(* defns Jtrans_ctx *)
+Inductive transctx : ctx -> nctx -> Prop :=    (* defn transctx *)
+ | transctx_empty : 
+     transctx  ctxempty   nctxempty 
+ | transctx_var : forall (ctx5:ctx) (x:var) (A:Ty) (nctx5:nctx) (C:nTy),
+     transctx ctx5 nctx5 ->
+     transTy A ctx5 C ->
+     transctx  (cons ( x , A )  ctx5 )   (cons  C   nctx5 ) .
 
 

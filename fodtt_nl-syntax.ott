@@ -2,7 +2,8 @@ grammar
 
 cdb, ic {{tex \iota_\Gamma }} :: 'cdb_' ::= {{com deBruijn indices for contexts }}
   | zeroc                ::   :: zero  
-  | succ cdb            ::   :: succ
+  | succ cdb             ::   :: succ
+%  | ( cdb )              :: S :: paren                        
 
 pdb, ip {{tex \iota_\Pi }} :: 'pdb_' ::= {{com deBruijn indices for pi types }}
   | zerop                ::   :: zero  

@@ -123,8 +123,6 @@ by
   pdecK typeK  === typeK
   pdecK Pi C . nK  === Pi pdecTy C . pdecK nK
 
-
-
 funs
   Psubst ::= 
 
@@ -152,6 +150,23 @@ fun
 by
   psubsK ( typeK ) Q  === typeK
   psubsK ( Pi C . nK ) Q  === Pi psubsTy (C) Q . psubsK (nK) Q
+
+%funs
+%  CincteTy ::= 
+%fun
+%  cincTy C :: nTy :: cincTy {{ tex \upharpoonright [[C]] }} {{ com ctx weakening in types}}
+%by
+%  cincTy alpha === alpha
+%  cincTy C P   === (cincTy C) (cincte P)
+%  cincTy Pi C . D  === Pi cincTy C  . cincTy D
+%fun
+%  cincte P :: nte :: cincte {{ tex \upharpoonright [[P]] }} {{ com ctx weakening on terms }}
+%by
+%  cincte ic      === succ ic
+%  cincte ip      === ip
+%  cincte c       === c
+%  cincte \ C . P === \ cincTy C . cincte P 
+%  cincte Q P     === (cincte Q) (cincte P)
 
 defns
 Jwfnl :: '' ::=
@@ -325,5 +340,111 @@ Jwfnl :: '' ::=
     ---------------------------------------- :: 3
     nsgn ; nctx |- \C.Q is \C'.Q' : Pi C . D
 
+
+
+
+%  defn
+%  inctxTy C nctx :: :: inctxTy :: 'inctxTy_' {{ tex [[C]] \upharpoonright [[nctx]] }} {{ com lives-in-context on types}} by
+%
+%  ----------------- :: 1
+%  inctxTy alpha nctx
+% 
+%  inctxTy C nctx
+%  inctxTy D nctx,C
+%  -------------------- :: 2
+%  inctxTy Pi C . D nctx  
+%
+%  inctxTy C nctx 
+%  inctxte P nctx
+%  --------------- :: 3
+%  inctxTy C P nctx 
+%
+%
+%
+%  defn 
+%  inctxte P nctx :: :: inctxte :: 'inctxte_' {{ tex [[P]] \upharpoonright [[nctx]] }} {{ com lives-in-context on terms }} by
+%
+%  -------------------------- :: 1
+%  inctxte zeroc nctx,C
+%%
+%%  inctxte ic nctx
+%%  ---------------------- :: 2
+%%  inctxte succ ic nctx,C
+%%
+%%  -------------- :: 3
+%%  inctxte ip nctx      
+%%
+%%  ------------- :: 4
+%%  inctxte c nctx
+%%
+%%  inctxTy C nctx
+%%  inctxte P nctx,C
+%%  --------------------- :: 5
+%%  inctxte \ C . P nctx
+%%
+%%  inctxte Q nctx
+%%  inctxte P nctx
+%%  ----------------- :: 6
+%%  inctxte Q P nctx     
+%
+
+defns 
+Jtrans_teTy :: '' ::=
+
+  defn
+  transte te ( ctx ) nte :: :: transte :: 'transte_' {{ tex \ulcorner [[te]] ; [[ctx]] \urcorner \equiv [[nte]] }} {{ com translation of term }} 
+  by
+
+    -------------------------- :: cdb_zero
+    transte x (ctx, x:A) zeroc
+
+    transte y (ctx) cdb
+    ----------------------------- :: cdb_succ
+    transte y (ctx, x:A) succ cdb     
+
+    ----------------- :: con
+    transte c (ctx) c
+
+    transTy A (ctx) C
+    transte M (ctx,x:A) P
+    ---------------------------------------- :: pi_intro
+    transte \ x : A . M (ctx) \ C . pdecte P
+
+    transte M (ctx) P
+    transte N (ctx) Q
+    --------------------- :: pi_elim
+    transte M N (ctx) P Q
+
+   defn
+   transTy Ty ( ctx ) nTy :: :: transTy :: 'transty_' {{ tex \ulcorner [[Ty]] ; [[ctx]] \urcorner \equiv [[nTy]] }}{{ com translation of type }}
+   by
+
+   ------------------------- :: tcon
+   transTy alpha (ctx) alpha
+
+   transTy A (ctx) C
+   transTy B (ctx,x:A) D
+   ------------------------------------------ :: pi_intro
+   transTy Pi x : A . B (ctx) Pi C . pdecTy D 
+   
+   transTy A (ctx) C
+   transte M (ctx) P
+   --------------------- :: pi_elim
+   transTy A M (ctx) C P
+
+defns 
+Jtrans_ctx :: '' ::=
+
+  defn
+  transctx ( ctx ) nctx :: :: transctx :: 'transctx_' {{ tex \ulcorner [[ctx]] \urcorner \equiv [[nctx]] }} {{ com translation of context }}
+  by
+
+  ----------------------------- :: empty
+  transctx (ctxempty) nctxempty
+
+  transctx (ctx) nctx
+  transTy A (ctx) C
+  -------------------------- :: var
+  transctx (ctx, x:A) nctx,C 
 
 

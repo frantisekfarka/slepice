@@ -558,58 +558,23 @@ Proof.
 Qed.
 
 
-Lemma wftype_nl_strenghtening_ctx:
-  forall (S : nsgn) (G : nctx) (C D : nTy),
-    wftype_nl S (D :: G) (pincTy C) kind_nl_type ->
-    wftype_nl S G C kind_nl_type.
-Proof.
-  intros.
-  induction C.
-  replace (pincTy (type_nl_tcon tcon5))
-  with (type_nl_tcon tcon5)
-    in H by (cbv; auto).
-  inversion H.
-  apply ty_nl_tcon.
-  inversion H1.
-  assumption.
-  assumption.
-  (* case pi elim *)
-  admit.
-  (* case pi intro *)
-(*  apply ty_nl_pi_intro.
-  
-  remember (D :: G) as G' in H.
-  remember (pincTy C) as C' in H.
-  induction H.
-  destruct C.
-  apply ty_nl_tcon.
-  rewrite HeqG' in H.
-  inversion H.
-  assumption.
-  admit.
-  admit.
-  admit.
-  (* step case *)
-  apply IHwftype_nl.
 
-  *)
-  (*
-Lemma wftype_nl_exchange_ctx:
+Lemma (*wftype_nl_exchange_ctx:
   forall (S : nsgn) (G : nctx) (L : nK) (C D1 D2 : nTy),
     wfctx_nl S (D2 :: G) ->
     wftype_nl S (pincTy D2 :: D1 :: G) (pincTy C) L ->
     wftype_nl S (pincTy D1 :: D2 :: G) (pincTy C) L
-with (*
+with 
     wfctx_nl S (D2 :: G) ->
     (*wfctx_nl S (D1 :: G) ->  *)
     wftype_nl S (D2 :: D1 :: G) C L ->
     wftype_nl S (D1 :: D2 :: G) C L
-(*with wfterm_nl_exchange_ctx:
+with wfterm_nl_exchange_ctx:
   forall (S : nsgn) (G : nctx) (P : nte) (C D1 D2 : nTy),
     wfctx_nl S (D1 :: G) ->
     wfterm_nl S (D1 :: D2 :: G) P C ->
     wfterm_nl S (D2 :: D1 :: G) P C
-       *)
+      
 with*) (*wfctx_nl_weakening_ctx: (* exchange ?? *)
   forall (S : nsgn) (G : nctx) (C D : nTy),
     wfctx_nl S (C :: G) ->

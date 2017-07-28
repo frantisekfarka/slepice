@@ -1,575 +1,324 @@
-metavar tvar, b ::=   {{ com  type variable }} 
-{{ isa string}} {{ coq nat}} {{ hol string}} {{ lem string }} {{ coq-equality }}
-{{ ocaml int}} {{ lex alphanum}} {{ tex \mathit{[[tvar]]} }}
+embed {{ tex-preamble \DeclareMathOperator{\dom}{dom} }}
 
-metavar var, x ::=   {{ com  term variable }} 
-{{ isa string}} {{ coq nat}} {{ hol string}} {{ lem string }} {{ coq-equality }}
-{{ ocaml int}} {{ lex alphanum}} {{ tex \mathit{[[var]]} }}
+metavar var {{ tex \mathcal{V} }}, x, y ::= {{ com  term variable }} 
+    {{ coq nat}} {{ coq-equality }}
+    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+    {{ tex \mathit{[[var]]} }} 
 
-metavar const, c ::=   {{ com  term constant }} 
-{{ isa string}} {{ coq nat}} {{ hol string}} {{ lem string }} {{ coq-equality }}
-{{ ocaml int}} {{ lex alphanum}} {{ tex \mathit{[[const]]} }}
+metavar con {{tex \mathcal{C} }}, c ::=   {{ com  term level constante }} 
+    {{ coq nat}} {{ coq-equality }}
+    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex ConAlphanum }}
+    {{ tex \mathit{[[con]]} }}
 
-metavar tmvar, mb {{ tex ?_b }} ::=   {{ com  type meta-variable }} 
-{{ isa string}} {{ coq nat}} {{ hol string}} {{ lem string }} {{ coq-equality }}
-{{ ocaml int}} {{ lex alphanum}} {{ tex \mathit{[[tmvar]]} }}
-
-metavar mvar, mx {{ tex ?_x }} ::=   {{ com  term meta-variable }} 
-{{ isa string}} {{ coq nat}} {{ hol string}} {{ lem string }} {{ coq-equality }}
-{{ ocaml int}} {{ lex alphanum}} {{ tex \mathit{[[mvar]]} }}
-
-metavar proofsym {{tex \mathcal{K} }}, kappa {{ tex \kappa }} ::=   {{ com  term meta-variable }} 
-{{ isa string}} {{ coq nat}} {{ hol string}} {{ lem string }} {{ coq-equality }}
-{{ ocaml int}} {{ lex alphanum}} {{ tex \mathit{[[mvar]]} }}
-
-indexvar index, n ::= 
-
+metavar tcon {{ tex \mathcal{B} }}, alpha {{ tex \alpha}}, beta {{ tex \beta }} ::=   {{ com  type level constants}} 
+    {{ coq nat}} {{ coq-equality }}
+    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex TConAlphanum }}
+    {{ tex \mathit{[[tcon]]} }}
 
 grammar
-kind, K :: 'kind_' ::=                       
-  | typeK         ::   :: type    
-  | Pi x : T . K  ::   :: pikind  
-  | ( K )         ::   :: kiparen
-  | K ap s        ::   :: kindsubst {{ tex [[K]] [ [[s]] ] }}
-%  | Sigma x . K   ::   :: sigmakind  
+K :: 'kind_' ::= {{ com Kinds }}
+  | typeK              ::   :: type                          {{ com kind of all types }} 
+  | Pi var : Ty . K    ::   :: pi_intro (+ bind var in K +)  {{ com kind of dependente functions }}
+  | K [ te / var ]     :: M :: subst                         {{ com substitution }}
+     {{ coq (tsubst_K [[te]] [[var]] [[K]]) }}
+     {{ ocaml int }}
+     {{ tex [[K]] [ [[te]] / [[var]] ] }} 
 
-extkind, Kstar {{ tex K^*{} }} :: 'kindstar_' ::=                       
-  | typeK                 ::   :: type    
-  | Pi x : Tstar . Kstar  ::   :: pikind  
-  | ( Kstar )             ::   :: kiparen
-  | Kstar ap sstar        ::   :: kindsubst {{ tex [[Kstar]] [ [[sstar]] ] }}
-%  | Sigma x . K           ::   :: sigmakind  
+%% we include 'a' since its used to generate ocaml variables
+%% hence we need lowecase
+Ty, a , A, B :: 'type_' ::= {{ com Types }}
+  | tcon               ::   :: tcon                           {{ com type constante }}
+  | Ty te              ::   :: pi_elim                        {{ com application of a type former }}
+  | Pi var : Ty . Ty'  ::   :: pi_intro (+ bind var in Ty +)  {{ com type of dependente functions }}
+  | Ty [ te / var ]    :: M :: subst                          {{ com substitution }}
+     {{ coq ( tsubst_Ty [[te]] [[var]] [[Ty]] ) }}
+     {{ ocaml int }}
+     {{ tex [[Ty]] [ [[te]] / [[var]] ] }}
 
-type, T :: 'types_' ::=                       
-  | b                ::   :: tvar
-  | T t              ::   :: tapp
-  | Pi x : T . T'    ::   :: pitform
-  | ( T )            ::   :: typaren
-  | T ap s           ::   :: tysubst {{ tex [[T]] [ [[s]] ] }}
-%  | c_sigma          ::   :: sigmatel
-%  | Sigma x : T . T' ::   :: sigmatform
+%% we include 'm' since its used to generate ocaml variables
+%% hence we need lowecase
+te, m , M, N :: 'term_' ::= {{ com Terms }}
+  | var                ::   :: var                           {{ com variables }} 
+  | con                ::   :: con                           {{ com term constants }} 
+  | \ var : Ty . te    ::   :: pi_intro (+ bind var in te +) {{ com formation of $\Pi$ type }}
+  | te te'             ::   :: pi_elim                       {{ com application }}
+  | ( te )             :: S :: paren                        
+     {{ coq [[te]] }}
+     {{ ocaml te }}
+  | te [ te' / var ]   :: M :: subst                         {{ com substitution of term}}
+     {{ coq ( tsubst_te [[te']] [[var]] [[te]] ) }}
+     {{ ocaml int }}
+     {{ tex [[te]] [ [[te']] / [[var]] ] }}
 
-exttype, Tstar {{tex T^*{} }} :: 'typesstar_' ::=                       
-  | b                        ::   :: tvar
-  | Tstar tstar              ::   :: tapp
-  | Pi x : Tstar . Tstar'    ::   :: pitform
-  | ( Tstar )                ::   :: typaren
-  | Tstar ap sstar           ::   :: tysubst {{ tex [[Tstar]] [ [[sstar]] ] }}
-  | mb                       ::   :: tmvar
-%  | c_sigma                  ::   :: sigmatel
-%  | Sigma x : T . T'         ::   :: sigmatform
+sgn {{ tex \mathcal{S} }} :: 'signature_' ::= {{ com signature }}
+    {{ coq list (con*Ty+tcon*K) }}
+%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+  | sigempty     ::   :: empty             {{ com empty signature }}
+     {{ coq sigempty }}
+  | sgn , con : Ty  ::   :: con
+     {{ coq (cons (inl([[con]],[[Ty]])) [[sgn]]) }}
+  | sgn , tcon : K  ::   :: sigtcon
+     {{ coq (cons (inr([[tcon]],[[K]])) [[sgn]]) }}
 
-
-term, t :: 't_' ::=                          
-  | x            ::   :: var                   
-  | c            ::   :: const                 
-  | \ x : T . t  ::   :: lam (+ bind x in t +) 
-  | t t'         ::   :: app                   
-  | ( t )        ::   :: teparen
-  | t ap s       ::   :: tesubst {{ tex [[t]] [ [[s]] ] }}
-%  | ( t )        :: S :: paren                 {{ icho [[t]]  }}  {{ lem [[t]] }}
-%  | { t / x } t' :: M :: sub  
-%                         {{ icho (tsubst_term [[t]] [[x]] [[t']])}}
-%  {{ lem (tsubst_term [[t]] [[x]] [[t']]) }}
-
-extterm, tstar {{tex t^*{} }} :: 'tstar_' ::=                          
-  | x                    ::   :: var                   
-  | c                    ::   :: const                 
-  | \ x : Tstar . tstar  ::   :: lam (+ bind x in tstar +) 
-  | tstar tstar'         ::   :: app                   
-  | ( tstar )            ::   :: teparen
-  | tstar ap s           ::   :: tesubst {{ tex [[tstar]] [ [[s]] ] }}
-  | mx                   ::   :: mvar
-%  | ( t )        :: S :: paren                 {{ icho [[t]]  }}  {{ lem [[t]] }}
-%  | { t / x } t' :: M :: sub  
-%                         {{ icho (tsubst_term [[t]] [[x]] [[t']])}}
-%  {{ lem (tsubst_term [[t]] [[x]] [[t']]) }}
-
-
-%val,v :: 'v_' ::=                            {{ com value   }}
-%  | \ x . t      ::   :: lam                   {{ com lambda  }}
-
-signature, sig {{ tex \mathcal{S} }} :: 'signature_' ::=          
-  | sigempty    ::   :: sigempty
-  | sig , c : T  ::   :: sigconst
-  | sig , b : K  ::   :: sigtype
-
-context, ctx {{ tex \Gamma }} :: 'context_' ::=           
-  | ctxempty    ::   :: ctxempty
-  | ctx , x : T  ::   :: ctxvar
-
-extcontext, ectx {{ tex \Gamma^*{} }} :: 'extcontext_' ::=           
-  | ctxempty    ::   :: ctxempty
-  | ectx , x : Tstar  ::   :: ctxvar
-
-
-extsubst, sstar {{tex \theta^*{} }} :: 'extsubst_' ::=
-  | substempty  ::   :: substempty
-  | extsubst , tstar / x   ::   :: substvar
-
-subst, s {{tex \theta }} :: 'subst_' ::=
-  | substempty  ::   :: substempty
-  | subst , t / x   ::   :: substvar
-
-atom, At {{ tex \mathcal{A} }} :: 'atom_' ::=
-  | true            ::    :: true     {{ tex \text{true} }}
-  | type ( mb , ctx )     ::    :: typePred {{ tex \text{type}([[mb]] , [[ctx]]) }}
-  | kind ( mb , ctx )     ::    :: kindPred {{ tex \text{kind}([[mb]] , [[ctx]]) }}
-  | eq Tstar Tstar' ::    :: eqT      {{ tex [[Tstar]] \equiv [[Tstar']] }}
-  | eq Kstar Kstar' ::    :: eqK      {{ tex [[Kstar]] \equiv [[Kstar']] }}
-
-goal, G {{ tex \mathcal{G} }} :: 'goal_' ::=
-  | At              ::    :: atom      {{tex [[At]] }}
-  | mx : G         ::    :: boundatom {{tex [[mx]] : [[G]] }}
-  | G , G'          ::    :: and       {{tex [[G]] \land [[G']] }}
-
-hc :: '' ::=
-  | At <- At1 , .. , Atn ::   :: hc 
-
-prog, P :: 'prog_' ::=
-  | progempty       ::    :: empty     
-  | prog , proofsym : hc   ::    :: hc
+ctx {{ tex \Gamma }} :: 'context_' ::= {{ com contexte }}
+    {{ coq list (var*Ty) }}
+  | ctxempty    ::   :: ctxempty              {{ com empty contexte }}
+     {{ coq ctxempty }}
+  | ctx , var : Ty  ::   :: ctxvar
+     {{ coq (cons ([[var]],[[Ty]]) [[ctx]]) }}
 
 terminals :: 'terminals_' ::=
-  | typeK        ::   :: type    {{ tex \text{type} }}
-  | kindS        ::   :: kind    {{ tex \text{kind} }}
-  | \            ::   :: lambda  {{ tex \lambda }}
-  | Pi           ::   :: pikindt {{ tex \Pi }}
-%  | Sigma        ::   :: sigmakindt {{ tex \Sigma }}
+  | typeK        ::   :: type     {{ tex \text{type} }}
+  | kindS        ::   :: kind     {{ tex \text{kind} }}
+  | \            ::   :: lambda   {{ tex \lambda }}
+  | Pi           ::   :: pi       {{ tex \Pi }}
   | sigempty     ::   :: sigempty {{ tex \cdot}}
   | ctxempty     ::   :: ctxempty {{ tex \cdot}}
-  | substempty   ::   :: substempty {{ tex \cdot}}
-  | progempty    ::   :: progtempty {{ tex \cdot}}
-  | <-           ::   :: hcarrow  {{ tex \leftarrow }}
-%  | |-sig        ::   :: wfsig    
-%  | |-ctx        ::   :: wfctx
-%  | |-           ::   :: wf    {{ tex \vdash }}
 
 formula :: formula_ ::=          
-  | judgement              :: :: judgement
-  | not ( formula )           :: :: not     {{ isa Not( [[formula]] ) }}
-                                         {{ tex \neg [[ formula]] }}
-  | fresh ( mb )           :: :: fresh  {{ tex [[mb]] \text{ fresh} }} 
-%  | b isin dom ( sig )     :: :: xin    {{ isa ? T. ([[b]],K,[[sig]]):tin }} 
+  | judgement               :: :: judgement
+  | c notin dom ( sgn )     :: :: cnotinsig 
+     {{ coq (not (indomCon [[c]] [[sgn]])) }}
+     {{ tex [[c]] \not\in \dom([[sgn]]) }}
+  | alpha notin dom ( sgn ) :: :: bnotinsig  
+     {{ coq (not (indomTCon [[alpha]] [[sgn]])) }}
+     {{ tex [[alpha]] \not\in \dom([[sgn]]) }}
+  | x notin dom ( ctx )     :: :: xnotinctx
+     {{ coq (not (indomVar [[x]] [[ctx]])) }}
+     {{ tex [[x]] \not\in \dom([[ctx]]) }}
+  | c : A in sgn            :: :: cinsig
+     {{ coq (boundCon [[c]] [[A]] [[sgn]]) }}
+     {{ tex [[c]] : [[A]] \in [[sgn]] }}
+  | alpha : K in sgn        :: :: binsig
+     {{ coq (boundTCon [[alpha]] [[K]] [[sgn]]) }}
+     {{ tex [[alpha]] : [[K]] \in [[sgn]] }}
+  | x : A in ctx            :: :: xinctx
+     {{ coq (boundVar [[x]] [[A]] [[ctx]]) }}
+     {{ tex [[x]] : [[A]] \in [[ctx]] }}
 
-parsing
-   goal_and left goal_and
+embed
+{{ coq
+Notation sigempty := (@nil (con*Ty+tcon*K)).
+Notation ctxempty := (@nil (var*Ty)).
+
+Definition fstSig (e : (con*Ty)+(tcon*K) ) := match e with
+    | inl (c, ty) => inl c
+    | inr (alpha, k) => inr alpha
+  end.
+
+Definition boundCon c T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inl(c,T0)) S2)) /\
+    ~In (inl(c)) (List.map (fstSig) S1).
+
+Definition boundTCon alpha T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
+    ~In (inr(alpha)) (List.map (fstSig) S1).
+
+Definition boundVar x T0 G :=
+  exists G1, exists G2,
+    (G = List.app G1 (List.cons (x,T0) G2)) /\
+    ~In x (List.map (@fst var Ty) G1).
+
+Definition indomCon c S :=
+  exists T0,
+    boundCon c T0 S.
+
+Definition indomTCon alpha S :=
+  exists T0,
+    boundCon alpha T0 S.
+
+Definition indomVar x S :=
+  exists T0,
+    boundVar x T0 S.
+
+}}
+embed
+{{ ocaml 
+type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
+}}
+
 
 subrules
-    kind     <:: extkind
-    type     <:: exttype 
-    term     <:: extterm
-    context  <:: extcontext
-    subst    <:: extsubst
-
-substitutions
-  single extterm var :: tsubst 
 
 freevars
-  sig b :: sigtypes
-  sig c :: sigcons
-  ectx x :: convars
-  extsubst x :: substvar
+% due to recursive definition of Ty and K the fv_Ty and fk_K are also generated
+%  Ty x :: tyfv
+  te x :: fv
 
+substitutions
+%  single K x :: tsubst
+%  single Ty x :: tsubst
+  single te x :: subst
 
 defns
-Jtype :: '' ::=
-
- defn
- b : K isin sig :: ::  binsig :: 'binsig_' {{ tex [[b]] : [[K]] \in [[sig]]}} by 
-
-   ------------------- :: 1
-   b : K isin sig,b:K
-
-   b : K isin sig
-   -------------------- :: 2
-   b : K isin sig,b':K'
-
-   b : K isin sig
-   ------------------- :: 3
-   b : K isin sig,c:T
-
- defn
- b isin dom ( sig ) :: ::  bindomsig :: 'bindomsig_' {{ tex [[b]] \in [[dom]]([[sig]])}} by 
-
-   ------------------- :: 1
-   b isin dom(sig,b:K)
-
-   b isin dom(sig)
-   -------------------- :: 2
-   b isin dom(sig,b':K)
-
-   b isin dom(sig)
-   ------------------- :: 3
-   b isin dom(sig,c:T)
-
- defn
- c : T isin sig :: ::  cinsig :: 'cinsig_' {{ tex [[c]] : [[T]] \in [[sig]]}} by 
-
-   ------------------- :: 1
-   c : T isin sig , c : T
-
-   c : T isin sig
-   ------------------- :: 2
-   c : T isin sig,b:K
-
-   c : T isin sig
-   -------------------- :: 3
-   c : T isin sig,c':T
+Jwellformed :: '' ::=
 
 
-
- defn
- c isin dom ( sig ) :: ::  cindomsig :: 'cindomsig_' {{ tex [[c]] \in [[dom]]([[sig]])}} by 
-
-   ------------------- :: 1
-   c isin dom(sig,c:T)
-
-   c isin dom(sig)
-   ------------------- :: 2
-   c isin dom(sig,b:K)
-
-   c isin dom(sig)
-   -------------------- :: 3
-   c isin dom(sig,c':T)
-
- defn
- x : T  isin ectx :: ::  xinectx :: 'xinectx_' {{ tex [[x]] : [[T]] \in [[ectx]]}} by 
-
-   ------------------- :: 1
-   x : T isin ectx,x:T
-
-   x : T isin ectx
-   -------------------- :: 2
-   x : T isin ectx,x':T'
-
- defn
- x isin dom ( ctx ) :: ::  xindomctx :: 'xindomctx_' {{ tex [[x]] \in [[dom]]([[ctx]])}} by 
-
-   ------------------- :: 1
-   x isin dom(ctx,x:T)
-
-   x isin dom(ctx)
-   -------------------- :: 2
-   x isin dom(ctx,x':T)
-
- defn
- x isin dom ( s ) :: ::  xinsubst :: 'xinsubst_' {{ tex [[x]] \in [[dom]]([[s]])}} by 
-
-   ------------------- :: 1
-   x isin dom(s,t / x)
-
-   x isin dom(s)
-   -------------------- :: 2
-   x isin dom(s,t / x')
-
-
-
- defn 
- sig ; ctx |- K is K' : kindS ::  :: substapkind :: 'eqK_' {{tex [[sig]] ; [[ctx]]
- \vdash [[K]] \equiv [[K']] : [[kindS]] }} by
-
-    sig ; ctx |- K : kindS
-    --------------------------- :: refl
-    sig ; ctx |- K is K : kindS
-
-    sig ; ctx |- K' is K : kindS
-    ---------------------------- :: sym
-    sig ; ctx |- K is K' : kindS
-
-    sig ; ctx |- K_1 is K_2 : kindS
-    sig ; ctx |- K_2 is K_3 : kindS
-    ------------------------------- :: trans
-    sig ; ctx |- K_1 is K_3 : kindS
-
-
-
-    |-sig sig
-    sig |-ctx ctx
-    ---------------------------------------- :: 1
-    sig ; ctx |- typeK ap s is typeK : kindS
-
-    sig ; ctx |- T ap s is T' : K''
-    sig ; ctx |- K ap s is K' : kindS
-    not (x isin dom (s))
-    ----------------------------------- :: 2
-    sig ; ctx |- (Pi x : T . K) ap s is (Pi x : T' . K') : kindS
-
- defn 
- sig ; ctx |- T is T' : K ::  :: substaptype :: 'eqT_' {{ tex [[sig]] ; [[ctx]]
- \vdash [[T]] \equiv [[T']] : [[K]] }} by
-
-    sig ; ctx |- T : K
-    --------------------------- :: refl
-    sig ; ctx |- T is T : K
-
-    sig ; ctx |- T' is T : K
-    ---------------------------- :: sym
-    sig ; ctx |- T is T' : K
-
-    sig ; ctx |- T_1 is T_2 : K
-    sig ; ctx |- T_2 is T_3 : K
-    ------------------------------- :: trans
-    sig ; ctx |- T_1 is T_3 : K
-
-    sig ; ctx |- T_1 is T_2 : K_1
-    sig ; ctx |- K_1 is K_2 : kindS
-    ------------------------------- :: ct
-    sig ; ctx |- T_1 is T_2 : K_2
-
-    sig ; ctx |- b : K
-    ---------------------------- :: 1
-    sig ; ctx |- b ap s is b : K
-
-    sig ; ctx |- T ap s is T' : (Pi x : T . K)
-    sig ; ctx |- t ap s is t' : T
-    ------------------------------------ :: 2
-    sig ; ctx |- (T t) ap s is T' t' : K
-
-    sig ; ctx |- T_1 ap s is T_1' : Pi x : T_2 . K
-    sig ; ctx |- T_2 ap s is T_2' : K_2
-    not (x isin dom (s))
-    ----------------------------------------------------------:: 3
-    sig ; ctx |- (Pi x:T_1.T_2) ap s is (Pi x:T_1'.T_2') : Pi x : T_1' . K_2
-
- defn 
- sig ; ctx |- t is t' : T ::  :: substaptern :: 'eqt_' {{ tex [[sig]] ; [[ctx]]
- \vdash [[t]] \equiv [[t']] : [[T]]}} by
-
-    sig ; ctx |- t : T
-    --------------------------- :: refl
-    sig ; ctx |- t is t : T
-
-    sig ; ctx |- t' is t : T
-    ---------------------------- :: sym
-    sig ; ctx |- t is t' : T
-
-    sig ; ctx |- t_1 is t_2 : T
-    sig ; ctx |- t_2 is t_3 : T
-    ------------------------------- :: trans
-    sig ; ctx |- t_1 is t_3 : T
-
-    sig ; ctx |- c : T
-    ---------------------------- :: 1
-    sig ; ctx |- c ap s is c : T
-
-    sig ; ctx |- t : T
-    ----------------------------------- :: 2
-    sig ; ctx |- x ap s, t / x is t : T
-
-    sig ; ctx |- x ap s is t : T
-    ------------------------------------- :: 3
-    sig ; ctx |- x ap s, t' / x' is t : T
-
-    sig ; ctx |- T ap s is T' : K_2
-    sig ; ctx |- t ap s is t' : T_2
-    not (x isin dom (s))
-    ---------------------------------------------- :: 4
-    sig ; ctx |- (\x:T.t) ap s is (\x:T'.t') : T_3
-    
-    sig ; ctx |- t_1 ap s is t_1' : T_1
-    sig ; ctx |- t_2 ap s is t_2' : T_2
-    ---------------------------------------------- :: 5
-    sig ; ctx |- (t_1 t_2) ap s is t_1' t_2' : T_3
-
-    sig ; ctx, x : T_1 |- t_2 : T_2
-    sig ; ctx |- t_1 : T_1
-    ---------------------------------------------- :: 6
-    sig ; ctx |- (\ x : T_1 . t_2) t_1 is (t_2' ap substempty , t_1 / x) : T_2 ap  substempty , t_1 / x
-
-
-
- defn
- |-sig sig :: ::wfsig::'sig_' {{ tex \vdash [[sig]] \text{ sig} }} by
+  defn
+  |-sig sgn :: ::wfsig::'sig_' {{ tex \vdash [[sgn]] \text{ sig} }} by
 
     ---------------  :: empty
     |-sig sigempty
 
-    |-sig sig
-    sig ; ctxempty |- K : kindS
-    not(b isin dom(sig)) 
-    -------------------------- :: type
-    |-sig sig,b:K
+    |-sig sgn
+    sgn ; ctxempty |- K : kindS
+    alpha notin dom(sgn)
+    -------------------------- :: tcon
+    |-sig sgn,alpha:K
 
-    |-sig sig
-    sig ; ctxempty |- c : T
-    not(b isin dom(sig)) 
+    |-sig sgn
+    sgn ; ctxempty |- A : typeK
+    c notin dom(sgn) 
     -------------------------- :: con
-    |-sig sig,b:K
+    |-sig sgn,c:A
 
- defn
- sig |-ctx ctx :: ::wfcon::'ctx_' {{tex [[sig]] \vdash [[ctx]] \text{ ctx} }} by
+  defn
+  sgn |-ctx ctx :: ::wfctx::'ctx_' {{tex [[sgn]] \vdash [[ctx]] \text{ ctx} }} by
    
-    |-sig sig
+    |-sig sgn
     --------------------  :: empty
-    sig |-ctx ctxempty
+    sgn |-ctx ctxempty
 
-    |-sig sig
-    sig |-ctx ctx
-    sig ; ctx |- A : K
-    not(x isin dom(ctx)) 
+    sgn |-ctx ctx
+    sgn ; ctx |- A : typeK
+    x notin dom(ctx) 
     -------------------------- :: var
-    sig |-ctx ctx,x:A
+    sgn |-ctx ctx,x:A
 
-    
+  defn
+  sgn ; ctx |- K : kindS :: ::wfkind::'k_' {{tex [[sgn]] ; [[ctx]] \vdash [[K]] : [[kindS]]}} by
 
- defn
- sig ; ctx |- K : kindS :: ::wfkind::'wfkind_' {{tex [[sig]] ; [[ctx]] \vdash
- [[K]] : [[kindS]]}} by
-
-    |-sig sig  
-    sig |-ctx ctx
+    sgn |-ctx ctx
     -----------------------------  :: type
-    sig ; ctx |- typeK : kindS
+    sgn ; ctx |- typeK : kindS
 
-    sig ; ctx,x:T |- K : kindS
-    ----------------------------- :: pi_k_intro
-    sig ; ctx |- Pi x:T.K : kindS
+    sgn ; ctx,x:A |- K : kindS
+    ----------------------------- :: pi_intro
+    sgn ; ctx |- Pi x:A.K : kindS
 
- defn
- sig ; ctx |- T : K  :: ::wftype::'wftype_' {{tex [[sig]] ; [[ctx]] \vdash
- [[T]] : [[K]]}} by
+  defn
+  sgn ; ctx |- A : K  :: ::wftype::'ty_' {{tex [[sgn]] ; [[ctx]] \vdash [[A]] : [[K]]}} by
 
-    |-sig sig,b:K
-    sig,b:K |-ctx ctx
-    ------------------  :: tvar_z
-    sig,b:K ; ctx |- b : K
-
-    |-sig sig,b:K
-    sig ; ctx |- b' : K'
-    ------------------  :: tvar_s
-    sig,b:K ; ctx |- b' : K'
-
-    sig ; ctx |- T : K'
-    sig ; ctx |- K is K' : kindS 
-    ---------------------------- :: t_eq
-    sig ; ctx |- T : K
-
-    sig ; ctx,x:T |- T' : K
-    ----------------------------------------- :: pi_t_intro
-    sig ; ctx |- Pi x : T . T' : Pi x : T . K
-
-    sig ; ctx |- T : Pi x : B . K
-    sig ; ctx |- t : T'
-    ----------------------------------------- :: pi_t_elim
-    sig ; ctx |- T t : K ap substempty, t / x
-
- defn
- sig ; ctx |- t : T  :: ::wfterm::'wfterm_' {{tex [[sig]] ; [[ctx]] \vdash
- [[t]] : [[T]]}} by
-
-    sig |-ctx ctx,x:T
-    ----------------------  :: var_z
-    sig ; ctx,x:T |- x : T
-
-    sig |-ctx ctx,x:T
-    sig ; ctx |- x' : T'
-    ----------------------  :: var_s
-    sig ; ctx,x:T |- x' : T'
-
-    |-sig sig,c:T
-    sig,c:T |-ctx ctx
-    ----------------------  :: con_z
-    sig,c:T ; ctx |- c : T
-
-    |-sig sig,c:T
-    sig ; ctx |- c' : T'
-    -----------------------  :: con_s
-    sig,c:T ; ctx |- c' : T' 
-
-defns
-Jgoal :: '' ::=
-
- defn
- sig ; ectx ; tstar |- ( G | tstar' : Tstar ) :: ::  tegoal :: 'tegoal_' {{ tex
- [[sig]] ; [[ectx]] ; [[tstar]] \vdash_{TeGoal} ( [[G]] \mid [[tstar']] : [[Tstar]] ) }} by
-  
-   c : A isin sig
-   --------------------------------- :: con
-   sig ; ectx ; c |- ( true | c : A )
-  
-   x : A isin ectx
-   ----------------------------- :: var
-   sig ; ectx ; x |- ( true | x : A)
-  
-   
-   sig ; ectx ; Tstar |- ( G1 | Tstar' : K)
-   sig ; ectx , x : Tstar ; tstar |- ( G2 | tstar' : Tstar'')
-   ------------------------------------------------------------------------------------------- :: lam
-   sig ; ectx ; (\x:Tstar.tstar) |- ( G1,G2 | \x : Tstar' . tstar : Pi x : Tstar' .  Tstar'' )
-  
-   sig ; ectx ; tstar |- ( G1 | tstar' : Tstar')
-   sig ; ectx ; tstar'' |- ( G2 | tstar''' : Tstar''')
-   fresh(mb)
-   --------------------------------------------------------------------------------------------------------------------------- :: ap
-   sig ; ectx ; (tstar tstar'') |- ( G1,G2,eq Tstar' Pi x:Tstar'''.mb  | tstar'' tstar''' : mb ap substempty , tstar / x )
-  
-  
-   %--------------------------------------- :: subst
-   %sig ; ectx ; t ap s |- ( true | t ap s )
-  
-   sig ; ectx ; mb |- ( G1 | mb : K)
-   fresh(mb)
-   -------------------------------------- :: mvar
-   sig ; ectx ; mx |- ( mx : G1 | mx : mb)
-  
-  
-  
- defn
- sig ; ectx ; Tstar |- ( G | Tstar' : Kstar ) :: ::  tygoal :: 'tygoal_' {{ tex
- [[sig]] ; [[ectx]] ; [[Tstar]] \vdash_{TyGoal} ( [[G]] \mid [[Tstar']] :
- [[Kstar]] ) }} by
-
-   b : K isin sig
-   ----------------------------- :: tvar 
-   sig ; ectx ; b |- ( true | b : K)
-
-%    |-sig sig,b:K
-%    sig,b:K |-ctx ctx
-   ---------------------------------------  :: tmvar {{ com ~type forces wf-kind }}
-   sig ; ctx ; mb  |- ( type(mb, ctx) | mb : Kstar )
+    sgn |-ctx ctx
+    alpha : K in sgn
+    ------------------  :: tcon
+    sgn ; ctx |- alpha : K
 
 
-   sig ; ctx ; Tstar |- ( G1 | Tstar'' : typeK)
-   sig ; ctx , x : Tstar ; Tstar' |- ( G2 | Tstar''' : Kstar)
-   ----------------------------------------- :: pi_t_intro
-   sig ; ctx ; Pi x : Tstar . Tstar' |- ( G1 , G2 | Pi x : Tstar'' . Tstar''' : Pi x : Tstar'' . Kstar)
+    sgn ; ctx,x:A |- B : typeK
+    ----------------------------------------- :: pi_intro
+    sgn ; ctx |- Pi x : A . B : typeK 
 
-   sig ; ctx ; Tstar |- (G1 | Tstar : Kstar' ) 
-   sig ; ctx ; tstar |- (G2 | tstar' : Tstar')
-   -------------------------------------------------------------------------------------------------------------------- :: pi_t_elim 
-   sig ; ctx ; Tstar tstar |- ( G1 , G2, eq Kstar' Pi x:Tstar'.Kstar | Tstar tstar : Kstar ap substempty , tstar / x  )
+    sgn ; ctx |- A : Pi x : B . K
+    sgn ; ctx |- M : B
+    ----------------------------------------- :: pi_elim
+    sgn ; ctx |- A M : K [ M / x ] 
+
+  defn
+  sgn ; ctx |- M : A  :: ::wfterm::'te_' {{tex [[sgn]] ; [[ctx]] \vdash [[M]] : [[A]]}} by
+
+    sgn |-ctx ctx
+    c : A in sgn
+    ----------------------  :: con
+    sgn ; ctx |- c : A
+
+    sgn |-ctx ctx
+    x : A in ctx
+    ----------------------  :: var
+    sgn ; ctx |- x : A
+
+    sgn ; ctx,x:A |- M : B 
+    ---------------------------------- :: pi_intro
+    sgn ; ctx |- \x:A.M : Pi x : A . B 
+
+    sgn ; ctx |- M : Pi x : A . B 
+    sgn ; ctx |- N : A
+    ------------------------------ :: pi_elim
+    sgn ; ctx |- M N : B [ N / x ]
+
+    sgn ; ctx |- M : A
+    sgn ; ctx |- A' : typeK
+    sgn ; ctx |- A is A' 
+    ------------------------------ :: conv
+    sgn ; ctx |- M : A' 
+
+  defn 
+  sgn ; ctx |- K is K' ::  :: substapkind :: 'eqK_' {{tex [[sgn]] ; [[ctx]] \vdash [[K]] \equiv [[K']] }} by
+
+    --------------------------- :: refl
+    sgn ; ctx |- K is K 
+
+    sgn ; ctx |- K' is K 
+    ---------------------------- :: sym
+    sgn ; ctx |- K is K' 
+
+    sgn ; ctx |- K_1 is K_2
+    sgn ; ctx |- K_2 is K_3
+    ------------------------------- :: trans
+    sgn ; ctx |- K_1 is K_3
+
+    sgn ; ctx |- A is A' 
+    sgn ; ctx |- K is K' 
+    ------------------------------------ :: 1
+    sgn ; ctx |- Pi x:A.K is Pi x:A'.K' 
+
+  defn 
+  sgn ; ctx |- A is A' ::  :: substaptype :: 'eqT_' {{ tex [[sgn]] ; [[ctx]] \vdash [[A]] \equiv [[A']] }} by
+
+    %sgn ; ctx |- A 
+    --------------------------- :: refl
+    sgn ; ctx |- A is A 
+
+    sgn ; ctx |- A' is A 
+    ---------------------------- :: sym
+    sgn ; ctx |- A is A' 
+
+    sgn ; ctx |- A_1 is A_2 
+    sgn ; ctx |- A_2 is A_3 
+    ------------------------------- :: trans
+    sgn ; ctx |- A_1 is A_3 
+
+    sgn ; ctx |- A is A' 
+    sgn ; ctx |- B is B' 
+    ------------------------------------ :: 1
+    sgn ; ctx |- Pi x:A.B is Pi x:A'.B' 
+
+    sgn ; ctx |- A is A' 
+    sgn ; ctx |- M is M' 
+    ------------------------------------ :: 2
+    sgn ; ctx |- A M is A' M' 
+
+  defn 
+  sgn ; ctx |- M is M' ::  :: substapterm :: 'eqt_' {{ tex [[sgn]] ; [[ctx]] \vdash [[M]] \equiv [[M']] }} by
+
+    ----------------------- :: refl
+    sgn ; ctx |- M is M 
+
+    sgn ; ctx |- M' is M 
+    ------------------------ :: sym
+    sgn ; ctx |- M is M' 
+
+    sgn ; ctx |- M_1 is M_2 
+    sgn ; ctx |- M_2 is M_3 
+    --------------------------- :: trans
+    sgn ; ctx |- M_1 is M_3 
+
+    sgn ; ctx |- M is M' 
+    sgn ; ctx |- N is N' 
+    --------------------------------------- :: 1
+    sgn ; ctx |- (\x:A.M)N is M' [ N' / x ] 
+
+    sgn ; ctx |- M is M' 
+    sgn ; ctx |- N is N' 
+    --------------------------------------- :: 2
+    sgn ; ctx |- M N is M' N' 
+
+    sgn ; ctx |- A is A' 
+    sgn ; ctx |- M is M' 
+    ------------------------------------------ :: 3
+    sgn ; ctx |- \x:A.M is \x:A'.M' 
 
 
-%
-%    sig ; ctx |- T : K'
-%    sig ; ctx |- K is K' : kindS 
-%    ---------------------------- :: t_eq
-%    sig ; ctx |- T : K
-%
-
- defn
- sig ; ectx ; Kstar |- ( G | Kstar' : kindS ) :: ::  kigoal :: 'kigoal_' {{ tex
- [[sig]] ; [[ectx]] ; [[Kstar]] \vdash_{KiGoal} ( [[G]] \mid [[Kstar']] :
- [[kindS]] ) }} by
-
-
-   --------------------------------------------- :: type
-   sig ; ectx ; typeK |- ( true | typeK : kindS)
-
-   sig ; ectx ; Tstar |- ( G1 | Tstar' : typeK)
-   sig ; ectx , x : Tstar ; Kstar |- (G2 | Kstar' : kindS )
-   -------------------------------------------------------------------------- :: pi_k_intro
-   sig ; ectx ; Pi x : Tstar . Kstar |- ( G1 , G2 | Pi x:Tstar' . Kstar' : kindS)
-
- defn
- sig |- prog :: :: prog :: 'prog_' {{ tex [[sig]] \vdash_{Prog} [[prog]]  }} by
-
-
-   --------------------- :: empty
-   sigempty |- progempty
-
-   sig |- P
-   --------------------------------------- :: tvar
-   sig , b : K |- P , kappa : kind(K, ctxempty) <- 
 
