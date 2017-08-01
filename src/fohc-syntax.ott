@@ -1,0 +1,33 @@
+grammar
+hct, u, v, w :: 'hcterm_' ::= {{ com terms of fohc }}
+    | mtvar                         ::   :: mtvar {{ com type-level metavariable }}
+    | mkvar                         ::   :: mkvar {{ com kind-level metavariable }}
+    | tcon                          ::   :: tcon {{ com type constants of fodtt }}
+    | con                           ::   :: con {{ com constants of fodtt }}
+    | zeroc                         ::   :: zeroc
+    | succ( hct1 )                  ::   :: succ
+    | zerop                         ::   :: zerop
+    | sucp( hct1 )                  ::   :: sucp
+    | typeK      ::   :: type
+%    | Pi_Type
+    | Pi_Kind( hct1 , hct2 , hct3 ) ::   :: pi_k
+    | Pi_Type( hct1 , hct2 , hct3 ) ::   :: pi_t
+    | nil                           ::   :: nil
+    | cons( hct1 , hct2 )           ::   :: cons
+    | ap( hct1 , hct2 )             ::   :: ap
+
+At :: 'atom_' ::= {{ com atoms of fohc }}
+   | true                ::   :: true
+   | type( hct1 , hct2 ) ::   :: type
+   | term( hct1 , hct2 ) ::   :: term
+   | eq( hct1 , hct2 )   ::   :: eq
+
+
+
+G :: 'goal_' ::= {{ com goals }}
+  | At        ::   :: uatom {{ com atomic goal }}
+  | mvar : At ::   :: batom {{ com atomic goal with binding of a proof term }}
+  | G1 & G2   ::   :: conj {{ com conjunction of goals }}
+  | ( G )     :: S :: paren 
+    {{ coq ([[G]]) }}
+

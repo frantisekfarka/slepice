@@ -17,9 +17,9 @@ formula :: formula_ ::=
   | alpha : K in sgn                                :: :: binsig
      {{ coq (boundTCon [[alpha]] [[K]] [[sgn]]) }}
      {{ tex [[alpha]] : [[K]] \in [[sgn]] }}
-  | x : A in ctx                                    :: :: xinctx
-     {{ coq (boundVar [[x]] [[A]] [[ctx]]) }}
-     {{ tex [[x]] : [[A]] \in [[ctx]] }}
+  | x : C in ectx                                    :: :: xinctx
+     {{ coq (boundVar [[x]] [[C]] [[ectx]]) }}
+     {{ tex [[x]] : [[C]] \in [[ectx]] }}
 
 
 %formula :: formula_ ::=          
@@ -36,4 +36,4 @@ formula :: formula_ ::=
      {{ coq (boundnTCon [[alpha]] [[nK]] [[nsgn]]) }}
      {{ tex [[alpha]] : [[nK]] \in [[nsgn]] }}
 
-
+  | mtvar # ete                                          :: :: apart   

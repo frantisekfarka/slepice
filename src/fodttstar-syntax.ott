@@ -1,5 +1,5 @@
 grammar
-eK {{ tex K^*{} }}:: 'kindstar_' ::= {{ com extended Kinds }}
+eK {{ tex K^*{} }}, eL {{ tex L^*{} }} :: 'kindstar_' ::= {{ com extended Kinds }}
   | typeK                ::   :: type                           {{ com kind of all types }} 
   | Pi var : eTy . eK    ::   :: pi_intro (+ bind var in eK +)  {{ com kind of dependente functions }}
   | eK [ ete / var ]     :: M :: subst                         {{ com substitution }}
@@ -15,7 +15,7 @@ eTy {{ tex Ty^*{} }}, ea , C, D :: 'typestar_' ::= {{ com extended Types }}
   | eTy ete              ::   :: pi_elim                         {{ com application of a type former }}
   | Pi var : eTy . eTy'  ::   :: pi_intro (+ bind var in eTy +)  {{ com type of dependente functions }}
   | eTy [ ete / var ]    :: M :: subst                           {{ com substitution }}
-     {{ coq ( subst_Ty [[ete]] [[var]] [[eTy]] ) }}
+     {{ coq ( subst_eTy [[ete]] [[var]] [[eTy]] ) }}
      {{ ocaml int }}
      {{ tex [[eTy]] [ [[ete]] / [[var]] ] }}
   | mtvar                ::   :: mvar                            {{ com type metavariable }}
@@ -31,18 +31,17 @@ ete {{ tex te^*{} }}, em , P, Q :: 'termstar_' ::= {{ com extended Terms }}
      {{ coq [[ete]] }}
      {{ ocaml ete }}
   | ete [ ete' / var ] :: M :: subst                          {{ com substitution of term}}
-     {{ coq ( subst_te [[ete']] [[var]] [[ete]] ) }}
-     {{ ocaml int }}
+     {{ coq ( subst_ete [[ete']] [[var]] [[ete]] ) }}
+    {{ ocaml int }}
      {{ tex [[ete]] [ [[ete']] / [[var]] ] }}
   | mvar               ::   :: mvar                           {{ com term metavariable }}
-
 
 esgn {{ tex \mathcal{S}^*{} }} :: 'sgnstar_' ::= {{ com exteded signature }}
     {{ coq list (con*eTy+tcon*eK) }}
     {{ ocaml ((con * ety , tcon*ek) esgn_el_type)  list }}
-  % this is the same empty as in the sgn production
+  % this is the same sigempty as in the sgn production
   | empty         ::   :: empty             {{ com empty signature }}
-     {{ coq empty }}
+     {{ coq nil }}
   | esgn , con : eTy  ::   :: con
      {{ coq (cons (inl([[con]],[[eTy]])) [[esgn]]) }}
   | esgn , tcon : eK  ::   :: tcon
@@ -50,9 +49,16 @@ esgn {{ tex \mathcal{S}^*{} }} :: 'sgnstar_' ::= {{ com exteded signature }}
 
 ectx {{ tex \Gamma^*{} }} :: 'ctxstar_' ::= {{ com extended context }}
     {{ coq list (var*eTy) }}
-  % this is the same empty as in the ctx production
+  % this is the same ctxempty as in the ctx production
   | empty         ::   :: empty     {{ com empty context }}
-     {{ coq empty }}
+     {{ coq nil }}
   | ectx , var : eTy  ::   :: var
      {{ coq (cons ([[var]],[[eTy]]) [[ectx]]) }}
+
+embed
+{{ coq
+Notation esgnempty := (@nil (con*eTy+tcon*eK)).
+Notation ectxempty := (@nil (var*eTy)).
+}}
+
 

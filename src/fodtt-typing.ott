@@ -6,10 +6,8 @@
 
 embed
 {{ coq
-Notation empty := (@nil (con*Ty+tcon*K)).
-Notation empty := (@nil (var*Ty)).
 
-Definition fstSig (e : (con*Ty)+(tcon*K) ) := match e with
+Definition fstSig (e : (con*eTy)+(tcon*eK) ) := match e with
     | inl (c, ty) => inl c
     | inr (alpha, k) => inr alpha
   end.
@@ -27,7 +25,7 @@ Definition boundTCon alpha T0 S :=
 Definition boundVar x T0 G :=
   exists G1, exists G2,
     (G = List.app G1 (List.cons (x,T0) G2)) /\
-    ~In x (List.map (@fst var Ty) G1).
+    ~In x (List.map (@fst var eTy) G1).
 
 Definition indomCon c S :=
   exists T0,

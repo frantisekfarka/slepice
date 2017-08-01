@@ -138,3 +138,7 @@ sympy-plots-for-*.tex/
 
 # tex
 *.tex
+
+
+# project specific
+coq/defns.v

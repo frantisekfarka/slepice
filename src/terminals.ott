@@ -9,4 +9,5 @@ terminals :: 'terminals_' ::=
   | succ         ::   :: succ      {{ tex \sigma_\Gamma }}
   | zerop        ::   :: zerop     {{ tex 0_\Pi }}
   | sucp         ::   :: sucp      {{ tex \sigma_\Pi }}
+  | true         ::   :: true      {{ tex \top }}
 

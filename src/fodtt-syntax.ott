@@ -1,9 +1,9 @@
 grammar
-K :: 'kind_' ::= {{ com Kinds }}
+K, L :: 'kind_' ::= {{ com Kinds }}
   | typeK              ::   :: type                          {{ com kind of all types }} 
   | Pi var : Ty . K    ::   :: pi_intro (+ bind var in K +)  {{ com kind of dependente functions }}
   | K [ te / var ]     :: M :: subst                         {{ com substitution }}
-     {{ coq (subst_K [[te]] [[var]] [[K]]) }}
+     {{ coq (subst_eK [[te]] [[var]] [[K]]) }}
      {{ ocaml int }}
      {{ tex [[K]] [ [[te]] / [[var]] ] }} 
 
@@ -14,7 +14,7 @@ Ty, a , A, B :: 'type_' ::= {{ com Types }}
   | Ty te              ::   :: pi_elim                        {{ com application of a type former }}
   | Pi var : Ty . Ty'  ::   :: pi_intro (+ bind var in Ty +)  {{ com type of dependente functions }}
   | Ty [ te / var ]    :: M :: subst                          {{ com substitution }}
-     {{ coq ( subst_Ty [[te]] [[var]] [[Ty]] ) }}
+     {{ coq ( subst_eTy [[te]] [[var]] [[Ty]] ) }}
      {{ ocaml int }}
      {{ tex [[Ty]] [ [[te]] / [[var]] ] }}
 
@@ -29,27 +29,26 @@ te, m , M, N :: 'term_' ::= {{ com Terms }}
      {{ coq [[te]] }}
      {{ ocaml te }}
   | te [ te' / var ]   :: M :: subst                         {{ com substitution of term}}
-     {{ coq ( subst_te [[te']] [[var]] [[te]] ) }}
+     {{ coq ( subst_ete [[te']] [[var]] [[te]] ) }}
      {{ ocaml int }}
      {{ tex [[te]] [ [[te']] / [[var]] ] }}
 
 sgn {{ tex \mathcal{S} }} :: 'signature_' ::= {{ com signature }}
-    {{ coq list (con*Ty+tcon*K) }}
+%    {{ coq list (con*({ C : eTy | is_Ty_of_eTy C }) + tcon*({ L : eK | is_K_of_eK L }) }}
 %    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
   | empty     ::   :: empty             {{ com empty signature }}
-     {{ coq empty }}
+%     {{ coq empty }}
   | sgn , con : Ty  ::   :: con
-     {{ coq (cons (inl([[con]],[[Ty]])) [[sgn]]) }}
+%     {{ coq (cons (inl([[con]],[[Ty]])) [[sgn]]) }}
   | sgn , tcon : K  ::   :: sigtcon
-     {{ coq (cons (inr([[tcon]],[[K]])) [[sgn]]) }}
+%     {{ coq (cons (inr([[tcon]],[[K]])) [[sgn]]) }}
 
 ctx {{ tex \Gamma }} :: 'context_' ::= {{ com contexte }}
-    {{ coq list (var*Ty) }}
+%    {{ coq list (var*Ty) }}
   | empty    ::   :: empty              {{ com empty contexte }}
      {{ coq empty }}
   | ctx , var : Ty  ::   :: ctxvar
      {{ coq (cons ([[var]],[[Ty]]) [[ctx]]) }}
-
 
 subrules
     K <:: eK
@@ -57,3 +56,9 @@ subrules
     te <:: ete
     sgn <:: esgn
     ctx <:: ectx
+
+freevars
+    ete var :: fv
+
+substitutions
+    single ete var :: subst

@@ -1,0 +1,163 @@
+funs
+pdec ::=
+  
+  fun
+  pdec( hct1 ) :: hct :: pdec {{ tex \downarrow [[hct1]] }} by
+
+  pdec( mtvar ) === mtvar
+  pdec( mkvar ) === mkvar
+  pdec( tcon ) === tcon
+  pdec( con ) === con
+  pdec( zeroc ) === succ(zeroc)
+  pdec( succ(hct1) ) === succ(succ(hct1))
+  pdec( zerop ) === zeroc
+  pdec( sucp(hct1) ) === hct1
+  pdec( typeK ) === typeK
+  pdec( Pi_Kind(hct1,hct2,hct3) ) === Pi_Kind( pdec(hct1) , pdec(hct2) , hct3 )
+  pdec( Pi_Type(hct1,hct2,hct3) ) === Pi_Type( pdec(hct1) , pdec(hct2) , hct3 )
+  pdec( nil ) === nil
+  pdec( cons(hct1,hct2) ) === cons(hct1,hct2)
+  pdec( ap(hct1,hct2) ) === ap(pdec(hct1), pdec(hct2))
+
+
+defns
+Jwftrans :: 'wftr_' ::=
+
+  defn
+  transl( eK ;  ectx ) = hct :: :: eK :: 'eK_' {{ tex \ulcorner [[eK]] ; [[ectx]] \urcorner = [[hct]]  }} by
+
+    ----------------------------- :: typeK
+    transl( typeK ; ectx) = typeK
+
+    transl( C ; ectx ) = u
+    transl( eL ; ectx , x : C ) = v
+    transl( ectx ) = w
+    ------------------------------------------------ :: pi_intro
+    transl( Pi x : C . eL ; ectx) = Pi_Kind(u, pdec(v), w)
+
+  defn
+  transl( eTy ;  ectx ) = hct :: :: eTy :: 'eTy_' {{ tex \ulcorner [[eTy]] ; [[ectx]] \urcorner = [[hct]]  }} by
+
+    ------------------------------ :: tcon
+    transl( alpha ; ectx ) = alpha
+
+    transl( C ; ectx) = u
+    transl( P ; ectx) = v
+    ------------------------------ :: pi_elim
+    transl( C P ; ectx ) = ap(u,v)
+
+    transl( C ; ectx ) = u
+    transl( D ; ectx , x : C) = v
+    transl( ectx ) = w
+    ---------------------------------------------------- :: pi_intro
+    transl( Pi x : C . D ; ectx ) = Pi_Type( u , pdec(v) , w )
+
+  defn
+  transl( ete ;  ectx ) = hct :: :: ete :: 'ete_' {{ tex \ulcorner [[ete]] ; [[ectx]] \urcorner = [[hct]]  }} by
+
+    --------------------------------- :: cbd_zero
+    transl( x ; ectx , x : C) = zeroc
+
+    transl( x ; ectx , y : C) = u
+    ----------------------------------- :: cbd_succ
+    transl( x ; ectx , y : C) = succ(u)
+
+
+    ---------------------- :: con
+    transl( c ; ectx ) = c
+
+    transl(P ; ectx) = u
+    transl(Q ; ectx) = v
+    ----------------------------- :: pi_elim
+    transl( P Q ; ectx) = ap(u,v)
+
+    transl(C ; ectx) = u
+    transl(P ; ectx,x:C) = v
+    transl(ectx) = w
+    --------------------------------------------- :: pi_intro
+    transl( \ x : C . P ; ectx ) = Pi_Type(u,pdec(v),w)
+
+
+%defns
+%Jwftransctx :: 'wftr_' ::=
+
+  defn
+  transl( ectx ) = hct :: :: ectx :: 'ectx_' {{ tex \ulcorner [[ectx]] \urcorner = [[hct]]  }} by
+
+    --------------------- :: empty
+    transl( empty ) = nil
+
+    transl( C ; ectx ) = u
+    transl( ectx ) = v
+    --------------------------------- :: var
+    transl( ectx, x : C) = cons(u, v)
+defns
+Jref :: 'r_' ::=
+
+  defn
+  sgn ; ectx ; eK |- ( G | kindS ) :: :: k :: 'k_' {{ tex [[sgn]] ; [[ectx]] ; [[eK]] \vdash ( [[G]] \mid [[kindS]] ) }} by
+
+    --------------------------------- :: type
+    sgn ; ectx ; typeK |- (true | kindS )
+
+    sgn ; ectx ; C |- (G1 | typeK)
+    sgn ; ectx ; eL |- (G2 | kindS)
+    --------------------------------------------- :: pi_intro
+    sgn ; ectx ; Pi x : C . eL |- ( G1 & G2 | kindS )
+
+  defn
+  sgn ; ectx ; eTy |- ( G | eK ) :: :: ty ::'ty_' {{ tex [[sgn]] ; [[ectx]] ; [[eTy]] \vdash ( [[G]] \mid [[eK]] ) }} by
+
+    alpha : L in sgn
+    --------------------------------- :: tcon
+    sgn ; ectx ; alpha |- (true | L )
+
+    sgn ; ectx ; C |- ( G1 | eL )
+    sgn ; ectx ; P |- ( G2 | D )
+    transl(eL ; ectx ) = u
+    transl(D ; ectx ) = v
+    transl(ectx,x:D) = w
+    ------------------------------------------- :: pi_elim
+    sgn ; ectx ; C P |- ( (G1 & G2) & eq( u , Pi_Kind( v , mL , w )) | mL[P / x] )
+    
+    sgn ; ectx ; C |- ( G1 | eL )
+    sgn ; ectx , x : C ; D |- ( G2 | typeK )
+    ------------------------------------------------ :: pi_intro
+    sgn ; ectx ; Pi x : C . D |- ( G1 & G2 | typeK )
+    
+    transl(ectx) = w
+    --------------------------------- :: mtvar
+    sgn ; ectx ; mX |- (type(mX, w) | K )
+
+
+  defn
+  sgn ; ectx ; ete |- ( G | eTy ) :: :: te ::'te_' {{ tex [[sgn]] ; [[ectx]] ; [[ete]] \vdash ( [[G]] \mid [[eTy]] ) }} by
+
+    x : C in ectx
+    sgn ; ectx ; C |- ( G | eL )
+    ----------------------------- :: var
+    sgn ; ectx ; x |- ( G | C )
+
+    c : A in sgn
+    ---------------------------- :: con 
+    sgn ; ectx ; c |- ( true | A)
+
+    sgn ; ectx ; P |- ( G1 | C )
+    sgn ; ectx ; Q |- ( G2 | D )
+    transl(C ; ectx ) = u
+    transl(D ; ectx ) = v
+    transl(ectx,x:D) = w
+    ---------------------------------- :: pi_elim
+    sgn ; ectx ; P Q |- ( (G1 & G2) & eq(u,Pi_Type(v,mX,w)) | mX[Q/x] )
+    
+    sgn ; ectx ; x |- ( G1 | C )
+    sgn ; ectx, x : A ; P |- ( G2 | D )
+    ----------------------------------------------------- :: pi_intro
+    sgn ; ectx ; \ x : C . M |- ( G1 & G2 | Pi x : C . D )
+
+
+    transl(ectx) = u
+    --------------------------------------------------- :: mvar
+    sgn ; ectx ; mx |- ( mx : term(mX, u) | mX )
+
+
