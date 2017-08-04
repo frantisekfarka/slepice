@@ -18,16 +18,46 @@ hct, u, v, w :: 'hcterm_' ::= {{ com terms of fohc }}
 
 At :: 'atom_' ::= {{ com atoms of fohc }}
    | true                ::   :: true
+   | kind( hct1 , hct2 ) ::   :: kind
    | type( hct1 , hct2 ) ::   :: type
    | term( hct1 , hct2 ) ::   :: term
    | eq( hct1 , hct2 )   ::   :: eq
 
 
 
-G :: 'goal_' ::= {{ com goals }}
+Goal, G :: 'goal_' ::= {{ com goal }}
   | At        ::   :: uatom {{ com atomic goal }}
   | mvar : At ::   :: batom {{ com atomic goal with binding of a proof term }}
   | G1 & G2   ::   :: conj {{ com conjunction of goals }}
   | ( G )     :: S :: paren 
     {{ coq ([[G]]) }}
+
+
+Kappa {{ tex \kappa }} :: 'kappa_' ::= {{ com proof-term symbols embeding }}
+  | kappa_con con    ::   :: con {{ tex \kappa_{[[con]]} }}
+  | kappa_tcon tcon  ::   :: tcon {{ tex \kappa_{[[tcon]]} }}
+  | kappa_succ       ::   :: succ
+  | kappa_zeroc      ::   :: zeroc
+%  | kappa_sucp       ::   :: sucp
+%  | kappa_zerop      ::   :: zerop
+  | kappa_true       ::   :: true {{ tex \kappa_\top }}
+
+Pt, s, t :: 'pt_' ::= {{ com proof-term }}
+  | Kappa        ::   :: head
+  | t s          ::   :: pt
+  | ( t )        :: S :: paren
+  {{ coq ( [[t]] ) }}
+
+HC :: 'hc_' ::= {{ com Horn Clause }}
+  | At           ::   :: empty
+  | At -> HC     ::   :: body
+
+Prog :: 'prog_' ::= {{ com logic program }}
+%  | empty             ::   :: empty {{ com empty program }}
+%  | Prog , Kappa : HC ::   :: cons  
+   | Kappa1 : HC1 , .. , Kappan : HCn :: :: prog
+
+%substitutions:
+%    multiple hct mkvar :: substhct
+
 

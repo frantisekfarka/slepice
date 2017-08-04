@@ -37,3 +37,7 @@ formula :: formula_ ::=
      {{ tex [[alpha]] : [[nK]] \in [[nsgn]] }}
 
   | mtvar # ete                                          :: :: apart   
+  | Kappa : HC in Prog                                   :: :: inprog
+     {{ coq member ([[Kappa]] , [[HC]]) [[Prog]]) }}
+     {{ tex [[Kappa]] : [[HC]] \in [[Prog]] }}
+

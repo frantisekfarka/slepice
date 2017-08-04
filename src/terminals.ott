@@ -4,10 +4,15 @@ terminals :: 'terminals_' ::=
   | kindS        ::   :: kind      {{ tex \text{kind} }}
   | \            ::   :: lambda    {{ tex \lambda }}
   | Pi           ::   :: pi        {{ tex \Pi }}
-  | empty        ::   :: empty  {{ tex \cdot}}
+  | empty        ::   :: empty     {{ tex \cdot}}
   | zeroc        ::   :: zeroc     {{ tex 0_\Gamma }}
   | succ         ::   :: succ      {{ tex \sigma_\Gamma }}
   | zerop        ::   :: zerop     {{ tex 0_\Pi }}
   | sucp         ::   :: sucp      {{ tex \sigma_\Pi }}
   | true         ::   :: true      {{ tex \top }}
+  | kappa_succ   ::   :: ksucc     {{ tex \kappa_{succ} }}
+  | kappa_zeroc  ::   :: kzeroc    {{ tex \kappa_{0 \Gamma} }}
+  | kappa_sucp   ::   :: ksucp     {{ tex \kappa_{sucp} }}
+  | kappa_zerop  ::   :: kzerop    {{ tex \kappa_{0 \Pi } }}
+  | ->           ::   :: arrow     {{ tex \rightarrow }}
 
