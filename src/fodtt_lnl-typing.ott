@@ -1,0 +1,447 @@
+%%
+%% needs
+%%    fodtt-syntax.ott
+%%    fodtt-flas_{n,both}.ott
+%%
+
+embed
+{{ coq
+
+Definition fstSig (e : (con*eTy)+(tcon*eK) ) := match e with
+    | inl (c, ty) => inl c
+    | inr (alpha, k) => inr alpha
+  end.
+
+Definition boundCon c T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inl(c,T0)) S2)) /\
+    ~In (inl(c)) (List.map (fstSig) S1).
+
+Definition boundTCon alpha T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
+    ~In (inr(alpha)) (List.map (fstSig) S1).
+
+Definition boundVar x T0 G :=
+  exists G1, exists G2,
+    (G = List.app G1 (List.cons (x,T0) G2)) /\
+    ~In x (List.map (@fst var eTy) G1).
+
+Definition indomCon c S :=
+  exists T0,
+    boundCon c T0 S.
+
+Definition indomTCon alpha S :=
+  exists T0,
+    boundCon alpha T0 S.
+
+Definition indomVar x S :=
+  exists T0,
+    boundVar x T0 S.
+
+}}
+embed
+{{ ocaml 
+type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
+}}
+
+
+subrules
+
+freevars
+% due to recursive definition of Ty and K the fv_Ty and fk_K are also generated
+%  Ty x :: tyfv
+%  te x :: fv
+
+substitutions
+%  single K x :: tsubst
+%  single Ty x :: tsubst
+%  single te x :: subst
+
+funs
+Topening ::=
+
+  fun
+  toTy( nA ; ixt ; ixc ) :: nTy :: topening_Ty {{ tex \{ [[ixt]] \rightarrow [[ixc]] \}[[nA]] }} {{ com T-o on types }} by
+ 
+  toTy( a ; ixt ; ixc ) === a
+  toTy( Pi nA . nB ; ixt ; ixc ) === Pi toTy( nA ; suct ixt ; ixc ) .  toTy( nB ; ixt ; ixc )
+  toTy( nA nM ; ixt ; ixc ) === toTy( nA ; ixt ; ixc ) tote( nM ; ixt ; ixc)
+
+  fun
+  tote( nM ; ixt ; ixc ) :: nte :: topening_te {{ tex \{ [[ixt]] \rightarrow [[ixc]] \}[[nM]] }} {{ com T-o on terms }} by
+ 
+  tote( c ; ixt ; ixc ) === c
+  tote( ixc ; ixt ; ixc ) === ixc
+  tote( ixt ; ixt ; ixc ) === ixc
+  tote( ixt ; ixt' ; ixc ) === ixt
+
+  tote(\ nA . nM ; ixt ; ixc) === \ toTy( nA ; suct ixt ; ixc ) . tote( nM ; ixt ; ixc )
+  tote(nM1 nM2 ; ixt ; ixc ) === tote( nM1 ; ixt ; ixc ) tote( nM2 ; ixt ; ixc)
+
+funs
+TopeningK ::=
+
+  fun
+  toK( nL ; ixt ; ixc ) :: nK :: topening_K {{ tex \{[[ixt]] \rightarrow [[ixc]] \} }} {{ com T-o on kinds }} by
+  toK( typeK ; ixt ; ixc ) === typeK
+  toK(Pi nA . nL ; ixt ; ixc ) === Pi toTy( nA ; suct ixt ; ixc) . toK( nL ; ixt ; ixc)
+
+funs
+Topen ::=
+
+  fun
+  topenTy( nA ; ixc ) :: nTy :: topen_Ty {{ tex {[[nA]]}^{\rightarrow [[ixc]]} }} {{ com type opening }} by
+
+  topenTy( nA ; ixc) === toTy(nA ; zerot ; ixc)
+
+  fun
+  topente( nM ; ixc ) :: nte :: topen_te {{ tex {[[nM]]}^{\rightarrow [[ixc]]} }} {{ com type opening }} by
+
+  topente( nM ; ixc) === tote(nM ; zerot ; ixc)
+
+  fun
+  topenK( nL ; ixc ) :: nK :: topen_K {{ tex {[[nL]]}^{\rightarrow [[ixc]]} }} {{ com type opening }} by
+
+  topenK( nL ; ixc) === toK(nL ; zerot ; ixc)
+
+funs
+Tclosing ::=
+
+  fun
+  tcTy( nA ; ixc ; ixt ) :: nTy :: tclosing_Ty {{ tex \{ [[ixc]] \leftarrow [[ixt]] \}[[nA]] }} {{ com T-c on types }} by
+ 
+  tcTy( a ; ixc ; ixt ) === a
+  tcTy( Pi nA . nB ; ixc ; ixt ) === Pi tcTy( nA ; succ ixc ; ixt ) .  tcTy( nB ; ixc ; ixt )
+  tcTy( nA nM ; ixc ; ixt ) === tcTy( nA ; ixc ; ixt ) tcte( nM ; ixc ; ixt)
+
+  fun
+  tcte( nM ; ixc ; ixt ) :: nte :: tclosing_te {{ tex \{ [[ixc]] \leftarrow [[ixt]] \}[[nM]] }} {{ com T-c on terms }} by
+ 
+  tcte( c ; ixc ; ixt ) === c
+  tcte( ixt ; ixc ; ixt ) === ixc
+  tcte( ixt ; ixc ; ixt' ) === ixt
+  tcte( ixc ; ixc' ; ixt ) === ixc
+  tcte(\ nA . nM ; ixc ; ixt) === \ tcTy( nA ; succ ixc ; ixt ) . tcte( nM ; ixc ; ixt )
+  tcte(nM1 nM2 ; ixc ; ixt ) === tcte( nM1 ; ixc ; ixt ) tcte( nM2 ; ixc ; ixt)
+
+funs
+TclosingK ::=
+
+  fun
+  tcK( nL ; ixc ; ixt ) :: nK :: otcc_K {{ tex \{[[ixc]] \leftarrow [[ixt]] \} [[nL]] }} {{ com T-c on kinds }} by
+
+  tcK( typeK ; ixc ; ixt ) === typeK
+  tcK(Pi nA . nL ; ixc ; ixt ) === Pi tcTy( nA ; succ ixc ; ixt) . tcK( nL ; ixc ; ixt)
+
+funs
+Tclose ::=
+
+  fun
+  tcloseTy( nA ; ixt ) :: nTy :: tclose_Ty {{ tex {}^{\leftarrow [[ixt]]}[[nA]] }} {{ com type closing }} by
+
+  tcloseTy( nA ; ixt) === tcTy(nA ; zeroc ; ixt)
+
+  fun
+  tclosete( nM ; ixt ) :: nte :: tclose_te {{ tex {}^{\leftarrow [[ixt]]}[[nM]] }} {{ com type closing }} by
+
+  tclosete( nM ; ixt) === tcte(nM ; zeroc ; ixt)
+
+  fun
+  tcloseK( nL ; ixt ) :: nK :: tclose_K {{ tex {}^{\leftarrow [[ixt]]}[[nL]] }} {{ com type closing }} by
+
+  tcloseK( nL ; ixt) === tcK(nL ; zeroc ; ixt)
+
+funs
+Copening ::=
+
+  fun
+  coTy( nA ; ixc ; ixt ) :: nTy :: copening_Ty {{ tex \{ [[ixc]] \rightarrow [[ixt]] \}[[nA]] }} {{ com C-o on types }} by
+ 
+  coTy( a ; ixc ; ixt ) === a
+  coTy( Pi nA . nB ; ixc ; ixt ) === Pi coTy( nA ; ixc ; ixt ) .  coTy( nB ; ixc ; ixt )
+  coTy( nA nM ; ixc ; ixt ) === coTy( nA ; ixc ; ixt ) cote( nM ; ixc ; ixt)
+
+  fun
+  cote( nM ; ixc ; ixt ) :: nte :: copening_te {{ tex \{ [[ixc]] \rightarrow [[ixt]] \}[[nM]] }} {{ com C-o on terms }} by
+ 
+  cote( c ; ixc ; ixt ) === c
+  cote( ixt ; ixc ; ixt ) === ixt
+  cote( ixc ; ixc ; ixt ) === ixt
+  cote( ixc ; ixc' ; ixt ) === ixc
+  cote(\ nA . nM ; ixc ; ixt) === \ coTy( nA ; ixc ; ixt ) . cote( nM ; ixc ; ixt )
+  cote(nM1 nM2 ; ixc ; ixt ) === cote( nM1 ; ixc ; ixt ) cote( nM2 ; ixc ; ixt)
+
+funs
+CopeningK ::=
+
+  fun
+  coK( nL ; ixc ; ixt ) :: nK :: copening_K {{ tex \{[[ixc]] \rightarrow [[ixt]] \}[[nL]] }} {{ com C-o on kinds }} by
+  coK( typeK ; ixc ; ixt ) === typeK
+  coK(Pi nA . nL ; ixc ; ixt ) === Pi coTy( nA ; ixc ; ixt) . coK( nL ; ixc ; ixt)
+
+funs
+Copeningctx ::=
+
+  fun
+  coctx( nctx' ; ixc ; ixt ) :: nctx :: copening_ctx {{ tex \{[[ixc]] \rightarrow [[ixt]] \}[[nctx']]  }} {{ com C-o on contexts }} by
+  coctx( empty ; ixc ; ixt ) === empty
+  coctx( nctx,nA ; ixc ; ixt ) === coctx(nctx ; succ ixc ; ixt),coTy(nA;ixc;ixt)
+
+funs
+Copen ::=
+
+  fun
+  copenTy( nA ; ixt ) :: nTy :: copen_Ty {{ tex {[[nA]]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
+
+  copenTy( nA ; ixt) === coTy(nA ; zeroc ; ixt)
+
+  fun
+  copente( nM ; ixt ) :: nte :: copen_te {{ tex {[[nM]]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
+
+  copente( nM ; ixt) === cote(nM ; zeroc ; ixt)
+
+  fun
+  copenK( nL ; ixt ) :: nK :: copen_K {{ tex {[[nL]]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
+
+  copenK( nL ; ixt) === coK(nL ; zeroc ; ixt)
+
+  fun
+  copenctx( nctx' ; ixt ) :: nctx :: copen_ctx {{ tex {[[nctx']]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
+
+  copenctx( nctx ; ixt) === coctx(nctx ; zeroc ; ixt)
+
+funs
+Cclosing ::=
+
+  fun
+  ccTy( nA ; ixt ; ixc ) :: nTy :: cclosing_Ty {{ tex \{ [[ixt]] \leftarrow [[ixc]] \}[[nA]] }} {{ com C-c on types }} by
+ 
+  ccTy( a ; ixt ; ixc ) === a
+  ccTy( Pi nA . nB ; ixt ; ixc ) === Pi ccTy( nA ; ixt ; ixc ) .  ccTy( nB ; ixt ; ixc )
+  ccTy( nA nM ; ixt ; ixc ) === ccTy( nA ; ixt ; ixc ) ccte( nM ; ixt ; ixc)
+
+  fun
+  ccte( nM ; ixt ; ixc ) :: nte :: cclosing_te {{ tex \{ [[ixt]] \leftarrow [[ixc]] \}[[nM]] }} {{ com C-c on terms }} by
+ 
+  ccte( c ; ixt ; ixc ) === c
+  ccte( ixc ; ixt ; ixc ) === ixt
+  ccte( ixc ; ixt ; ixc' ) === ixc
+  ccte( ixt ; ixt' ; ixc ) === ixt
+  ccte(\ nA . nM ; ixt ; ixc) === \ ccTy( nA ; ixt ; ixc ) . ccte( nM ; ixt ; ixc )
+  ccte(nM1 nM2 ; ixt ; ixc ) === ccte( nM1 ; ixt ; ixc ) ccte( nM2 ; ixt ; ixc)
+
+funs
+CclosingK ::=
+
+  fun
+  ccK( nL ; ixt ; ixc ) :: nK :: occc_K {{ tex \{[[ixt]] \leftarrow [[ixc]] \} [[nL]] }} {{ com C-c on kinds }} by
+
+  ccK( typeK ; ixt ; ixc ) === typeK
+  ccK(Pi nA . nL ; ixt ; ixc ) === Pi ccTy( nA ; ixt ; ixc) . ccK( nL ; ixt ; ixc)
+
+funs
+Cclosingctx ::=
+
+  fun
+  ccctx( nctx' ; ixt ; ixc ) :: nctx :: occc_ctx {{ tex \{[[ixt]] \leftarrow [[ixc]] \} [[nctx']] }} {{ com C-c on contexts }} by
+
+  ccctx( empty ; ixt ; ixc ) === empty
+  ccctx( nctx,nA ; ixt ; ixc ) === ccctx(nctx ; suct ixt ; ixc ) , ccTy(nA ; ixt ; ixc )
+
+funs
+Cclose ::=
+
+  fun
+  ccloseTy( nA ; ixc ) :: nTy :: cclose_Ty {{ tex {}^{\leftarrow [[ixc]]}[[nA]] }} {{ com context closing }} by
+
+  ccloseTy( nA ; ixc) === ccTy(nA ; zerot ; ixc)
+
+  fun
+  cclosete( nM ; ixc ) :: nte :: cclose_te {{ tex {}^{\leftarrow [[ixc]]}[[nM]] }} {{ com context closing }} by
+
+  cclosete( nM ; ixc) === ccte(nM ; zerot ; ixc)
+
+  fun
+  ccloseK( nL ; ixc ) :: nK :: cclose_K {{ tex {}^{\leftarrow [[ixc]]}[[nL]] }} {{ com context closing }} by
+
+  ccloseK( nL ; ixc) === ccK(nL ; zerot ; ixc)
+
+  fun
+  cclosectx( nctx' ; ixc ) :: nctx :: cclose_ctx {{ tex {}^{\leftarrow [[ixc]]}[[nctx']] }} {{ com context closing }} by
+
+  cclosectx( nctx ; ixc) === ccctx(nctx ; zerot ; ixc)
+
+
+
+ 
+
+defns
+Jwellformed :: '' ::=
+
+
+  defn
+  |- nsgn :: :: wfsig_nl ::'sig_nl_' {{ tex _{n}\vdash [[nsgn]] \Rightarrow \text{sig} }} by
+
+    ---------------  :: empty
+    |- empty
+
+    |- nsgn
+    nsgn ; empty |- nL => kindS
+    a notin dom(nsgn)
+    -------------------------- :: tcon
+    |- nsgn,a:nL
+
+    |- nsgn
+    nsgn ; empty |- nA => typeK
+    c notin dom(nsgn) 
+    -------------------------- :: con
+    |- nsgn,c:nA
+
+  defn
+  nsgn |- nctx :: :: wfctx_nl ::'ctx_nl_' {{tex [[nsgn]] _{n}\vdash [[nctx]] \Rightarrow \text{ctx} }} by
+   
+    |- nsgn
+    --------------------  :: empty
+    nsgn |- empty
+
+    nsgn |- nctx
+    nsgn ; nctx |- nA => typeK
+    ----------------------------- :: var
+    nsgn |- cc( nctx,nA )
+
+  defn
+  nsgn ; nctx |- nK => kindS :: :: wfkind_nl :: 'k_n_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nK]] \Rightarrow [[kindS]]}} by
+
+    nsgn |- nctx
+    -----------------------------  :: type
+    nsgn ; nctx |- typeK => kindS
+
+    nsgn ; cc(nctx,nA) |- nL => kindS
+    ---------------------------------------- :: pi_intro
+    nsgn ; nctx |- Pi nA . ctocK nL => kindS
+
+  defn
+  nsgn ; nctx |- nA => nK  :: :: wftype_nl ::'ty_nl_' {{tex [[nsgn]] ; [[nctx]] _{n}\vdash [[nA]] \Rightarrow [[nK]]}} by
+
+    nsgn |- nctx
+    a : nK in nsgn
+    ---------------------  :: tcon
+    nsgn ; nctx |- a => nL
+
+
+    nsgn ; cc(nctx,nA) |- nB => typeK
+    ----------------------------------------- :: pi_intro
+    nsgn ; nctx |- Pi nA . ctocTy nB => typeK 
+
+    nsgn ; nctx |- nA => Pi nB . nL
+    nsgn ; nctx |- nM => nB
+    ----------------------------------------- :: pi_elim
+    nsgn ; nctx |- nA nM => oK(nL ; nM)
+
+  defn
+  nsgn ; nctx |- nM => nA  :: ::wfterm::'te_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \Rightarrow [[nA]]}} by
+
+    nsgn |-nctx nctx
+    c : A in nsgn
+    ----------------------  :: con
+    nsgn ; nctx |- c : A
+
+    nsgn |-nctx nctx
+    x : A in nctx
+    ----------------------  :: var
+    nsgn ; nctx |- x : A
+
+    nsgn ; nctx,x:A |- M : B 
+    ---------------------------------- :: pi_intro
+    nsgn ; nctx |- \x:A.M : Pi x : A . B 
+
+    nsgn ; nctx |- M : Pi x : A . B 
+    nsgn ; nctx |- N : A
+    ------------------------------ :: pi_elim
+    nsgn ; nctx |- M N : B [ N / x ]
+
+    nsgn ; nctx |- M : A
+    nsgn ; nctx |- A' : typeK
+    nsgn ; nctx |- A is A' 
+    ------------------------------ :: conv
+    nsgn ; nctx |- M : A' 
+
+  defn 
+  nsgn ; nctx |- K is K' ::  :: substapkind :: 'eqK_' {{tex [[nsgn]] ; [[nctx]] \vdash [[K]] \equiv [[K']] }} by
+
+    --------------------------- :: refl
+    nsgn ; nctx |- K is K 
+
+    nsgn ; nctx |- K' is K 
+    ---------------------------- :: sym
+    nsgn ; nctx |- K is K' 
+
+    nsgn ; nctx |- K_1 is K_2
+    nsgn ; nctx |- K_2 is K_3
+    ------------------------------- :: trans
+    nsgn ; nctx |- K_1 is K_3
+
+    nsgn ; nctx |- A is A' 
+    nsgn ; nctx |- K is K' 
+    ------------------------------------ :: 1
+    nsgn ; nctx |- Pi x:A.K is Pi x:A'.K' 
+
+  defn 
+  nsgn ; nctx |- A is A' ::  :: substaptype :: 'eqT_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[A]] \equiv [[A']] }} by
+
+    %nsgn ; nctx |- A 
+    --------------------------- :: refl
+    nsgn ; nctx |- A is A 
+
+    nsgn ; nctx |- A' is A 
+    ---------------------------- :: sym
+    nsgn ; nctx |- A is A' 
+
+    nsgn ; nctx |- A_1 is A_2 
+    nsgn ; nctx |- A_2 is A_3 
+    ------------------------------- :: trans
+    nsgn ; nctx |- A_1 is A_3 
+
+    nsgn ; nctx |- A is A' 
+    nsgn ; nctx |- B is B' 
+    ------------------------------------ :: 1
+    nsgn ; nctx |- Pi x:A.B is Pi x:A'.B' 
+
+    nsgn ; nctx |- A is A' 
+    nsgn ; nctx |- M is M' 
+    ------------------------------------ :: 2
+    nsgn ; nctx |- A M is A' M' 
+
+  defn 
+  nsgn ; nctx |- M is M' ::  :: substapterm :: 'eqt_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[M]] \equiv [[M']] }} by
+
+    ----------------------- :: refl
+    nsgn ; nctx |- M is M 
+
+    nsgn ; nctx |- M' is M 
+    ------------------------ :: sym
+    nsgn ; nctx |- M is M' 
+
+    nsgn ; nctx |- M_1 is M_2 
+    nsgn ; nctx |- M_2 is M_3 
+    --------------------------- :: trans
+    nsgn ; nctx |- M_1 is M_3 
+
+    nsgn ; nctx |- M is M' 
+    nsgn ; nctx |- N is N' 
+    --------------------------------------- :: 1
+    nsgn ; nctx |- (\x:A.M)N is M' [ N' / x ] 
+
+    nsgn ; nctx |- M is M' 
+    nsgn ; nctx |- N is N' 
+    --------------------------------------- :: 2
+    nsgn ; nctx |- M N is M' N' 
+
+    nsgn ; nctx |- A is A' 
+    nsgn ; nctx |- M is M' 
+    ------------------------------------------ :: 3
+    nsgn ; nctx |- \x:A.M is \x:A'.M' 
+
+
+
