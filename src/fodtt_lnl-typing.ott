@@ -268,7 +268,7 @@ Cclose ::=
   ccloseK( nL ; ixc) === ccK(nL ; zerot ; ixc)
 
   fun
-  cclosectx( nctx' ; ixc ) :: nctx :: cclose_ctx {{ tex {}^{\leftarrow [[ixc]]}[[nctx']] }} {{ com context closing }} by
+  cclosectx( nctx' ; ixc ) :: nctx :: cclose_ctx {{ tex {}^{\leftarrow [[ixc]]}([[nctx']]) }} {{ com context closing }} by
 
   cclosectx( nctx ; ixc) === ccctx(nctx ; zerot ; ixc)
 
@@ -305,10 +305,10 @@ Jwellformed :: '' ::=
     --------------------  :: empty
     nsgn |- empty
 
-    nsgn |- nctx
-    nsgn ; nctx |- nA => typeK
+    nsgn |- copenctx(nctx ; blah)
+    nsgn ; copenctx(nctx ; blah)  |- copenTy(nA ; blah) => typeK
     ----------------------------- :: var
-    nsgn |- cc( nctx,nA )
+    nsgn |- nctx,nA 
 
   defn
   nsgn ; nctx |- nK => kindS :: :: wfkind_nl :: 'k_n_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nK]] \Rightarrow [[kindS]]}} by
@@ -317,131 +317,134 @@ Jwellformed :: '' ::=
     -----------------------------  :: type
     nsgn ; nctx |- typeK => kindS
 
-    nsgn ; cc(nctx,nA) |- nL => kindS
+    nsgn ; cclosectx(nctx,nA ; blah) |- topenK(ccloseK(nL ; blah); zeroc) => kindS
     ---------------------------------------- :: pi_intro
-    nsgn ; nctx |- Pi nA . ctocK nL => kindS
+    nsgn ; nctx |- Pi nA . nL => kindS
 
   defn
   nsgn ; nctx |- nA => nK  :: :: wftype_nl ::'ty_nl_' {{tex [[nsgn]] ; [[nctx]] _{n}\vdash [[nA]] \Rightarrow [[nK]]}} by
 
     nsgn |- nctx
-    a : nK in nsgn
+    a : nL in nsgn
     ---------------------  :: tcon
     nsgn ; nctx |- a => nL
 
 
-    nsgn ; cc(nctx,nA) |- nB => typeK
+    nsgn ; cclosectx(nctx,nA ; blah) |- topenTy(ccloseTy(nB;blah);zeroc) => typeK
     ----------------------------------------- :: pi_intro
-    nsgn ; nctx |- Pi nA . ctocTy nB => typeK 
+    nsgn ; nctx |- Pi nA . nB => typeK 
 
     nsgn ; nctx |- nA => Pi nB . nL
     nsgn ; nctx |- nM => nB
-    ----------------------------------------- :: pi_elim
-    nsgn ; nctx |- nA nM => oK(nL ; nM)
+    ------------------------------------------------------- :: pi_elim
+    nsgn ; nctx |- nA nM => topenK(nL ; blah) [ nM / blah ]
 
   defn
   nsgn ; nctx |- nM => nA  :: ::wfterm::'te_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \Rightarrow [[nA]]}} by
 
-    nsgn |-nctx nctx
-    c : A in nsgn
+    nsgn |- nctx
+    c : nA in nsgn
     ----------------------  :: con
-    nsgn ; nctx |- c : A
+    nsgn ; nctx |- c => nA
 
-    nsgn |-nctx nctx
-    x : A in nctx
-    ----------------------  :: var
-    nsgn ; nctx |- x : A
+    nsgn |- nctx,nA
+    ----------------------------  :: var_nil
+    nsgn ; nctx,nA |- zeroc => nA
 
-    nsgn ; nctx,x:A |- M : B 
-    ---------------------------------- :: pi_intro
-    nsgn ; nctx |- \x:A.M : Pi x : A . B 
+    nsgn ; cclosectx(nctx;blah) |- ixc => nA
+    ------------------------------------------------  :: var_cons
+    nsgn ; nctx,nB |- succ ixc => copenTy(nA ;blah)
 
-    nsgn ; nctx |- M : Pi x : A . B 
-    nsgn ; nctx |- N : A
+    nsgn ; cclosectx(nctx,nA ; blah) |- topente(cclosete(nM;blah);zeroc) => nB 
+    ---------------------------------------------------------- :: pi_intro
+    nsgn ; nctx |- \nA.nM => Pi nA . tcloseTy(copenTy(nB ; blah) ; zerot)
+
+    nsgn ; nctx |- nM => Pi nA . nB 
+    nsgn ; nctx |- nN => nA
     ------------------------------ :: pi_elim
-    nsgn ; nctx |- M N : B [ N / x ]
+    nsgn ; nctx |- nM nN => topenTy(nB ; blah) [ nN / blah ]
 
-    nsgn ; nctx |- M : A
-    nsgn ; nctx |- A' : typeK
-    nsgn ; nctx |- A is A' 
+    nsgn ; nctx |- nM => nA
+    nsgn ; nctx |- nA' => typeK
+    nsgn ; nctx |- nA is nA' 
     ------------------------------ :: conv
-    nsgn ; nctx |- M : A' 
+    nsgn ; nctx |- nM => nA' 
 
   defn 
-  nsgn ; nctx |- K is K' ::  :: substapkind :: 'eqK_' {{tex [[nsgn]] ; [[nctx]] \vdash [[K]] \equiv [[K']] }} by
+  nsgn ; nctx |- nL is nL' ::  :: substapkind :: 'eqnL_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nL]] \equiv [[nL']] }} by
 
     --------------------------- :: refl
-    nsgn ; nctx |- K is K 
+    nsgn ; nctx |- nL is nL 
 
-    nsgn ; nctx |- K' is K 
+    nsgn ; nctx |- nL' is nL 
     ---------------------------- :: sym
-    nsgn ; nctx |- K is K' 
+    nsgn ; nctx |- nL is nL' 
 
-    nsgn ; nctx |- K_1 is K_2
-    nsgn ; nctx |- K_2 is K_3
+    nsgn ; nctx |- nL_1 is nL_2
+    nsgn ; nctx |- nL_2 is nL_3
     ------------------------------- :: trans
-    nsgn ; nctx |- K_1 is K_3
+    nsgn ; nctx |- nL_1 is nL_3
 
-    nsgn ; nctx |- A is A' 
-    nsgn ; nctx |- K is K' 
+    nsgn ; nctx |- nA is nA' 
+    nsgn ; nctx |- nL is nL' 
     ------------------------------------ :: 1
-    nsgn ; nctx |- Pi x:A.K is Pi x:A'.K' 
+    nsgn ; nctx |- Pi nA.nL is Pi nA'.nL' 
 
   defn 
-  nsgn ; nctx |- A is A' ::  :: substaptype :: 'eqT_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[A]] \equiv [[A']] }} by
+  nsgn ; nctx |- nA is nA' ::  :: substaptype :: 'eqT_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nA]] \equiv [[nA']] }} by
 
-    %nsgn ; nctx |- A 
+    %nsgn ; nctx |- nA 
     --------------------------- :: refl
-    nsgn ; nctx |- A is A 
+    nsgn ; nctx |- nA is nA 
 
-    nsgn ; nctx |- A' is A 
+    nsgn ; nctx |- nA' is nA 
     ---------------------------- :: sym
-    nsgn ; nctx |- A is A' 
+    nsgn ; nctx |- nA is nA' 
 
-    nsgn ; nctx |- A_1 is A_2 
-    nsgn ; nctx |- A_2 is A_3 
+    nsgn ; nctx |- nA_1 is nA_2 
+    nsgn ; nctx |- nA_2 is nA_3 
     ------------------------------- :: trans
-    nsgn ; nctx |- A_1 is A_3 
+    nsgn ; nctx |- nA_1 is nA_3 
 
-    nsgn ; nctx |- A is A' 
-    nsgn ; nctx |- B is B' 
+    nsgn ; nctx |- nA is nA' 
+    nsgn ; nctx |- nB is nB' 
     ------------------------------------ :: 1
-    nsgn ; nctx |- Pi x:A.B is Pi x:A'.B' 
+    nsgn ; nctx |- Pi nA.nB is Pi nA'.nB' 
 
-    nsgn ; nctx |- A is A' 
-    nsgn ; nctx |- M is M' 
+    nsgn ; nctx |- nA is nA' 
+    nsgn ; nctx |- nM is nM' 
     ------------------------------------ :: 2
-    nsgn ; nctx |- A M is A' M' 
+    nsgn ; nctx |- nA nM is nA' nM' 
 
   defn 
-  nsgn ; nctx |- M is M' ::  :: substapterm :: 'eqt_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[M]] \equiv [[M']] }} by
+  nsgn ; nctx |- nM is nM' ::  :: substapterm :: 'eqt_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \equiv [[nM']] }} by
 
     ----------------------- :: refl
-    nsgn ; nctx |- M is M 
+    nsgn ; nctx |- nM is nM 
 
-    nsgn ; nctx |- M' is M 
+    nsgn ; nctx |- nM' is nM 
     ------------------------ :: sym
-    nsgn ; nctx |- M is M' 
+    nsgn ; nctx |- nM is nM' 
 
-    nsgn ; nctx |- M_1 is M_2 
-    nsgn ; nctx |- M_2 is M_3 
+    nsgn ; nctx |- nM_1 is nM_2 
+    nsgn ; nctx |- nM_2 is nM_3 
     --------------------------- :: trans
-    nsgn ; nctx |- M_1 is M_3 
+    nsgn ; nctx |- nM_1 is nM_3 
 
-    nsgn ; nctx |- M is M' 
-    nsgn ; nctx |- N is N' 
+    nsgn ; nctx |- nM is nM' 
+    nsgn ; nctx |- nN is nN' 
     --------------------------------------- :: 1
-    nsgn ; nctx |- (\x:A.M)N is M' [ N' / x ] 
+    nsgn ; nctx |- (\nA.nM)nN is topente(nM'; blah) [ nN' / blah ] 
 
-    nsgn ; nctx |- M is M' 
-    nsgn ; nctx |- N is N' 
+    nsgn ; nctx |- nM is nM' 
+    nsgn ; nctx |- nN is nN' 
     --------------------------------------- :: 2
-    nsgn ; nctx |- M N is M' N' 
+    nsgn ; nctx |- nM nN is nM' nN' 
 
-    nsgn ; nctx |- A is A' 
-    nsgn ; nctx |- M is M' 
+    nsgn ; nctx |- nA is nA' 
+    nsgn ; nctx |- nM is nM' 
     ------------------------------------------ :: 3
-    nsgn ; nctx |- \x:A.M is \x:A'.M' 
+    nsgn ; nctx |- \nA.nM is \nA'.nM' 
 
 
 

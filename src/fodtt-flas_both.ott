@@ -32,6 +32,9 @@ formula :: formula_ ::=
   | c : C in nsgn                                   :: :: cinsig_nl
      {{ coq (boundnCon [[c]] [[C]] [[nsgn]]) }}
      {{ tex [[c]] : [[C]] \in [[nsgn]] }}
+  | c : nA in nsgn                                    :: :: cinsig_lnl
+     {{ coq (boundCon [[c]] [[nA]] [[nsgn]]) }}
+     {{ tex [[c]] : [[nA]] \in [[nsgn]] }}
   | alpha : nK in nsgn                              :: :: binsig_nl
      {{ coq (boundnTCon [[alpha]] [[nK]] [[nsgn]]) }}
      {{ tex [[alpha]] : [[nK]] \in [[nsgn]] }}
@@ -41,3 +44,12 @@ formula :: formula_ ::=
      {{ coq member ([[Kappa]] , [[HC]]) [[Prog]]) }}
      {{ tex [[Kappa]] : [[HC]] \in [[Prog]] }}
 
+  | c notin dom ( lnsgn )                             :: :: cnotinsig_lnl
+     {{ coq (not (indomCon [[c]] [[lnsgn]])) }}
+     {{ tex [[c]] \not\in \dom([[lnsgn]]) }}
+  | a notin dom ( lnsgn )                         :: :: bnotinsig_lnl
+     {{ coq (not (indomTCon [[a]] [[lnsgn]])) }}
+     {{ tex [[a]] \not\in \dom([[lnsgn]]) }}
+  | x notin dom ( lnctx )                             :: :: xnotinctx_lnl
+     {{ coq (not (indomVar [[x]] [[lnctx]])) }}
+     {{ tex [[x]] \not\in \dom([[lnctx]]) }}

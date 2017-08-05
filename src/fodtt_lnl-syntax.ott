@@ -8,10 +8,12 @@ grammar
 ixc {{tex I_\Gamma{} }}, m :: 'cdb_' ::= {{com deBruijn indices for context }}
   | zeroc                ::   :: zero  
   | succ ixc             ::   :: succ
+  | blah ::   :: blah
 
 ixt {{tex I_T }}, n :: 'tdb_' ::= {{com deBruijn indices for pi types }}
   | zerot                ::   :: zero  
   | suct ixt             ::   :: succ
+  | blah ::   :: blah
 
 
 grammar
@@ -21,8 +23,8 @@ nK {{ tex K^{n}{} }} , nL {{ tex L^{n}{} }} :: 'kind_nl_' ::= {{ com Locally Nam
   | ( nK )               :: S :: paren                        
      {{ coq [[nK]] }}
 %     {{ ocaml nK }}
-%  | K [ te / var ]     :: M :: subst                         {{ com substitution }}
-%     {{ coq (tsubst_K [[te]] [[var]] [[K]]) }}
+  | nK [ nte / ixc ]     :: M :: subst                         {{ com substitution }}
+     {{ coq (tsubst_K [[nte]] [[ixc]] [[nK]]) }}
 %     {{ ocaml int }}
 %     {{ tex [[K]] [ [[te]] / [[var]] ] }} 
 
@@ -33,8 +35,8 @@ nTy {{ tex T^{n}{} }}, nA {{ tex A^{n}{} }}, nB {{ tex B^{n}{} }} :: 'type_nl_' 
   | ( nTy )               :: S :: paren                        
      {{ coq [[nTy]] }}
 %     {{ ocaml nTy }}
-%%  | Ty [ te / var ]    :: M :: subst                          {{ com substitution }}
-%%     {{ coq ( tsubst_Ty [[te]] [[var]] [[Ty]] ) }}
+  | nTy [ nte / ixc ]    :: M :: subst                          {{ com substitution }}
+     {{ coq ( tsubst_Ty [[nte]] [[ixc]] [[nTy]] ) }}
 %%     {{ ocaml int }}
 %%     {{ tex [[Ty]] [ [[te]] / [[var]] ] }}
 %
@@ -48,8 +50,8 @@ nte {{ tex t^n{} }}, nM {{ tex M^{n}{} }}, nN {{ tex N^{n}{} }} :: 'term_nl_' ::
   | ( nte )               :: S :: paren                        
      {{ coq [[nte]] }}
 %     {{ ocaml nte }}
-%%  | te [ te' / var ]   :: M :: subst                         {{ com substitution of term}}
-%%     {{ coq ( tsubst_te [[te']] [[var]] [[te]] ) }}
+  | nte [ nte' / ixc ]   :: M :: subst                         {{ com substitution of term}}
+     {{ coq ( tsubst_te [[nte']] [[ixc]] [[nte]] ) }}
 %%     {{ ocaml int }}
 %%     {{ tex [[te]] [ [[te']] / [[var]] ] }}
 

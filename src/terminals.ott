@@ -7,8 +7,8 @@ terminals :: 'terminals_' ::=
   | empty        ::   :: empty     {{ tex \cdot}}
   | zeroc        ::   :: zeroc     {{ tex 0_\Gamma }}
   | succ         ::   :: succ      {{ tex \sigma_\Gamma }}
-  | zerop        ::   :: zerop     {{ tex 0_\Pi }}
-  | sucp         ::   :: sucp      {{ tex \sigma_\Pi }}
+  | zerot        ::   :: zerot     {{ tex 0_T }}
+  | suct         ::   :: suct      {{ tex \sigma_T }}
   | true         ::   :: true      {{ tex \top }}
   | kappa_succ   ::   :: ksucc     {{ tex \kappa_{succ} }}
   | kappa_zeroc  ::   :: kzeroc    {{ tex \kappa_{0 \Gamma} }}
