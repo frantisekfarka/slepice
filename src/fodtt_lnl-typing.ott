@@ -59,218 +59,148 @@ substitutions
 %  single te x :: subst
 
 funs
-Topening ::=
+Cshifting ::=
 
   fun
-  toTy( nA ; ixt ; ixc ) :: nTy :: topening_Ty {{ tex \{ [[ixt]] \rightarrow [[ixc]] \}[[nA]] }} {{ com T-o on types }} by
+  csTy nA  :: nTy :: cshifting_Ty {{ tex \overleftarrow{ [[nA]] } }} {{ com C-shifting on types }} by
  
-  toTy( a ; ixt ; ixc ) === a
-  toTy( Pi nA . nB ; ixt ; ixc ) === Pi toTy( nA ; suct ixt ; ixc ) .  toTy( nB ; ixt ; ixc )
-  toTy( nA nM ; ixt ; ixc ) === toTy( nA ; ixt ; ixc ) tote( nM ; ixt ; ixc)
+  csTy a  === a
+  csTy Pi nA . nB  === Pi csTy nA  .  csTy nB 
+  csTy ( nA nM ) === (csTy nA) (cste nM)
 
   fun
-  tote( nM ; ixt ; ixc ) :: nte :: topening_te {{ tex \{ [[ixt]] \rightarrow [[ixc]] \}[[nM]] }} {{ com T-o on terms }} by
+  cste nM  :: nte :: cshifting_te {{ tex \overleftarrow{ [[nM]] } }} {{ com C-shifting on terms }} by
  
-  tote( c ; ixt ; ixc ) === c
-  tote( ixc ; ixt ; ixc ) === ixc
-  tote( ixt ; ixt ; ixc ) === ixc
-  tote( ixt ; ixt' ; ixc ) === ixt
-
-  tote(\ nA . nM ; ixt ; ixc) === \ toTy( nA ; suct ixt ; ixc ) . tote( nM ; ixt ; ixc )
-  tote(nM1 nM2 ; ixt ; ixc ) === tote( nM1 ; ixt ; ixc ) tote( nM2 ; ixt ; ixc)
+  cste c  === c
+  cste ixc  === succ ixc
+  cste ixt  === ixt
+  cste \ nA . nM === \ csTy( nA ) . cste( nM )
+  cste ( nM1 nM2 ) === (cste nM1 ) (cste nM2 )
 
 funs
-TopeningK ::=
+Cshiftingctx ::=
 
   fun
-  toK( nL ; ixt ; ixc ) :: nK :: topening_K {{ tex \{[[ixt]] \rightarrow [[ixc]] \} }} {{ com T-o on kinds }} by
-  toK( typeK ; ixt ; ixc ) === typeK
-  toK(Pi nA . nL ; ixt ; ixc ) === Pi toTy( nA ; suct ixt ; ixc) . toK( nL ; ixt ; ixc)
+  csctx( nctx' ) :: nctx :: s_ctx {{ tex \overleftarrow{ [[nctx']] } }} {{ com C-shift on contexts }} by
+
+  csctx( empty ) === empty
+  csctx( nctx,nA ) === csctx(nctx ) , csTy nA 
 
 funs
-Topen ::=
+Cunshifting ::=
 
   fun
-  topenTy( nA ; ixc ) :: nTy :: topen_Ty {{ tex {[[nA]]}^{\rightarrow [[ixc]]} }} {{ com type opening }} by
-
-  topenTy( nA ; ixc) === toTy(nA ; zerot ; ixc)
-
-  fun
-  topente( nM ; ixc ) :: nte :: topen_te {{ tex {[[nM]]}^{\rightarrow [[ixc]]} }} {{ com type opening }} by
-
-  topente( nM ; ixc) === tote(nM ; zerot ; ixc)
-
-  fun
-  topenK( nL ; ixc ) :: nK :: topen_K {{ tex {[[nL]]}^{\rightarrow [[ixc]]} }} {{ com type opening }} by
-
-  topenK( nL ; ixc) === toK(nL ; zerot ; ixc)
-
-funs
-Tclosing ::=
-
-  fun
-  tcTy( nA ; ixc ; ixt ) :: nTy :: tclosing_Ty {{ tex \{ [[ixc]] \leftarrow [[ixt]] \}[[nA]] }} {{ com T-c on types }} by
+  cuTy nA  :: nTy :: cuhifting_Ty {{ tex \overrightarrow{ [[nA]] } }} {{ com C-unshifting on types }} by
  
-  tcTy( a ; ixc ; ixt ) === a
-  tcTy( Pi nA . nB ; ixc ; ixt ) === Pi tcTy( nA ; succ ixc ; ixt ) .  tcTy( nB ; ixc ; ixt )
-  tcTy( nA nM ; ixc ; ixt ) === tcTy( nA ; ixc ; ixt ) tcte( nM ; ixc ; ixt)
+  cuTy( a ) === a
+  cuTy( Pi nA . nB ) === Pi cuTy nA  .  cuTy nB 
+  cuTy( nA nM ) === (cuTy nA) (cute nM)
 
   fun
-  tcte( nM ; ixc ; ixt ) :: nte :: tclosing_te {{ tex \{ [[ixc]] \leftarrow [[ixt]] \}[[nM]] }} {{ com T-c on terms }} by
+  cute nM  :: nte :: cuhifting_te {{ tex \overrightarrow{ [[nM]] } }} {{ com C-unshifting on terms }} by
  
-  tcte( c ; ixc ; ixt ) === c
-  tcte( ixt ; ixc ; ixt ) === ixc
-  tcte( ixt ; ixc ; ixt' ) === ixt
-  tcte( ixc ; ixc' ; ixt ) === ixc
-  tcte(\ nA . nM ; ixc ; ixt) === \ tcTy( nA ; succ ixc ; ixt ) . tcte( nM ; ixc ; ixt )
-  tcte(nM1 nM2 ; ixc ; ixt ) === tcte( nM1 ; ixc ; ixt ) tcte( nM2 ; ixc ; ixt)
+  cute( c ) === c
+  cute( succ ixc ) === ixc
+  cute( ixt ) === ixt
+  cute( \ nA . nM ) === \ cuTy( nA ) . cute( nM )
+  cute( nM1 nM2 ) === (cute nM1 ) (cute nM2 )
 
 funs
-TclosingK ::=
+Cunshiftingctx ::=
 
   fun
-  tcK( nL ; ixc ; ixt ) :: nK :: otcc_K {{ tex \{[[ixc]] \leftarrow [[ixt]] \} [[nL]] }} {{ com T-c on kinds }} by
+  cuctx( nctx' ) :: nctx :: u_ctx {{ tex \overrightarrow{ [[nctx']] }  }} {{ com C-shift on contexts }} by
 
-  tcK( typeK ; ixc ; ixt ) === typeK
-  tcK(Pi nA . nL ; ixc ; ixt ) === Pi tcTy( nA ; succ ixc ; ixt) . tcK( nL ; ixc ; ixt)
+  cuctx( empty ) === empty
+  cuctx( nctx,nA ) === cuctx(nctx ) , cuTy nA 
 
 funs
-Tclose ::=
+CshiftingTunshifting ::=
 
   fun
-  tcloseTy( nA ; ixt ) :: nTy :: tclose_Ty {{ tex {}^{\leftarrow [[ixt]]}[[nA]] }} {{ com type closing }} by
-
-  tcloseTy( nA ; ixt) === tcTy(nA ; zeroc ; ixt)
-
-  fun
-  tclosete( nM ; ixt ) :: nte :: tclose_te {{ tex {}^{\leftarrow [[ixt]]}[[nM]] }} {{ com type closing }} by
-
-  tclosete( nM ; ixt) === tcte(nM ; zeroc ; ixt)
-
-  fun
-  tcloseK( nL ; ixt ) :: nK :: tclose_K {{ tex {}^{\leftarrow [[ixt]]}[[nL]] }} {{ com type closing }} by
-
-  tcloseK( nL ; ixt) === tcK(nL ; zeroc ; ixt)
-
-funs
-Copening ::=
-
-  fun
-  coTy( nA ; ixc ; ixt ) :: nTy :: copening_Ty {{ tex \{ [[ixc]] \rightarrow [[ixt]] \}[[nA]] }} {{ com C-o on types }} by
+  cstuTy nA  :: nTy :: cstuing_Ty {{ tex \overleftarrow{ [[nA]] }^{0_T \rightarrow 0_\Gamma} }} {{ com C-shifting T-unshifting on types }} by
  
-  coTy( a ; ixc ; ixt ) === a
-  coTy( Pi nA . nB ; ixc ; ixt ) === Pi coTy( nA ; ixc ; ixt ) .  coTy( nB ; ixc ; ixt )
-  coTy( nA nM ; ixc ; ixt ) === coTy( nA ; ixc ; ixt ) cote( nM ; ixc ; ixt)
+  cstuTy a  === a
+  cstuTy Pi nA . nB  === Pi cstuTy nA  .  cstuTy nB 
+  cstuTy ( nA nM ) === (cstuTy nA) (cstute nM)
 
   fun
-  cote( nM ; ixc ; ixt ) :: nte :: copening_te {{ tex \{ [[ixc]] \rightarrow [[ixt]] \}[[nM]] }} {{ com C-o on terms }} by
+  cstute nM  :: nte :: cstuing_te {{ tex \overleftarrow{ [[nM]] }^{0_T \rightarrow 0_\Gamma } }} {{ com C-shifting T-unshifting on terms }} by
  
-  cote( c ; ixc ; ixt ) === c
-  cote( ixt ; ixc ; ixt ) === ixt
-  cote( ixc ; ixc ; ixt ) === ixt
-  cote( ixc ; ixc' ; ixt ) === ixc
-  cote(\ nA . nM ; ixc ; ixt) === \ coTy( nA ; ixc ; ixt ) . cote( nM ; ixc ; ixt )
-  cote(nM1 nM2 ; ixc ; ixt ) === cote( nM1 ; ixc ; ixt ) cote( nM2 ; ixc ; ixt)
+  cstute c  === c
+  cstute ixc  === succ ixc
+  cstute zerot  === zeroc
+  cstute suct ixt  === ixt
+  cstute \ nA . nM === \ cstuTy( nA ) . cstute( nM )
+  cstute ( nM1 nM2 ) === (cstute nM1 ) (cstute nM2 )
 
 funs
-CopeningK ::=
+CshiftingTunshiftingK ::=
 
   fun
-  coK( nL ; ixc ; ixt ) :: nK :: copening_K {{ tex \{[[ixc]] \rightarrow [[ixt]] \}[[nL]] }} {{ com C-o on kinds }} by
-  coK( typeK ; ixc ; ixt ) === typeK
-  coK(Pi nA . nL ; ixc ; ixt ) === Pi coTy( nA ; ixc ; ixt) . coK( nL ; ixc ; ixt)
-
-funs
-Copeningctx ::=
-
-  fun
-  coctx( nctx' ; ixc ; ixt ) :: nctx :: copening_ctx {{ tex \{[[ixc]] \rightarrow [[ixt]] \}[[nctx']]  }} {{ com C-o on contexts }} by
-  coctx( empty ; ixc ; ixt ) === empty
-  coctx( nctx,nA ; ixc ; ixt ) === coctx(nctx ; succ ixc ; ixt),coTy(nA;ixc;ixt)
-
-funs
-Copen ::=
-
-  fun
-  copenTy( nA ; ixt ) :: nTy :: copen_Ty {{ tex {[[nA]]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
-
-  copenTy( nA ; ixt) === coTy(nA ; zeroc ; ixt)
-
-  fun
-  copente( nM ; ixt ) :: nte :: copen_te {{ tex {[[nM]]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
-
-  copente( nM ; ixt) === cote(nM ; zeroc ; ixt)
-
-  fun
-  copenK( nL ; ixt ) :: nK :: copen_K {{ tex {[[nL]]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
-
-  copenK( nL ; ixt) === coK(nL ; zeroc ; ixt)
-
-  fun
-  copenctx( nctx' ; ixt ) :: nctx :: copen_ctx {{ tex {[[nctx']]}^{\rightarrow [[ixt]]} }} {{ com context opening }} by
-
-  copenctx( nctx ; ixt) === coctx(nctx ; zeroc ; ixt)
-
-funs
-Cclosing ::=
-
-  fun
-  ccTy( nA ; ixt ; ixc ) :: nTy :: cclosing_Ty {{ tex \{ [[ixt]] \leftarrow [[ixc]] \}[[nA]] }} {{ com C-c on types }} by
+  cstuK nL  :: nK :: cstuing_K {{ tex \overleftarrow{ [[nL]] }^{0_T \rightarrow 0_\Gamma} }} {{ com C-shifting T-unshifting on kinds }} by
  
-  ccTy( a ; ixt ; ixc ) === a
-  ccTy( Pi nA . nB ; ixt ; ixc ) === Pi ccTy( nA ; ixt ; ixc ) .  ccTy( nB ; ixt ; ixc )
-  ccTy( nA nM ; ixt ; ixc ) === ccTy( nA ; ixt ; ixc ) ccte( nM ; ixt ; ixc)
+  cstuK typeK  === typeK
+  cstuK Pi nA . nL  === Pi cstuTy nA  .  cstuK nL 
+
+funs
+CunshiftingTshifting ::=
 
   fun
-  ccte( nM ; ixt ; ixc ) :: nte :: cclosing_te {{ tex \{ [[ixt]] \leftarrow [[ixc]] \}[[nM]] }} {{ com C-c on terms }} by
+  cutsTy nA  :: nTy :: cutshifting_Ty {{ tex \overrightarrow{ [[nA]] }^{0_T \leftarrow 0_\Gamma} }} {{ com C-unshifting T-shifting on types }} by
  
-  ccte( c ; ixt ; ixc ) === c
-  ccte( ixc ; ixt ; ixc ) === ixt
-  ccte( ixc ; ixt ; ixc' ) === ixc
-  ccte( ixt ; ixt' ; ixc ) === ixt
-  ccte(\ nA . nM ; ixt ; ixc) === \ ccTy( nA ; ixt ; ixc ) . ccte( nM ; ixt ; ixc )
-  ccte(nM1 nM2 ; ixt ; ixc ) === ccte( nM1 ; ixt ; ixc ) ccte( nM2 ; ixt ; ixc)
+  cutsTy( a ) === a
+  cutsTy( Pi nA . nB ) === Pi cutsTy nA  .  cutsTy nB 
+  cutsTy( nA nM ) === (cutsTy nA) (cutste nM)
+
+  fun
+  cutste nM  :: nte :: cutshifting_te {{ tex \overrightarrow{ [[nM]] }^{0_T \leftarrow 0_\Gamma} }} {{ com
+  C-unshifting T-shifting on terms }} by
+ 
+  cutste( c ) === c
+  cutste( succ ixc ) === ixc
+  cutste( zeroc ) === zerot
+  cutste( ixt ) === suct ixt
+  cutste( \ nA . nM ) === \ cutsTy( nA ) . cutste( nM )
+  cutste( nM1 nM2 ) === (cutste nM1 ) (cutste nM2 )
+
+%funs
+%CunshiftingTshiftingK ::=
+%
+%  fun
+%  cutsK nL :: nK :: cutsing_K {{ tex \overrightarrow{ [[nL]] }^{0_T \leftarrow 0_\Gamma}  }} {{ com C-shift T-unshift on kinds }} by
+%
+%  cutsK typeK === typeK
+%  cutsK (Pi nA . nL)  === Pi cutsTy nA . cutsK nL
 
 funs
-CclosingK ::=
+TunshiftingTsubst ::=
 
   fun
-  ccK( nL ; ixt ; ixc ) :: nK :: occc_K {{ tex \{[[ixt]] \leftarrow [[ixc]] \} [[nL]] }} {{ com C-c on kinds }} by
+  tutsTy( nA , nN )  :: nTy :: tutshifting_Ty {{ tex { [[nA]] }^{0_T \leftarrow [[nN]] } }} {{ com T-unshifting T-substitution on types }} by
+ 
+  tutsTy( a , nN ) === a
+  tutsTy( Pi nA . nB , nN ) === Pi tutsTy( nA , nN) .  tutsTy( nB , nN)
+  tutsTy( nA nM , nN ) === tutsTy( nA , nN ) tutste( nM , nN)
 
-  ccK( typeK ; ixt ; ixc ) === typeK
-  ccK(Pi nA . nL ; ixt ; ixc ) === Pi ccTy( nA ; ixt ; ixc) . ccK( nL ; ixt ; ixc)
+  fun
+  tutste( nM , nN )  :: nte :: tutshifting_te {{ tex { [[nM]] }^{0_T \leftarrow [[nN]] } }} {{ com T-unshifting T-substitution on terms }} by
+ 
+  tutste( c , nN ) === c
+  tutste( ixc , nN ) === ixc
+  tutste( zerot , nN ) === nN
+  tutste( suct ixt , nN ) === ixt
+  tutste( \ nA . nM , nN ) === \ tutsTy( nA , nN ) . tutste( nM , nN )
+  tutste( nM1 nM2 , nN ) === tutste( nM1 , nN ) tutste( nM2 , nN )
 
 funs
-Cclosingctx ::=
+TunshiftingTsubstK ::=
 
   fun
-  ccctx( nctx' ; ixt ; ixc ) :: nctx :: occc_ctx {{ tex \{[[ixt]] \leftarrow [[ixc]] \} [[nctx']] }} {{ com C-c on contexts }} by
+  tutsK( nL , nN ) :: nK :: tutsing_K {{ tex { [[nL]] }^{0_T \leftarrow [[nN]]}  }} {{ com T-shifting T-substitution on kinds }} by
 
-  ccctx( empty ; ixt ; ixc ) === empty
-  ccctx( nctx,nA ; ixt ; ixc ) === ccctx(nctx ; suct ixt ; ixc ) , ccTy(nA ; ixt ; ixc )
-
-funs
-Cclose ::=
-
-  fun
-  ccloseTy( nA ; ixc ) :: nTy :: cclose_Ty {{ tex {}^{\leftarrow [[ixc]]}[[nA]] }} {{ com context closing }} by
-
-  ccloseTy( nA ; ixc) === ccTy(nA ; zerot ; ixc)
-
-  fun
-  cclosete( nM ; ixc ) :: nte :: cclose_te {{ tex {}^{\leftarrow [[ixc]]}[[nM]] }} {{ com context closing }} by
-
-  cclosete( nM ; ixc) === ccte(nM ; zerot ; ixc)
-
-  fun
-  ccloseK( nL ; ixc ) :: nK :: cclose_K {{ tex {}^{\leftarrow [[ixc]]}[[nL]] }} {{ com context closing }} by
-
-  ccloseK( nL ; ixc) === ccK(nL ; zerot ; ixc)
-
-  fun
-  cclosectx( nctx' ; ixc ) :: nctx :: cclose_ctx {{ tex {}^{\leftarrow [[ixc]]}([[nctx']]) }} {{ com context closing }} by
-
-  cclosectx( nctx ; ixc) === ccctx(nctx ; zerot ; ixc)
+  tutsK(typeK , nN) === typeK
+  tutsK(Pi nA . nL, nN)  === Pi tutsTy( nA , nN) . tutsK( nL , nN)
 
 
 
@@ -305,19 +235,19 @@ Jwellformed :: '' ::=
     --------------------  :: empty
     nsgn |- empty
 
-    nsgn |- copenctx(nctx ; blah)
-    nsgn ; copenctx(nctx ; blah)  |- copenTy(nA ; blah) => typeK
-    ----------------------------- :: var
+    nsgn |- cuctx( nctx )
+    nsgn ; cuctx( nctx ) |- cuTy nA  => typeK
+    ------------------------------------------------------------ :: var
     nsgn |- nctx,nA 
 
   defn
   nsgn ; nctx |- nK => kindS :: :: wfkind_nl :: 'k_n_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nK]] \Rightarrow [[kindS]]}} by
 
-    nsgn |- nctx
+    nsgn |- nctx 
     -----------------------------  :: type
     nsgn ; nctx |- typeK => kindS
 
-    nsgn ; cclosectx(nctx,nA ; blah) |- topenK(ccloseK(nL ; blah); zeroc) => kindS
+    nsgn ; csctx(nctx,nA ) |- cstuK nL => kindS
     ---------------------------------------- :: pi_intro
     nsgn ; nctx |- Pi nA . nL => kindS
 
@@ -330,14 +260,14 @@ Jwellformed :: '' ::=
     nsgn ; nctx |- a => nL
 
 
-    nsgn ; cclosectx(nctx,nA ; blah) |- topenTy(ccloseTy(nB;blah);zeroc) => typeK
+    nsgn ; csctx(nctx,nA) |- cstuTy nB => typeK
     ----------------------------------------- :: pi_intro
     nsgn ; nctx |- Pi nA . nB => typeK 
 
     nsgn ; nctx |- nA => Pi nB . nL
     nsgn ; nctx |- nM => nB
     ------------------------------------------------------- :: pi_elim
-    nsgn ; nctx |- nA nM => topenK(nL ; blah) [ nM / blah ]
+    nsgn ; nctx |- nA nM => tutsK(nL , nM) 
 
   defn
   nsgn ; nctx |- nM => nA  :: ::wfterm::'te_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \Rightarrow [[nA]]}} by
@@ -351,18 +281,18 @@ Jwellformed :: '' ::=
     ----------------------------  :: var_nil
     nsgn ; nctx,nA |- zeroc => nA
 
-    nsgn ; cclosectx(nctx;blah) |- ixc => nA
+    nsgn ; cuctx(nctx) |- ixc => nA
     ------------------------------------------------  :: var_cons
-    nsgn ; nctx,nB |- succ ixc => copenTy(nA ;blah)
+    nsgn ; nctx,nB |- succ ixc => cuTy nA 
 
-    nsgn ; cclosectx(nctx,nA ; blah) |- topente(cclosete(nM;blah);zeroc) => nB 
+    nsgn ; csctx(nctx,nA) |- cstute nM => nB 
     ---------------------------------------------------------- :: pi_intro
-    nsgn ; nctx |- \nA.nM => Pi nA . tcloseTy(copenTy(nB ; blah) ; zerot)
+    nsgn ; nctx |- \nA.nM => Pi nA . cutsTy nB 
 
     nsgn ; nctx |- nM => Pi nA . nB 
     nsgn ; nctx |- nN => nA
     ------------------------------ :: pi_elim
-    nsgn ; nctx |- nM nN => topenTy(nB ; blah) [ nN / blah ]
+    nsgn ; nctx |- nM nN => tutsTy(nB , nN)
 
     nsgn ; nctx |- nM => nA
     nsgn ; nctx |- nA' => typeK
@@ -431,10 +361,10 @@ Jwellformed :: '' ::=
     --------------------------- :: trans
     nsgn ; nctx |- nM_1 is nM_3 
 
-    nsgn ; nctx |- nM is nM' 
+    nsgn ; csctx( nctx,nA ) |- nM is nM' 
     nsgn ; nctx |- nN is nN' 
     --------------------------------------- :: 1
-    nsgn ; nctx |- (\nA.nM)nN is topente(nM'; blah) [ nN' / blah ] 
+    nsgn ; nctx |- (\nA.nM)nN is tutste(nM' , nN') 
 
     nsgn ; nctx |- nM is nM' 
     nsgn ; nctx |- nN is nN' 
