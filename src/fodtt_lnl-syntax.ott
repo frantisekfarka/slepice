@@ -5,13 +5,13 @@ grammar
 %  | succ cdb             ::   :: succ
 %  | ( cdb )              :: S :: paren                        
 
-ixc {{tex I_\Gamma{} }}, m :: 'cdb_' ::= {{com deBruijn indices for context }}
-  | zeroc                ::   :: zero  
-  | succ ixc             ::   :: succ
+%ixc {{tex I_\Gamma{} }}, m :: 'cdb_' ::= {{com deBruijn indices for context }}
+%  | zeroc                ::   :: zero  
+%  | succ ixc             ::   :: succ
 
-ixt {{tex I_T }}, n :: 'tdb_' ::= {{com deBruijn indices for pi types }}
-  | zerot                ::   :: zero  
-  | suct ixt             ::   :: succ
+%ixt {{tex I_T }}, n :: 'tdb_' ::= {{com deBruijn indices for pi types }}
+%  | zerot                ::   :: zero  
+%  | suct ixt             ::   :: succ
 
 grammar
 nK {{ tex K^{n}{} }} , nL {{ tex L^{n}{} }} :: 'kind_nl_' ::= {{ com Locally Nameless Kinds }}
@@ -20,10 +20,6 @@ nK {{ tex K^{n}{} }} , nL {{ tex L^{n}{} }} :: 'kind_nl_' ::= {{ com Locally Nam
   | ( nK )               :: S :: paren                        
      {{ coq [[nK]] }}
 %     {{ ocaml nK }}
-%  | nK [ nte / ixc ]     :: M :: subst                         {{ com substitution }}
-%     {{ coq (tsubst_K [[nte]] [[ixc]] [[nK]]) }}
-%     {{ ocaml int }}
-%     {{ tex [[K]] [ [[te]] / [[var]] ] }} 
 
 nTy {{ tex T^{n}{} }}, nA {{ tex A^{n}{} }}, nB {{ tex B^{n}{} }} :: 'type_nl_' ::= {{ com Locally Nameless Types }}
   | tcon                 ::   :: tcon                          {{ com type constant }}
@@ -32,11 +28,6 @@ nTy {{ tex T^{n}{} }}, nA {{ tex A^{n}{} }}, nB {{ tex B^{n}{} }} :: 'type_nl_' 
   | ( nTy )               :: S :: paren                        
      {{ coq [[nTy]] }}
 %     {{ ocaml nTy }}
-%  | nTy [ nte / ixc ]    :: M :: subst                          {{ com substitution }}
-%     {{ coq ( tsubst_Ty [[nte]] [[ixc]] [[nTy]] ) }}
-%%     {{ ocaml int }}
-%%     {{ tex [[Ty]] [ [[te]] / [[var]] ] }}
-%
 
 nte {{ tex t^n{} }}, nM {{ tex M^{n}{} }}, nN {{ tex N^{n}{} }} :: 'term_nl_' ::= {{ com Locally Nameless Terms }}
   | con                   ::   :: con                 {{ com term constant }} 
@@ -47,10 +38,6 @@ nte {{ tex t^n{} }}, nM {{ tex M^{n}{} }}, nN {{ tex N^{n}{} }} :: 'term_nl_' ::
   | ( nte )               :: S :: paren                        
      {{ coq [[nte]] }}
 %     {{ ocaml nte }}
-%  | nte [ nte' / ixc ]   :: M :: subst                         {{ com substitution of term}}
-%     {{ coq ( tsubst_te [[nte']] [[ixc]] [[nte]] ) }}
-%%     {{ ocaml int }}
-%%     {{ tex [[te]] [ [[te']] / [[var]] ] }}
 
 nsgn {{ tex \mathcal{S}^{n}{} }} :: 'signature_nl_' ::= {{ com Locally Nameless Signature }}
 %    {{ coq list (con*nTy+tcon*nK) }}
@@ -69,4 +56,12 @@ nctx {{ tex \Gamma^n{} }} :: 'context_nl_' ::= {{ com Locally Nameless Context }
   | nctx , nTy   ::   :: ctxvar
 %     {{ coq (cons [[nTy]] [[nctx]]) }}
 %
+
+subrules
+    nK <:: enK
+    nTy <:: enTy
+    nte <:: ente
+    nsgn <:: ensgn
+    nctx <:: enctx
+
 

@@ -1,0 +1,98 @@
+grammar
+
+ixc {{tex I_\Gamma{} }}, m :: 'cdb_' ::= {{com deBruijn indices for context }}
+  | zeroc                ::   :: zero  
+  | succ ixc             ::   :: succ
+
+ixt {{tex I_T }}, n :: 'tdb_' ::= {{com deBruijn indices for types formers }}
+  | zerot                ::   :: zero  
+  | suct ixt             ::   :: succ
+
+grammar
+enK {{ tex K^{*n}{} }} , enL {{ tex L^{*n}{} }} :: 'kindstar_nl_' ::= {{ com Extended Locally Nameless Kinds }}
+  | typeK                 ::   :: type                {{ com kind of all types }} 
+  | Pi enTy . enK         ::   :: pi_intro            {{ com kind of dependente functions }}
+  | ( enK )               :: S :: paren                        
+     {{ coq [[enK]] }}
+%     {{ ocaml nK }}
+  | cstuK enK             :: M :: cstuing
+     {{ tex \overleftarrow{ [[enK]] }^{0_T \rightarrow 0_\Gamma} }} 
+     {{ coq ??TODO }}
+  | tutsK( enK , ente )   :: M :: tutsing
+     {{ tex { [[enK]] }^{0_T \leftarrow [[ente]]} }} 
+     {{ coq ??TODO }}
+
+enTy {{ tex T^{*n}{} }}, enA {{ tex A^{*n}{} }}, enB {{ tex B^{*n}{} }} :: 'typestar_nl_' ::= {{ com Extended Locally Nameless Types }}
+  | tcon                  ::   :: tcon                {{ com type constant }}
+  | Pi enTy1 . enTy2      ::   :: pi_intro            {{ com type of dependente functions }}
+  | enTy ente             ::   :: pi_elim             {{ com application of a type former }}
+  | ( enTy )              :: S :: paren                        
+     {{ coq [[enTy]] }}
+%     {{ ocaml nTy }}
+  | csTy enTy             :: M :: cshifting
+     {{ tex \overleftarrow{ [[enTy]] } }} 
+     {{ coq ??TODO }}
+  | cuTy enTy             :: M :: cunshifting
+     {{ tex \overrightarrow{ [[enTy]] } }} 
+     {{ coq ??TODO }}
+  | cstuTy enTy           :: M :: cstuing
+     {{ tex \overleftarrow{ [[enTy]] }^{0_T \rightarrow 0_\Gamma} }} 
+     {{ coq ??TODO }}
+  | cutsTy enTy           :: M :: cutsing
+     {{ tex \overrightarrow{ [[enTy]] }^{0_T \leftarrow 0_\Gamma} }} 
+     {{ coq ??TODO }}
+  | tutsTy( enTy , ente ) :: M :: tutsing
+     {{ tex { [[enTy]] }^{0_T \leftarrow [[ente]] } }} 
+     {{ coq ??TODO }}
+
+ente {{ tex t^{*n}{} }}, enM {{ tex M^{*n}{} }}, enN {{ tex N^{*n}{} }} :: 'termstar_nl_' ::= {{ com Extended Locally Nameless Terms }}
+  | con                   ::   :: con                 {{ com term constant }} 
+  | ixc                   ::   :: ixc                 {{ com indices left of $\vdash$ (context) }} 
+  | ixt                   ::   :: ixt                 {{ com indices right of $\vdash$ ($\Pi$ and $\Sigma$ types) }} 
+  | \ enTy . ente         ::   :: pi_intro            {{ com formation of $\Pi$ type }}
+  | ente1 ente2           ::   :: pi_elim             {{ com application }}
+  | ( ente )              :: S :: paren                        
+     {{ coq [[ente]] }}
+%     {{ ocaml nte }}
+  | cste ente             :: M :: cshifting
+     {{ tex \overleftarrow{ [[ente]] } }} 
+     {{ coq ??TODO }}
+  | cute ente             :: M :: cunshifting
+     {{ tex \overrightarrow{ [[ente]] } }} 
+     {{ coq ??TODO }}
+  | cstute ente           :: M :: cstuing
+     {{ coq ??TODO }}
+     {{ tex \overleftarrow{ [[ente]] }^{0_T \rightarrow 0_\Gamma } }} 
+  | cutste ente           :: M :: cutsing
+     {{ tex \overrightarrow{ [[ente]] }^{0_T \leftarrow 0_\Gamma} }} 
+     {{ coq ??TODO }}
+  | tutste( ente1 , ente2 ) :: M :: tutsing
+     {{ tex { [[ente1]] }^{0_T \leftarrow [[ente2]] } }} 
+     {{ coq ??TODO }}
+
+ensgn {{ tex \mathcal{S}^{*n}{} }} :: 'signaturestar_nl_' ::= {{ com Extended Locally Nameless Signature }}
+%    {{ coq list (con*nTy+tcon*nK) }}
+%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+  | empty                 ::   :: empty               {{ com empty signature }}
+%     {{ coq empty }}
+  | ensgn , con : enTy    ::   :: con
+%     {{ coq (cons (inl([[con]],[[nTy]])) [[nsgn]]) }}
+  | ensgn , tcon : enK    ::   :: tcon
+%     {{ coq (cons (inr([[tcon]],[[nK]])) [[nsgn]]) }}
+
+enctx {{ tex \Gamma^{*n}{} }} :: 'contextstar_nl_' ::= {{ com Extended Locally Nameless Context }}
+%    {{ coq list (nTy) }}
+  | empty                 ::   :: empty              {{ com empty context }}
+%     {{ coq empty }}
+  | enctx , enTy          ::   :: ctxvar
+%     {{ coq (cons [[nTy]] [[nctx]]) }}
+  | csctx( enctx )           :: M :: cshifting
+     {{ tex \overleftarrow{ [[enctx]] } }} 
+     {{ coq ??TODO }}
+  | cuctx( enctx )           :: M :: cunshifting
+     {{ tex \overrightarrow{ [[enctx]] }  }} 
+     {{ coq ??TODO }}
+
+
+     {{ coq ??TODO }}
+

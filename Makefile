@@ -25,12 +25,16 @@ FOHC=${SRC_DIR}fohc-metavar.ott\
     
 TRANS=$(SRC_DIR)trans.ott
 
-TRANSLNL=$(SRC_DIR)trans-lnl.ott
 
-TERMINALS=$(SRC_DIR)terminals.ott
+FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott
 
 FODTTLNL=$(SRC_DIR)fodtt_lnl-syntax.ott\
          $(SRC_DIR)fodtt_lnl-typing.ott
+
+#TRANSLNL=$(SRC_DIR)trans-lnl.ott
+
+TERMINALS=$(SRC_DIR)terminals.ott
+
 
 
 OTT=../ott/bin/ott
@@ -58,7 +62,7 @@ exquan-raw.tex: $(META) $(FODTTSTAR) $(FODTT) $(FOHC) $(TRANS) $(TERMINALS)
 	    $(TRANS) \
 	    $(TERMINALS)
 
-exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(TRANSLNL) $(TERMINALS)
+exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANSLNL) $(TERMINALS)
 	$(OTT) \
 	    -tex_wrap true\
 	    -tex_name_prefix fodtt \
@@ -67,6 +71,7 @@ exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(TRANSLNL) $(TERMINALS
 	    $(META) \
 	    $(FODTTSTAR) \
 	    $(FODTT) \
+	    $(FODTTSTARLNL) \
 	    $(FODTTLNL) \
 	    $(TRANSLNL) \
 	    $(TERMINALS)

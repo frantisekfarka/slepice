@@ -62,14 +62,14 @@ funs
 Cshifting ::=
 
   fun
-  csTy nA  :: nTy :: cshifting_Ty {{ tex \overleftarrow{ [[nA]] } }} {{ com C-shifting on types }} by
+  csTy nA  :: nTy :: cshifting_Ty {{ com C-shifting on types }} by
  
   csTy a  === a
   csTy Pi nA . nB  === Pi csTy nA  .  csTy nB 
   csTy ( nA nM ) === (csTy nA) (cste nM)
 
   fun
-  cste nM  :: nte :: cshifting_te {{ tex \overleftarrow{ [[nM]] } }} {{ com C-shifting on terms }} by
+  cste nM  :: nte :: cshifting_te {{ com C-shifting on terms }} by
  
   cste c  === c
   cste ixc  === succ ixc
@@ -81,7 +81,7 @@ funs
 Cshiftingctx ::=
 
   fun
-  csctx( nctx' ) :: nctx :: s_ctx {{ tex \overleftarrow{ [[nctx']] } }} {{ com C-shift on contexts }} by
+  csctx( nctx' ) :: nctx :: s_ctx {{ com C-shift on contexts }} by
 
   csctx( empty ) === empty
   csctx( nctx,nA ) === csctx(nctx ) , csTy nA 
@@ -90,14 +90,14 @@ funs
 Cunshifting ::=
 
   fun
-  cuTy nA  :: nTy :: cuhifting_Ty {{ tex \overrightarrow{ [[nA]] } }} {{ com C-unshifting on types }} by
+  cuTy nA  :: nTy :: cunshifting_Ty {{ com C-unshifting on types }} by
  
   cuTy( a ) === a
   cuTy( Pi nA . nB ) === Pi cuTy nA  .  cuTy nB 
   cuTy( nA nM ) === (cuTy nA) (cute nM)
 
   fun
-  cute nM  :: nte :: cuhifting_te {{ tex \overrightarrow{ [[nM]] } }} {{ com C-unshifting on terms }} by
+  cute nM  :: nte :: cunshifting_te {{ com C-unshifting on terms }} by
  
   cute( c ) === c
   cute( succ ixc ) === ixc
@@ -118,14 +118,14 @@ funs
 CshiftingTunshifting ::=
 
   fun
-  cstuTy nA  :: nTy :: cstuing_Ty {{ tex \overleftarrow{ [[nA]] }^{0_T \rightarrow 0_\Gamma} }} {{ com C-shifting T-unshifting on types }} by
+  cstuTy nA  :: nTy :: cstuing_Ty {{ com C-shifting T-unshifting on types }} by
  
   cstuTy a  === a
   cstuTy Pi nA . nB  === Pi cstuTy nA  .  cstuTy nB 
   cstuTy ( nA nM ) === (cstuTy nA) (cstute nM)
 
   fun
-  cstute nM  :: nte :: cstuing_te {{ tex \overleftarrow{ [[nM]] }^{0_T \rightarrow 0_\Gamma } }} {{ com C-shifting T-unshifting on terms }} by
+  cstute nM  :: nte :: cstuing_te {{ com C-shifting T-unshifting on terms }} by
  
   cstute c  === c
   cstute ixc  === succ ixc
@@ -138,7 +138,7 @@ funs
 CshiftingTunshiftingK ::=
 
   fun
-  cstuK nL  :: nK :: cstuing_K {{ tex \overleftarrow{ [[nL]] }^{0_T \rightarrow 0_\Gamma} }} {{ com C-shifting T-unshifting on kinds }} by
+  cstuK nL  :: nK :: cstuing_K {{ com C-shifting T-unshifting on kinds }} by
  
   cstuK typeK  === typeK
   cstuK Pi nA . nL  === Pi cstuTy nA  .  cstuK nL 
@@ -147,15 +147,14 @@ funs
 CunshiftingTshifting ::=
 
   fun
-  cutsTy nA  :: nTy :: cutshifting_Ty {{ tex \overrightarrow{ [[nA]] }^{0_T \leftarrow 0_\Gamma} }} {{ com C-unshifting T-shifting on types }} by
+  cutsTy nA  :: nTy :: cutshifting_Ty {{ com C-unshifting T-shifting on types }} by
  
   cutsTy( a ) === a
   cutsTy( Pi nA . nB ) === Pi cutsTy nA  .  cutsTy nB 
   cutsTy( nA nM ) === (cutsTy nA) (cutste nM)
 
   fun
-  cutste nM  :: nte :: cutshifting_te {{ tex \overrightarrow{ [[nM]] }^{0_T \leftarrow 0_\Gamma} }} {{ com
-  C-unshifting T-shifting on terms }} by
+  cutste nM  :: nte :: cutshifting_te {{ com C-unshifting T-shifting on terms }} by
  
   cutste( c ) === c
   cutste( succ ixc ) === ixc
@@ -177,14 +176,14 @@ funs
 TunshiftingTsubst ::=
 
   fun
-  tutsTy( nA , nN )  :: nTy :: tutshifting_Ty {{ tex { [[nA]] }^{0_T \leftarrow [[nN]] } }} {{ com T-unshifting T-substitution on types }} by
+  tutsTy( nA , nN )  :: nTy :: tutsing_Ty {{ com T-unshifting T-substitution on types }} by
  
   tutsTy( a , nN ) === a
   tutsTy( Pi nA . nB , nN ) === Pi tutsTy( nA , nN) .  tutsTy( nB , nN)
   tutsTy( nA nM , nN ) === tutsTy( nA , nN ) tutste( nM , nN)
 
   fun
-  tutste( nM , nN )  :: nte :: tutshifting_te {{ tex { [[nM]] }^{0_T \leftarrow [[nN]] } }} {{ com T-unshifting T-substitution on terms }} by
+  tutste( nM , nN )  :: nte :: tutsing_te {{ com T-unshifting T-substitution on terms }} by
  
   tutste( c , nN ) === c
   tutste( ixc , nN ) === ixc
@@ -197,7 +196,7 @@ funs
 TunshiftingTsubstK ::=
 
   fun
-  tutsK( nL , nN ) :: nK :: tutsing_K {{ tex { [[nL]] }^{0_T \leftarrow [[nN]]} }} {{ com T-unshifting T-substitution on kinds }} by
+  tutsK( nL , nN ) :: nK :: tutsing_K {{ com T-unshifting T-substitution on kinds }} by
 
   tutsK(typeK , nN) === typeK
   tutsK(Pi nA . nL, nN)  === Pi tutsTy( nA , nN) . tutsK( nL , nN)

@@ -1,0 +1,28 @@
+funs
+Ftransl ::=
+  
+  fun
+  translTy( A ; ctx ) :: nTy :: transTy {{ tex \transl{ [[A]] ; [[ctx]] } }} by
+
+    translTy(alpha ; ctx) === alpha
+    translTy(A M ; ctx) === translTy(A ; ctx) translte(M ; ctx)
+    translTy(Pi x : A . B ; ctx ) === Pi translTy( A ; ctx) . translTy( B ; ctx,x:A)
+
+  fun
+  translte( M ; ctx ) :: nte :: transte {{ tex \transl{ [[M]] ; [[ctx]] } }} by
+
+    translte(x ; ctx) === c
+
+    translte(c ; ctx) === c
+    translte(\ x : A . M ; ctx) === \ translTy( A ; ctx ) . translte( M ; ctx,x:A)
+    translte(M N ; ctx) === translte(M ; ctx) translte(N ; ctx)
+
+funs
+FtranslK ::=
+  
+  fun
+  translK( L ; ctx ) :: nK :: transK {{ tex \transl{ [[L]] ; [[ctx]] } }} by
+
+    translK(typeK ; ctx) === typeK
+    translK(Pi x : A . L ; ctx ) === Pi translTy( A ; ctx) . translK( L ; ctx,x:A)
+
