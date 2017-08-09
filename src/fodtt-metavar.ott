@@ -1,4 +1,7 @@
-embed {{ tex-preamble \DeclareMathOperator{\dom}{dom} }}
+embed {{ tex-preamble
+\DeclareMathOperator{\dom}{dom}
+\newcommand{\transl}[1]{\ulcorner #1 \urcorner}
+}}
 
 metavar var {{ tex \mathcal{V} }}, x, y ::= {{ com  term variable }} 
     {{ coq nat}} {{ coq-equality }}

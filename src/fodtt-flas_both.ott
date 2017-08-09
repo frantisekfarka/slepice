@@ -17,9 +17,10 @@ formula :: formula_ ::=
   | alpha : K in sgn                                :: :: binsig
      {{ coq (boundTCon [[alpha]] [[K]] [[sgn]]) }}
      {{ tex [[alpha]] : [[K]] \in [[sgn]] }}
-  | x : C in ectx                                    :: :: xinctx
-     {{ coq (boundVar [[x]] [[C]] [[ectx]]) }}
-     {{ tex [[x]] : [[C]] \in [[ectx]] }}
+%% for now, to change into C and ectx
+  | x : A in ctx                                    :: :: xinctx
+     {{ coq (boundVar [[x]] [[A]] [[ctx]]) }}
+     {{ tex [[x]] : [[A]] \in [[ctx]] }}
 
 
 %formula :: formula_ ::=          

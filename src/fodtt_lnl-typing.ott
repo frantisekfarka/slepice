@@ -197,7 +197,7 @@ funs
 TunshiftingTsubstK ::=
 
   fun
-  tutsK( nL , nN ) :: nK :: tutsing_K {{ tex { [[nL]] }^{0_T \leftarrow [[nN]]}  }} {{ com T-shifting T-substitution on kinds }} by
+  tutsK( nL , nN ) :: nK :: tutsing_K {{ tex { [[nL]] }^{0_T \leftarrow [[nN]]} }} {{ com T-unshifting T-substitution on kinds }} by
 
   tutsK(typeK , nN) === typeK
   tutsK(Pi nA . nL, nN)  === Pi tutsTy( nA , nN) . tutsK( nL , nN)
@@ -207,7 +207,7 @@ TunshiftingTsubstK ::=
  
 
 defns
-Jwellformed :: '' ::=
+Jwellformednl :: '' ::=
 
 
   defn
@@ -270,7 +270,7 @@ Jwellformed :: '' ::=
     nsgn ; nctx |- nA nM => tutsK(nL , nM) 
 
   defn
-  nsgn ; nctx |- nM => nA  :: ::wfterm::'te_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \Rightarrow [[nA]]}} by
+  nsgn ; nctx |- nM => nA  :: :: wfterm_nl ::'te_nl_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \Rightarrow [[nA]]}} by
 
     nsgn |- nctx
     c : nA in nsgn
@@ -301,7 +301,7 @@ Jwellformed :: '' ::=
     nsgn ; nctx |- nM => nA' 
 
   defn 
-  nsgn ; nctx |- nL is nL' ::  :: substapkind :: 'eqnL_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nL]] \equiv [[nL']] }} by
+  nsgn ; nctx |- nL is nL' ::  :: substapkind_nl :: 'eqnK_' {{tex [[nsgn]] ; [[nctx]] \vdash [[nL]] \equiv [[nL']] }} by
 
     --------------------------- :: refl
     nsgn ; nctx |- nL is nL 
@@ -321,7 +321,7 @@ Jwellformed :: '' ::=
     nsgn ; nctx |- Pi nA.nL is Pi nA'.nL' 
 
   defn 
-  nsgn ; nctx |- nA is nA' ::  :: substaptype :: 'eqT_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nA]] \equiv [[nA']] }} by
+  nsgn ; nctx |- nA is nA' ::  :: substaptype_nl :: 'eqnT_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nA]] \equiv [[nA']] }} by
 
     %nsgn ; nctx |- nA 
     --------------------------- :: refl
@@ -347,7 +347,7 @@ Jwellformed :: '' ::=
     nsgn ; nctx |- nA nM is nA' nM' 
 
   defn 
-  nsgn ; nctx |- nM is nM' ::  :: substapterm :: 'eqt_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \equiv [[nM']] }} by
+  nsgn ; nctx |- nM is nM' ::  :: substapterm_nl :: 'eqt_nl_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \equiv [[nM']] }} by
 
     ----------------------- :: refl
     nsgn ; nctx |- nM is nM 
