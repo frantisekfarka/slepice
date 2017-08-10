@@ -127,27 +127,19 @@ Jgoal :: '' ::=
     ---------------------------------------------------------- :: var
     nsgn ; enctx,enA |- (G1 & G2) & eq_K(enL , typeK , enctx )
 
-%
-%    nsgn ; nctx |- nL_1 is nL_2
-%    nsgn ; nctx |- nL_2 is nL_3
-%    ------------------------------- :: trans
-%    nsgn ; nctx |- nL_1 is nL_3
-%
-%    nsgn ; nctx |- nA is nA' 
-%    nsgn ; nctx |- nL is nL' 
-%    ------------------------------------ :: 1
-%    nsgn ; nctx |- Pi nA.nL is Pi nA'.nL' 
-%
-%  defn 
-%  nsgn ; nctx |- nA is nA' ::  :: goalsubstaptype_nl :: 'eqnT_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nA]] \equiv [[nA']] }} by
-%
-%    %nsgn ; nctx |- nA 
-%    --------------------------- :: refl
-%    nsgn ; nctx |- nA is nA 
-%
-%    nsgn ; nctx |- nA' is nA 
-%    ---------------------------- :: sym
-%    nsgn ; nctx |- nA is nA' 
+  defn 
+  nsgn |- TTProg ::  :: prog_nl :: 'prog_nl_' {{ tex [[nsgn]] \vdash_{Prog} [[TTProg]]  }} by
+
+    --------------------------- :: empty
+    empty |- empty
+
+    nsgn |- TTProg
+    ------------------------------------------------ :: con
+    nsgn , c:nA |- TTProg , c : type( nA , enctx) <-
+
+    nsgn |- TTProg
+    ------------------------------------------------ :: tcon
+    nsgn , a:nL |- TTProg , a : kind( nL , enctx) <-
 %
 %    nsgn ; nctx |- nA_1 is nA_2 
 %    nsgn ; nctx |- nA_2 is nA_3 

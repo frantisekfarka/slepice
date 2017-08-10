@@ -74,3 +74,9 @@ TTGoal {{ tex \text{Goal}^{*n} }} , G :: 'ttgoal_' ::= {{ com goal in TT }}
   | mvar : type( enTy , enctx )    ::   :: Ty_bound
 
 
+TTProg {{ tex \text{Prog}^{*n} }} :: 'ttprog_' ::= {{ com program in TT }}
+  | empty                                 ::   :: empty
+  | TTProg , con : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_con
+  | TTProg , tcon : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_tcon
+
+

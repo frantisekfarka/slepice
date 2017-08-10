@@ -14,6 +14,7 @@ terminals :: 'terminals_' ::=
   | kappa_zeroc  ::   :: kzeroc    {{ tex \kappa_{0 \Gamma} }}
   | kappa_sucp   ::   :: ksucp     {{ tex \kappa_{sucp} }}
   | kappa_zerop  ::   :: kzerop    {{ tex \kappa_{0 \Pi } }}
-  | ->           ::   :: arrow     {{ tex \rightarrow }}
+  | ->           ::   :: rarrow    {{ tex \rightarrow }}
+  | <-           ::   :: larrow    {{ tex \leftarrow }}
   | &            ::   :: and       {{ tex \land }}
 

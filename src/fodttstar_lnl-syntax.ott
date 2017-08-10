@@ -21,6 +21,7 @@ enK {{ tex K^{*n}{} }} , enL {{ tex L^{*n}{} }} :: 'kindstar_nl_' ::= {{ com Ext
   | tutsK( enK , ente )   :: M :: tutsing
      {{ tex { [[enK]] }^{0_T \leftarrow [[ente]]} }} 
      {{ coq ??TODO }}
+  | mkvar                 ::   :: mkvar               {{ com kind level metavariables }}
 
 enTy {{ tex T^{*n}{} }}, enA {{ tex A^{*n}{} }}, enB {{ tex B^{*n}{} }} :: 'typestar_nl_' ::= {{ com Extended Locally Nameless Types }}
   | tcon                  ::   :: tcon                {{ com type constant }}
@@ -44,6 +45,7 @@ enTy {{ tex T^{*n}{} }}, enA {{ tex A^{*n}{} }}, enB {{ tex B^{*n}{} }} :: 'type
   | tutsTy( enTy , ente ) :: M :: tutsing
      {{ tex { [[enTy]] }^{0_T \leftarrow [[ente]] } }} 
      {{ coq ??TODO }}
+  | mtvar                 ::   :: mtvar               {{ com type level metavariables }}
 
 ente {{ tex t^{*n}{} }}, enM {{ tex M^{*n}{} }}, enN {{ tex N^{*n}{} }} :: 'termstar_nl_' ::= {{ com Extended Locally Nameless Terms }}
   | con                   ::   :: con                 {{ com term constant }} 
@@ -69,6 +71,7 @@ ente {{ tex t^{*n}{} }}, enM {{ tex M^{*n}{} }}, enN {{ tex N^{*n}{} }} :: 'term
   | tutste( ente1 , ente2 ) :: M :: tutsing
      {{ tex { [[ente1]] }^{0_T \leftarrow [[ente2]] } }} 
      {{ coq ??TODO }}
+  | mvar                 ::   :: mvar               {{ com term level metavariables }}
 
 ensgn {{ tex \mathcal{S}^{*n}{} }} :: 'signaturestar_nl_' ::= {{ com Extended Locally Nameless Signature }}
 %    {{ coq list (con*nTy+tcon*nK) }}
