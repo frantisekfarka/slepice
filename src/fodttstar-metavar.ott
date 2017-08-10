@@ -3,7 +3,7 @@ metavar mvar {{ tex ?_\mathcal{V} }}, mx {{ tex ?_x }}, my {{ tex ?_y }} ::=
     {{ coq nat}} {{ coq-equality }}
     {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
 
-metavar mtvar {{ tex ?_\mathcal{B} }}, mX {{ tex ?_X }}, mY, mZ {{ tex ?_Y }} ::=
+metavar mtvar {{ tex ?_\mathcal{B} }}, mA {{ tex ?_A }}, mB {{ tex ?_B }} ::=
     {{ com  type-level meta-variable }} 
     {{ coq nat}} {{ coq-equality }}
     {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}

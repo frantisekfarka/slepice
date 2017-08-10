@@ -1,0 +1,198 @@
+%%
+%% needs
+%%    fodtt-syntax.ott
+%%    fodtt-flas_{n,both}.ott
+%%
+
+ 
+
+defns
+Jgoal :: '' ::=
+
+
+%  defn
+%  |- nsgn :: :: goalsig_nl ::'sig_nl_' {{ tex _{n}\vdash [[nsgn]] \Rightarrow \text{sig} }} by
+%
+%    ---------------  :: empty
+%    |- empty
+%
+%    |- nsgn
+%    nsgn ; empty |- nL => kindS
+%    a notin dom(nsgn)
+%    -------------------------- :: tcon
+%    |- nsgn,a:nL
+%
+%    |- nsgn
+%    nsgn ; empty |- nA => typeK
+%    c notin dom(nsgn) 
+%    -------------------------- :: con
+%    |- nsgn,c:nA
+%
+%  defn
+%  nsgn |- nctx :: :: goalctx_nl ::'ctx_nl_' {{tex [[nsgn]] _{n}\vdash [[nctx]] \Rightarrow \text{ctx} }} by
+%   
+%    |- nsgn
+%    --------------------  :: empty
+%    nsgn |- empty
+%
+%    nsgn |- cuctx( nctx )
+%    nsgn ; cuctx( nctx ) |- cuTy nA  => typeK
+%    ------------------------------------------------------------ :: var
+%    nsgn |- nctx,nA 
+%
+  defn
+  nsgn ; enctx ; enK |- TTGoal ; kindS :: :: goalkind_nl :: 'g_nK_' {{tex [[nsgn]] ; [[enctx]] ; [[enK]] \vdash ( [[TTGoal]] \mid [[kindS]] ) }} by
+
+    ---------------------------------------  :: type
+    nsgn ; enctx ; typeK |- true ; kindS 
+
+    nsgn ; enctx ; enA |- G1 ; typeK
+    nsgn ; enctx , enA ; enL |- G1 ; kindS
+    ----------------------------------------------- :: pi_intro
+    nsgn ; enctx ; Pi enA . enL |- G1 & G2  ; kindS
+
+    nsgn ; enctx |- G
+    --------------------------------------------------- :: mvar
+    nsgn ; enctx ; mL |- G & kind( mL , enctx ) ; kindS
+
+  defn
+  nsgn ; enctx ; enTy |- TTGoal ; enK  :: :: goaltype_nl ::'g_nTy_' {{tex [[nsgn]] ; [[enctx]] ; [[enTy]] \vdash ( [[TTGoal]] \mid [[enK]] ) }} by
+
+    nsgn |- nctx
+    a : nL in nsgn
+    ---------------------  :: tcon
+    nsgn ; nctx ; a |- true ; nL
+
+
+    nsgn ; enctx ; enA |- G1 ; typeK
+    nsgn ; csctx(enctx,enA) ; cstuTy enB |- G2 ; typeK
+    -------------------------------------------------- :: pi_intro
+    nsgn ; enctx ; Pi enA . nB |- G1 & G2 ; typeK 
+
+    nsgn ; enctx ; nA |- G1 ; nL
+    nsgn ; enctx ; nM |- G2 ; nB
+    ---------------------------------------------------------------------- :: pi_elim
+    nsgn ; enctx ; enA enM |- (G1 & G2) & eq_K( Pi nB . nL , mL , enctx ) ; tutsK( mL , enM) 
+
+    nsgn ; enctx |- G
+    --------------------------------------------------------- :: mvar
+    nsgn ; enctx ; mA |- G & type( mA , enctx) ; mL
+    
+    %G & type( mtvar , enctx ) ; mL
+
+
+  defn
+  nsgn ; enctx ; enM |- TTGoal ; enA  :: :: goalterm_nl ::'g_nte_' {{tex [[nsgn]] ; [[enctx]] ; [[enM]] \vdash ( [[TTGoal]] \mid [[enA]] ) }} by
+
+    nsgn ; enctx |- G
+    c : nA in nsgn
+    ----------------------  :: con
+    nsgn ; enctx ; c |- G ; nA
+
+    nsgn ; enctx,enA |- G
+    --------------------------------------  :: var_nil
+    nsgn ; enctx,enA ; zeroc |- G ; enA 
+
+    nsgn ; cuctx(enctx) ; ixc |- G ; nA
+    ------------------------------------------------  :: var_cons
+    nsgn ; enctx,enB ; succ ixc |- G ; cuTy nA 
+
+    nsgn ; csctx(enctx,enA) ; cstute enM |- G ; enB 
+    ---------------------------------------------------------- :: pi_intro
+    nsgn ; enctx ; \enA.enM |- G ; Pi enA . cutsTy enB 
+
+    nsgn ; enctx ; enM |- G1 ; Pi enA1 . enB 
+    nsgn ; enctx ; enN |- G2 ; enA2
+    ------------------------------ :: pi_elim
+    nsgn ; enctx ; enM enN |- (G1 & G2) & eq_Ty(enA1 , enA2 , enctx ) ; tutsTy(nB , nN)
+%
+%    nsgn ; nctx |- nM => nA
+%    nsgn ; nctx |- nA' => typeK
+%    nsgn ; nctx |- nA is nA' 
+%    ------------------------------ :: conv
+%    nsgn ; nctx |- nM => nA' 
+
+    nsgn ; enctx |- G 
+    ------------------------------ :: mvar
+    nsgn ; enctx ; mx |- G & mx : type(mA , enctx)  ; mA
+
+  defn 
+  nsgn ; enctx |- TTGoal ::  :: goalctx_nl :: 'g_ctx_' {{tex [[nsgn]] ; [[enctx]] \vdash [[TTGoal]] }} by
+
+    --------------------------- :: empty
+    nsgn ; empty |- true
+
+    nsgn ; enctx |- G1
+    nsgn ; enctx ; enA |- G2 ; enL
+    ---------------------------------------------------------- :: var
+    nsgn ; enctx,enA |- (G1 & G2) & eq_K(enL , typeK , enctx )
+
+%
+%    nsgn ; nctx |- nL_1 is nL_2
+%    nsgn ; nctx |- nL_2 is nL_3
+%    ------------------------------- :: trans
+%    nsgn ; nctx |- nL_1 is nL_3
+%
+%    nsgn ; nctx |- nA is nA' 
+%    nsgn ; nctx |- nL is nL' 
+%    ------------------------------------ :: 1
+%    nsgn ; nctx |- Pi nA.nL is Pi nA'.nL' 
+%
+%  defn 
+%  nsgn ; nctx |- nA is nA' ::  :: goalsubstaptype_nl :: 'eqnT_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nA]] \equiv [[nA']] }} by
+%
+%    %nsgn ; nctx |- nA 
+%    --------------------------- :: refl
+%    nsgn ; nctx |- nA is nA 
+%
+%    nsgn ; nctx |- nA' is nA 
+%    ---------------------------- :: sym
+%    nsgn ; nctx |- nA is nA' 
+%
+%    nsgn ; nctx |- nA_1 is nA_2 
+%    nsgn ; nctx |- nA_2 is nA_3 
+%    ------------------------------- :: trans
+%    nsgn ; nctx |- nA_1 is nA_3 
+%
+%    nsgn ; nctx |- nA is nA' 
+%    nsgn ; nctx |- nB is nB' 
+%    ------------------------------------ :: 1
+%    nsgn ; nctx |- Pi nA.nB is Pi nA'.nB' 
+%
+%    nsgn ; nctx |- nA is nA' 
+%    nsgn ; nctx |- nM is nM' 
+%    ------------------------------------ :: 2
+%    nsgn ; nctx |- nA nM is nA' nM' 
+%
+%  defn 
+%  nsgn ; nctx |- nM is nM' ::  :: goalsubstapterm_nl :: 'eqt_nl_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \equiv [[nM']] }} by
+%
+%    ----------------------- :: refl
+%    nsgn ; nctx |- nM is nM 
+%
+%    nsgn ; nctx |- nM' is nM 
+%    ------------------------ :: sym
+%    nsgn ; nctx |- nM is nM' 
+%
+%    nsgn ; nctx |- nM_1 is nM_2 
+%    nsgn ; nctx |- nM_2 is nM_3 
+%    --------------------------- :: trans
+%    nsgn ; nctx |- nM_1 is nM_3 
+%
+%    nsgn ; csctx( nctx,nA ) |- nM is nM' 
+%    nsgn ; nctx |- nN is nN' 
+%    --------------------------------------- :: 1
+%    nsgn ; nctx |- (\nA.nM)nN is tutste(nM' , nN') 
+%
+%    nsgn ; nctx |- nM is nM' 
+%    nsgn ; nctx |- nN is nN' 
+%    --------------------------------------- :: 2
+%    nsgn ; nctx |- nM nN is nM' nN' 
+%
+%    nsgn ; nctx |- nA is nA' 
+%    nsgn ; nctx |- nM is nM' 
+%    ------------------------------------------ :: 3
+%    nsgn ; nctx |- \nA.nM is \nA'.nM' 
+%
+%
+%

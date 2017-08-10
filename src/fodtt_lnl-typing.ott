@@ -109,7 +109,7 @@ funs
 Cunshiftingctx ::=
 
   fun
-  cuctx( nctx' ) :: nctx :: u_ctx {{ tex \overrightarrow{ [[nctx']] }  }} {{ com C-shift on contexts }} by
+  cuctx( nctx' ) :: nctx :: u_ctx {{ com C-shift on contexts }} by
 
   cuctx( empty ) === empty
   cuctx( nctx,nA ) === cuctx(nctx ) , cuTy nA 

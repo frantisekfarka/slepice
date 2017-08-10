@@ -35,6 +35,8 @@ FODTTLNL=$(SRC_DIR)fodtt_lnl-syntax.ott\
 
 TERMINALS=$(SRC_DIR)terminals.ott
 
+GOALS=$(SRC_DIR)fodtt_lnl-goal.ott
+
 
 
 OTT=../ott/bin/ott
@@ -62,7 +64,7 @@ exquan-raw.tex: $(META) $(FODTTSTAR) $(FODTT) $(FOHC) $(TRANS) $(TERMINALS)
 	    $(TRANS) \
 	    $(TERMINALS)
 
-exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANSLNL) $(TERMINALS)
+exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANSLNL) $(TERMINALS) $(FOHC) $(GOALS)
 	$(OTT) \
 	    -tex_wrap true\
 	    -tex_name_prefix fodtt \
@@ -74,7 +76,9 @@ exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANS
 	    $(FODTTSTARLNL) \
 	    $(FODTTLNL) \
 	    $(TRANSLNL) \
-	    $(TERMINALS)
+	    $(FOHC) \
+	    $(GOALS) \
+	    $(TERMINALS) 
 
 
 coqdoc: $(COQ)

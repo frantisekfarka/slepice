@@ -25,7 +25,7 @@ At :: 'atom_' ::= {{ com atoms of fohc }}
 
 
 
-Goal, G :: 'goal_' ::= {{ com goal }}
+Goal  :: 'goal_' ::= {{ com goal }}
   | At        ::   :: uatom {{ com atomic goal }}
   | mvar : At ::   :: batom {{ com atomic goal with binding of a proof term }}
   | G1 & G2   ::   :: conj {{ com conjunction of goals }}
@@ -59,5 +59,18 @@ Prog :: 'prog_' ::= {{ com logic program }}
 
 %substitutions:
 %    multiple hct mkvar :: substhct
+
+
+TTGoal {{ tex \text{Goal}^{*n} }} , G :: 'ttgoal_' ::= {{ com goal in TT }}
+  | true                           ::   :: true
+  | TTGoal1 & TTGoal2              ::   :: conj
+  | eq_te( ente1 , ente2 , enctx ) ::   :: eq_te {{ tex [[ente1]] \equiv_{[[enctx]]} [[ente2]] }}
+  | eq_Ty( enTy1 , enTy2 , enctx ) ::   :: eq_Ty {{ tex [[enTy1]] \equiv_{[[enctx]]} [[enTy2]] }}
+  | eq_K( enK1 , enK2 , enctx )    ::   :: eq_K  {{ tex [[enK1]] \equiv_{[[enctx]]} [[enK2]] }}
+  | ( TTGoal )                     :: M :: paren
+    {{ coq ( [[TTGoal]] ) }}
+  | kind( enK , enctx )            ::   :: K
+  | type( enTy , enctx )           ::   :: Ty
+  | mvar : type( enTy , enctx )    ::   :: Ty_bound
 
 
