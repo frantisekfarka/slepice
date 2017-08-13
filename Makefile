@@ -2,14 +2,14 @@ RM=rm -f
 TEX=pdflatex -interaction=nonstopmode
 BIBTEX=bibtex
 BIB=references.bib
-COQDOC=coqdoc
+COQDOC=coqdoc -g
 
 TEX_DIR=tex/
 SRC_DIR=src/
 COQ_DIR=coq/
 DOC_DIR=doc/
 #MAIN=exquan-raw.tex
-MAIN=exquan-nl.tex
+MAIN=exquan-nl-only.tex
 
 META=$(SRC_DIR)fodtt-metavar.ott\
      $(SRC_DIR)fodttstar-metavar.ott
@@ -26,12 +26,13 @@ FOHC=${SRC_DIR}fohc-metavar.ott\
 TRANS=$(SRC_DIR)trans.ott
 
 
-FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott
+FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott\
+	     $(SRC_DIR)fodtt_lnl-typing-algo.ott
 
 FODTTLNL=$(SRC_DIR)fodtt_lnl-syntax.ott\
-         $(SRC_DIR)fodtt_lnl-typing.ott
+	 $(SRC_DIR)fodtt_lnl-typing.ott
 
-#TRANSLNL=$(SRC_DIR)trans-lnl.ott
+TRANSLNL=$(SRC_DIR)trans-lnl.ott
 
 TERMINALS=$(SRC_DIR)terminals.ott
 
@@ -41,7 +42,9 @@ GOALS=$(SRC_DIR)fodtt_lnl-goal.ott
 
 OTT=../ott/bin/ott
 
-COQ=$(COQ_DIR)defns.v
+COQ=$(COQ_DIR)defns.v\
+    $(COQ_DIR)fusion.v\
+    $(COQ_DIR)nl_tycheck.v
 
 .PHONY: clean veryclean
 
@@ -63,6 +66,17 @@ exquan-raw.tex: $(META) $(FODTTSTAR) $(FODTT) $(FOHC) $(TRANS) $(TERMINALS)
 	    $(FOHC) \
 	    $(TRANS) \
 	    $(TERMINALS)
+
+exquan-nl-only.tex: $(META) $(FODTTSTARLNL) $(FODTTLNL) $(SRC_DIR)fodtt_lnl-flas.ott 
+	$(OTT) \
+	    -tex_wrap true\
+	    -tex_name_prefix fodtt \
+	    -o $@ \
+	    -o $(COQ_DIR)defns.v \
+	    $(META) \
+	    $(SRC_DIR)fodtt_lnl-flas.ott \
+	    $(FODTTSTARLNL) \
+	    $(TERMINALS) 
 
 exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANSLNL) $(TERMINALS) $(FOHC) $(GOALS)
 	$(OTT) \
