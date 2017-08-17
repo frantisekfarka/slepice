@@ -1,0 +1,28 @@
+grammar 
+
+formula :: formula_ ::=          
+  | judgement                                       :: :: judgement
+  | c notin dom ( nsgn )                            :: :: cnotinsig_nl
+     {{ coq (not (indomnCon [[c]] [[nsgn]])) }}
+     {{ tex [[c]] \not\in \dom([[nsgn]]) }}
+  | a notin dom ( nsgn )                        :: :: bnotinsig_nl
+     {{ coq (not (indomnTCon [[a]] [[nsgn]])) }}
+     {{ tex [[a]] \not\in \dom([[nsgn]]) }}
+  | c : nA in nsgn                                    :: :: cinsig_lnl
+     {{ coq (boundnCon [[c]] [[nA]] [[nsgn]]) }}
+     {{ tex [[c]] : [[nA]] \in [[nsgn]] }}
+  | a : nK in nsgn                              :: :: binsig_nl
+     {{ coq (boundnTCon [[a]] [[nK]] [[nsgn]]) }}
+     {{ tex [[a]] : [[nK]] \in [[nsgn]] }}
+  | c notin dom ( snsgn )                            :: :: cnotinssig_nl
+     {{ coq (not (indomsnCon [[c]] [[snsgn]])) }}
+     {{ tex [[c]] \not\in \dom([[snsgn]]) }}
+  | a notin dom ( snsgn )                        :: :: bnotinssig_nl
+     {{ coq (not (indomsnTCon [[a]] [[snsgn]])) }}
+     {{ tex [[a]] \not\in \dom([[snsgn]]) }}
+  | c : tau in snsgn                                    :: :: cinssig_lnl
+     {{ coq (boundsnCon [[c]] [[tau]] [[snsgn]]) }}
+     {{ tex [[c]] : [[tau]] \in [[snsgn]] }}
+  | a : kappa in snsgn                              :: :: binssig_nl
+     {{ coq (boundsnTCon [[a]] [[kappa]] [[snsgn]]) }}
+     {{ tex [[a]] : [[kappa]] \in [[snsgn]] }}
