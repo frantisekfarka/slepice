@@ -14,7 +14,7 @@ grammar
 %  | suct ixt             ::   :: succ
 
 grammar
-nK {{ tex K^{n}{} }} , nL {{ tex L^{n}{} }} :: 'kind_nl_' ::= {{ com Locally Nameless Kinds }}
+nsK {{ tex K^{n}{} }} , nL {{ tex L^{n}{} }} :: 'kind_nl_' ::= {{ com Locally Nameless Kinds }}
   | typeK                ::   :: type                           {{ com kind of all types }} 
   | Pi nTy . nK          ::   :: pi_intro                    {{ com kind of dependente functions }}
   | ( nK )               :: S :: paren                        
