@@ -1,4 +1,6 @@
-Load defns.
+Require Import defns.
+
+(** decidability and injectivity of cstu **)
 
 Lemma cstu_nTy_dec:
   forall (A : nTy),
@@ -10,29 +12,26 @@ Proof.
   intros.
   induction A.
   left.
-  exists (typestar_nl_tcon tcon5).
-  trivial using cstu_nTy_tcon.
-  destruct IHA1.
-  destruct IHA2.
+  exists (typestar_nl_tcon tcon5); trivial using cstu_nTy_tcon.
+  destruct IHA1; destruct IHA2.
   left.
-  destruct H.
-  destruct H0.
-  exists (typestar_nl_pi_intro x x0).
-  auto using cstu_nTy_pi_intro.
+  destruct H;  destruct H0.
+  exists (typestar_nl_pi_intro x x0); auto using cstu_nTy_pi_intro.
   (* next case *)
   right.
+  intros.
   intro.
-  intro.
-  inversion H1.
-  apply H0 with nB'.
-  assumption.
+  inversion H1; apply H0 with nB'; assumption.
   (* next case *)
   right.
+  intros.
   intro.
+  inversion H1; apply H with nA'; assumption.
+  (* pi intro ~ pi inttro *)
+  right.
+  intros.
   intro.
-  inversion H0.
-  apply H with nA'.
-  assumption.
+  inversion H1; apply H with nA'; assumption.
   (* next case *)
   destruct IHA.
   assert ((exists M' : nte, cstu_nte nte5 M') \/
@@ -41,36 +40,26 @@ Proof.
   left.
   destruct H.
   destruct H0.
-  exists (typestar_nl_pi_elim x x0).
-  apply cstu_nTy_pi_elim.
-  assumption.
-  assumption.
+  exists (typestar_nl_pi_elim x x0); apply cstu_nTy_pi_elim; assumption.
   (* the other sub case *)
   right.
   intro.
   intro.
-  inversion H.
-  inversion H1.
-  apply H0 with nM'.
-  assumption.
+  inversion H; inversion H1; apply H0 with nM'; assumption.
   (* really last case :-) *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nA'.
-  assumption.
+  inversion H0; apply H with nA'; assumption.
   (* lemma cstu_nte_dec *)
   intros.
   induction M.
   (* case con *)
   left.
-  exists (termstar_nl_con con5).
-  auto using cstu_nte_con.
+  exists (termstar_nl_con con5); auto using cstu_nte_con.
   (* case ixc *)
   left.
-  exists (termstar_nl_ixc (ixctx_succ ixc)).
-  apply cstu_nte_ixc.
+  exists (termstar_nl_ixc (ixctx_succ ixc)); auto using cstu_nte_ixc.
   (* case ixt *)
   left.
   destruct ixt.
@@ -176,16 +165,16 @@ with cstu_nte_inj:
     N1 = N2.
 Proof.
   intros.
+  generalize dependent H.
+  generalize dependent H0.
   generalize dependent B2.
   generalize dependent B1.
   induction A.
   intros.
-  inversion H.
-  inversion H0.
+  inversion H; inversion H0.
   auto.
   intros.
-  inversion H.
-  inversion H0.
+  inversion H; inversion H0.
   f_equal.
   apply IHA1.
   assumption.
@@ -193,7 +182,7 @@ Proof.
   apply IHA2.
   assumption.
   assumption.
-  (* case pi_elim *)
+  (* elim *)
   intros.
   inversion H; inversion H0.
   f_equal.
@@ -205,6 +194,8 @@ Proof.
   assumption.
   (* lemma 2 *)
   intros.
+  generalize dependent H0.
+  generalize dependent H.
   generalize dependent N2.
   generalize dependent N1.
   induction M.
@@ -212,15 +203,21 @@ Proof.
   inversion H; inversion H0.
   auto.
   intros.
-  inversion H; inversion H0; auto.
+  inversion H; inversion H0.
+  auto.
   intros.
-  destruct ixt.
-  inversion H; inversion H0; auto.
-  inversion H; inversion H0; auto.
-  (* step case pi intro *)
+  inversion H; inversion H0.
+  auto.
+  rewrite <- H2 in H4.
+  inversion H4.
+  rewrite <- H2 in H4.
+  inversion H4.
+  rewrite <- H2 in H4.
+  inversion H4.
+  auto.
+  (* pi_intro *)
   intros.
-  inversion H.
-  inversion H0.
+  inversion H; inversion H0.
   f_equal.
   apply cstu_nTy_inj with nTy5.
   assumption.
@@ -228,17 +225,12 @@ Proof.
   apply IHM.
   assumption.
   assumption.
-  (* pi elim *)
+  (* pi_elim *)
   intros.
-  inversion H.
-  inversion H0.
+  inversion H; inversion H0.
   f_equal.
-  apply IHM1.
-  assumption.
-  assumption.
-  apply IHM2.
-  assumption.
-  assumption.
+  apply IHM1; assumption; assumption.
+  apply IHM2; assumption; assumption.
 Qed.
 
 Lemma cstu_nK_inj:
@@ -265,6 +257,8 @@ Proof.
   assumption.
   assumption.
 Qed.
+
+(** decidability and injectivity of cuts **)
 
 Lemma cuts_nTy_dec:
   forall (A : nTy),
@@ -405,71 +399,44 @@ with cuts_nte_inj:
     N1 = N2.
 Proof.
   intros.
+  generalize dependent H.
+  generalize dependent H0.
   generalize dependent B2.
   generalize dependent B1.
   induction A.
   intros.
-  inversion H.
-  inversion H0.
-  auto.
+  inversion H; inversion H0; auto.
+  intros; inversion H; inversion H0; f_equal.
+  apply IHA1; assumption; assumption.
+  apply IHA2; assumption; assumption.
+  (* elim *)
   intros.
-  inversion H.
-  inversion H0.
-  f_equal.
-  apply IHA1.
-  assumption.
-  assumption.
-  apply IHA2.
-  assumption.
-  assumption.
-  (* case pi_elim *)
-  intros.
-  inversion H; inversion H0.
-  f_equal.
-  apply IHA.
-  assumption.
-  assumption.
-  apply cuts_nte_inj with nte5.
-  assumption.
-  assumption.
+  inversion H; inversion H0; f_equal.
+  apply IHA; assumption; assumption.
+  apply cuts_nte_inj with nte5; assumption; assumption.
   (* lemma 2 *)
   intros.
+  generalize dependent H0.
+  generalize dependent H.
   generalize dependent N2.
   generalize dependent N1.
   induction M.
+  intros; inversion H; inversion H0; auto.
+  intros; inversion H; inversion H0; rewrite <- H2 in H4; inversion H4; auto.
+  intros; inversion H; inversion H0; rewrite <- H2 in H4; inversion H4; auto.
+  (* pi_intro *)
   intros.
-  inversion H; inversion H0.
-  auto.
+  inversion H; inversion H0; f_equal.
+  apply cuts_nTy_inj with nTy5; assumption; assumption.
+  apply IHM; assumption; assumption.
+  (* pi_elim *)
   intros.
-  destruct ixc.
-  inversion H; inversion H0; auto.
-  inversion H; inversion H0; auto.
-  intros.
-  inversion H; inversion H0; auto.
-  (* step case pi intro *)
-  intros.
-  inversion H.
-  inversion H0.
-  f_equal.
-  apply cuts_nTy_inj with nTy5.
-  assumption.
-  assumption.
-  apply IHM.
-  assumption.
-  assumption.
-  (* pi elim *)
-  intros.
-  inversion H.
-  inversion H0.
-  f_equal.
-  apply IHM1.
-  assumption.
-  assumption.
-  apply IHM2.
-  assumption.
-  assumption.
+  inversion H; inversion H0; f_equal.
+  apply IHM1; assumption; assumption.
+  apply IHM2; assumption; assumption.
 Qed.
 
+(** decidability and injectivity of tuts *)
 Lemma tuts_nTy_dec:
   forall (A : nTy) (N : nte) ,
     ( exists A' , tuts_nTy A N A' ) \/ (forall A',  ~ (tuts_nTy A N A'))
@@ -595,4 +562,53 @@ Proof.
   inversion H0.
   apply H with nM'.
   assumption.
+Qed.
+
+Lemma tuts_nTy_inj:
+  forall (A B1 B2: nTy) (N : nte),
+    tuts_nTy A N B1 -> tuts_nTy A N B2 ->
+    B1 = B2
+with tuts_nte_inj:
+  forall (M N N1 N2 : nte),
+    tuts_nte M N N1 -> tuts_nte M N N2 ->
+    N1 = N2.
+Proof.
+  intros.
+  generalize dependent H.
+  generalize dependent H0.
+  generalize dependent B2.
+  generalize dependent B1.
+  induction A.
+  intros; inversion H; inversion H0; auto.
+  intros; inversion H; inversion H0; f_equal.
+  apply IHA1; assumption; assumption.
+  apply IHA2; assumption; assumption.
+  (* elim *)
+  intros; inversion H; inversion H0; f_equal.
+  apply IHA; assumption; assumption.
+  apply tuts_nte_inj with nte5 N; assumption; assumption.
+  (* lemma 2 *)
+  intros.
+  generalize dependent H0.
+  generalize dependent H.
+  generalize dependent N2.
+  generalize dependent N1.
+  induction M.
+  intros; inversion H; inversion H0; auto.
+  intros; inversion H; inversion H0; auto.
+  intros; inversion H; inversion H0.
+  rewrite <- H3; inversion H6; auto.
+  rewrite <- H5 in H2; inversion H2.
+  rewrite <- H5 in H2; inversion H2.
+  rewrite <- H5 in H2; inversion H2; reflexivity.
+  (* pi_intro *)
+  intros.
+  inversion H; inversion H0; f_equal.
+  apply tuts_nTy_inj with nTy5 N; assumption; assumption.
+  apply IHM; assumption; assumption.
+  (* pi_elim *)
+  intros.
+  inversion H; inversion H0; f_equal.
+  apply IHM1; assumption; assumption.
+  apply IHM2; assumption; assumption.
 Qed.
