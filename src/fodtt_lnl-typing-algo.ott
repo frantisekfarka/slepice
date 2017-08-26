@@ -598,6 +598,10 @@ Jwellformednl_alg :: '' ::=
     --------------------------------- :: whr_r
     snsgn ; snctx |- nM algeq nN : a
 
+    snsgn ; snctx |- nM streq nN : a
+    --------------------------------- :: streq
+    snsgn ; snctx |- nM algeq nN : a
+
     cste nM nM'
     cste nN nN'
     snsgn ; snctx, tau1 |- (nM' zeroc) algeq (nN' zeroc) : tau2

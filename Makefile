@@ -3,6 +3,7 @@ TEX=pdflatex -interaction=nonstopmode
 BIBTEX=bibtex
 BIB=references.bib
 COQDOC=coqdoc -g
+COQC=coqc
 
 TEX_DIR=tex/
 SRC_DIR=src/
@@ -97,6 +98,9 @@ exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANS
 
 coqdoc: $(COQ)
 	$(COQDOC) --no-glob $(COQ) -d $(DOC_DIR)
+
+coqc: $(COQ)
+	$(COQC) $(COQ) 
 
 #cleaning rules
 

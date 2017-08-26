@@ -1,12 +1,18 @@
 grammar
 
 Ixc {{tex I_\Gamma{} }}, ixc {{tex \iota_\Gamma }} :: 'ixctx_' ::= {{com deBruijn indices for context }}
+  {{ coq nat }}
   | zeroc                ::   :: zero  
+  {{ coq 0 }}
   | succ Ixc             ::   :: succ
+  {{ coq (S [[Ixc]]) }}
 
 Ixt {{tex I_T }}, ixt {{tex \iota_T }} :: 'ixTy_' ::= {{com deBruijn indices for types formers }}
+  {{ coq nat }}
   | zerot                ::   :: zero  
+  {{ coq 0 }}
   | suct Ixt             ::   :: succ
+  {{ coq (S [[Ixt]]) }}
 
 grammar
 nK {{ tex K^{n}{} }} , nL {{ tex L^{n}{} }} :: 'kindstar_nl_' ::= {{ com Extended Locally Nameless Kinds }}

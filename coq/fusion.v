@@ -4,10 +4,10 @@ Require Import defns.
 
 Lemma cstu_nTy_dec:
   forall (A : nTy),
-    ( exists A' , cstu_nTy A A' ) \/ (forall A',  ~ (cstu_nTy A A'))
+    { exists A' , cstu_nTy A A' } + {forall A',  ~ (cstu_nTy A A')}
 with cstu_nte_dec:
   forall (M : nte),
-    ( exists M' , cstu_nte M M' ) \/ (forall M',  ~ (cstu_nte M M')).
+    { exists M' , cstu_nte M M' } + {forall M',  ~ (cstu_nte M M')}.
 Proof.
   intros.
   induction A.
@@ -15,42 +15,42 @@ Proof.
   exists (typestar_nl_tcon tcon5); trivial using cstu_nTy_tcon.
   destruct IHA1; destruct IHA2.
   left.
-  destruct H;  destruct H0.
+  destruct e;  destruct e0.
   exists (typestar_nl_pi_intro x x0); auto using cstu_nTy_pi_intro.
   (* next case *)
   right.
   intros.
   intro.
-  inversion H1; apply H0 with nB'; assumption.
+  inversion H; eapply n with nB'; assumption.
   (* next case *)
   right.
   intros.
   intro.
-  inversion H1; apply H with nA'; assumption.
-  (* pi intro ~ pi inttro *)
+  inversion H; apply n with nA'; assumption.
+  (* pi intro ~ pi intro *)
   right.
   intros.
   intro.
-  inversion H1; apply H with nA'; assumption.
+  inversion H; apply n with nA'; assumption.
   (* next case *)
   destruct IHA.
-  assert ((exists M' : nte, cstu_nte nte5 M') \/
-      (forall M' : nte, ~ cstu_nte nte5 M')) by (apply cstu_nte_dec).
-  destruct H0.
-  left.
+  assert ({exists M' : nte, cstu_nte nte5 M'} +
+      {forall M' : nte, ~ cstu_nte nte5 M'}) by (apply cstu_nte_dec).
   destruct H.
-  destruct H0.
+  left.
+  destruct e.
+  destruct e0.
   exists (typestar_nl_pi_elim x x0); apply cstu_nTy_pi_elim; assumption.
   (* the other sub case *)
   right.
   intro.
   intro.
-  inversion H; inversion H1; apply H0 with nM'; assumption.
+  inversion e; inversion H; apply n with nM'; assumption.
   (* really last case :-) *)
   right.
   intro.
   intro.
-  inversion H0; apply H with nA'; assumption.
+  inversion H; apply n with nA'; assumption.
   (* lemma cstu_nte_dec *)
   intros.
   induction M.
@@ -59,69 +59,66 @@ Proof.
   exists (termstar_nl_con con5); auto using cstu_nte_con.
   (* case ixc *)
   left.
-  exists (termstar_nl_ixc (ixctx_succ ixc)); auto using cstu_nte_ixc.
+  exists (termstar_nl_ixc (S ixc)); auto using cstu_nte_ixc.
   (* case ixt *)
   left.
   destruct ixt.
-  exists (termstar_nl_ixc ixctx_zero).
+  exists (termstar_nl_ixc 0).
   apply cstu_nte_zerot.
-  auto using termstar_nl_ixt.
   exists (termstar_nl_ixt ixt).
   apply cstu_nte_suct.
   (* case pi_intro *)  
   destruct IHM.
-  assert ((exists A' : nTy, cstu_nTy nTy5 A') \/
-          (forall A' : nTy, ~ cstu_nTy nTy5 A')).
+  assert ({exists A' : nTy, cstu_nTy nTy5 A'} +
+          {forall A' : nTy, ~ cstu_nTy nTy5 A'}).
   apply cstu_nTy_dec.
-  destruct H0.
-  left.
   destruct H.
-  destruct H0.
+  left.
+  destruct e.
+  destruct e0.
   exists (termstar_nl_pi_intro x0 x).
-  apply cstu_nte_pi_intro.
-  assumption.
-  assumption.  
+  auto using cstu_nte_pi_intro.
   (* subcase ~ nA' *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nA'.
+  inversion H.
+  apply n with nA'.
   assumption.
   (* subcase ~ nM' *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nM'.
+  inversion H.
+  apply n with nM'.
   assumption.
   (* case pi elim *)
   destruct IHM1.
   destruct IHM2.
   left.
-  destruct H.
-  destruct H0.
+  destruct e.
+  destruct e0.
   exists (termstar_nl_pi_elim x x0).
   auto using cstu_nte_pi_elim.
   (* subcase ~M2 *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nN'.
+  inversion H.
+  apply n with nN'.
   assumption.
   (* subcase ~M1 *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nM'.
+  inversion H.
+  apply n with nM'.
   assumption.
-Qed.
-  
+Defined.
+
 Lemma cstu_nK_dec:
   forall (L : nK),
-    ( exists L' , cstu_nK L L') \/ (forall L',  ~ (cstu_nK L L')).
+    { exists L' , cstu_nK L L'} + {forall L',  ~ (cstu_nK L L')}.
 Proof.
   intros.
   induction L.
@@ -129,29 +126,27 @@ Proof.
   exists kindstar_nl_type.
   apply cstu_K_type.
   (* step case *)
-  assert ((exists A' : nTy, cstu_nTy nTy5 A') \/
-          (forall A' : nTy, ~ cstu_nTy nTy5 A')).
+  assert ({exists A' : nTy, cstu_nTy nTy5 A'} + 
+          {forall A' : nTy, ~ cstu_nTy nTy5 A'}).
   apply cstu_nTy_dec.
   destruct IHL.
   destruct H.
   left.
-  destruct H0.
-  destruct H.
+  destruct e.
+  destruct e0.
   exists (kindstar_nl_pi_intro x0 x).
-  apply cstu_K_pi_intro.
-  assumption.
+  auto using cstu_K_pi_intro.
+  right.
+  intro.
+  intro.
+  inversion H.
+  apply n with nA'.
   assumption.
   right.
   intro.
   intro.
-  inversion H1.
-  apply H with nA'.
-  assumption.
-  right.
-  intro.
-  intro.
-  inversion H1.
-  apply H0 with nL'.
+  inversion H0.
+  apply n with nL'.
   assumption.
 Qed.
   
@@ -262,10 +257,10 @@ Qed.
 
 Lemma cuts_nTy_dec:
   forall (A : nTy),
-    ( exists A' , cuts_nTy A A' ) \/ (forall A',  ~ (cuts_nTy A A'))
+    { exists A' , cuts_nTy A A' } + {forall A',  ~ (cuts_nTy A A')}
 with cuts_nte_dec:
   forall (M : nte),
-    ( exists M' , cuts_nte M M' ) \/ (forall M',  ~ (cuts_nte M M')).
+    { exists M' , cuts_nte M M' } + {forall M',  ~ (cuts_nte M M')}.
 Proof.
   intros.
   induction A.
@@ -275,32 +270,32 @@ Proof.
   destruct IHA1.
   destruct IHA2.
   left.
-  destruct H.
-  destruct H0.
+  destruct e.
+  destruct e0.
   exists (typestar_nl_pi_intro x x0).
   auto using cuts_nTy_pi_intro.
   (* next case *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nB'.
+  inversion H.
+  apply n with nB'.
   assumption.
   (* next case *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nA'.
+  inversion H.
+  apply n with nA'.
   assumption.
   (* next case *)
   destruct IHA.
-  assert ((exists M' : nte, cuts_nte nte5 M') \/
-      (forall M' : nte, ~ cuts_nte nte5 M')) by (apply cuts_nte_dec).
-  destruct H0.
-  left.
+  assert ({exists M' : nte, cuts_nte nte5 M'} +
+      {forall M' : nte, ~ cuts_nte nte5 M'}) by (apply cuts_nte_dec).
   destruct H.
-  destruct H0.
+  left.
+  destruct e.
+  destruct e0.
   exists (typestar_nl_pi_elim x x0).
   apply cuts_nTy_pi_elim.
   assumption.
@@ -310,15 +305,15 @@ Proof.
   intro.
   intro.
   inversion H.
-  inversion H1.
-  apply H0 with nM'.
+  inversion e.
+  apply n with nM'.
   assumption.
   (* really last case :-) *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nA'.
+  inversion H.
+  apply n with nA'.
   assumption.
   (* lemma cstu_nte_dec *)
   intros.
@@ -330,62 +325,60 @@ Proof.
   (* case ixc *)
   left.
   destruct ixc.
-  exists (termstar_nl_ixt (ixTy_zero)).
+  exists (termstar_nl_ixt (0)).
   apply cuts_nte_zeroc.
   exists (termstar_nl_ixc ixc).
   apply cuts_nte_succ.
   (* case ixt *)
   left.
-  exists (termstar_nl_ixt (ixTy_succ ixt)).
+  exists (termstar_nl_ixt (S ixt)).
   apply cuts_nte_ixt.
   (* case pi_intro *)  
   destruct IHM.
-  assert ((exists A' : nTy, cuts_nTy nTy5 A') \/
-          (forall A' : nTy, ~ cuts_nTy nTy5 A')).
+  assert ({exists A' : nTy, cuts_nTy nTy5 A'} +
+          {forall A' : nTy, ~ cuts_nTy nTy5 A'}).
   apply cuts_nTy_dec.
-  destruct H0.
-  left.
   destruct H.
-  destruct H0.
+  left.
+  destruct e.
+  destruct e0.
   exists (termstar_nl_pi_intro x0 x).
-  apply cuts_nte_pi_intro.
-  assumption.
-  assumption.  
+  auto using cuts_nte_pi_intro.
   (* subcase ~ nA' *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nA'.
+  inversion H.
+  apply n with nA'.
   assumption.
   (* subcase ~ nM' *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nM'.
+  inversion H.
+  apply n with nM'.
   assumption.
   (* case pi elim *)
   destruct IHM1.
   destruct IHM2.
   left.
-  destruct H.
-  destruct H0.
+  destruct e.
+  destruct e0.
   exists (termstar_nl_pi_elim x x0).
   auto using cuts_nte_pi_elim.
   (* subcase ~M2 *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nN'.
+  inversion H.
+  apply n with nN'.
   assumption.
   (* subcase ~M1 *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nM'.
+  inversion H.
+  apply n with nM'.
   assumption.
 Qed.
   
@@ -439,10 +432,10 @@ Qed.
 (** decidability and injectivity of tuts *)
 Lemma tuts_nTy_dec:
   forall (A : nTy) (N : nte) ,
-    ( exists A' , tuts_nTy A N A' ) \/ (forall A',  ~ (tuts_nTy A N A'))
+    { exists A' , tuts_nTy A N A' } + {forall A',  ~ (tuts_nTy A N A')}
 with tuts_nte_dec:
   forall (M N : nte),
-    ( exists M' , tuts_nte M N M' ) \/ (forall M',  ~ (tuts_nte M N M')).
+    { exists M' , tuts_nte M N M' } + {forall M',  ~ (tuts_nte M N M')}.
 Proof.
   intros.
   induction A.
@@ -452,50 +445,48 @@ Proof.
   destruct IHA1.
   destruct IHA2.
   left.
-  destruct H.
-  destruct H0.
+  destruct e.
+  destruct e0.
   exists (typestar_nl_pi_intro x x0).
   auto using tuts_nTy_pi_intro.
   (* next case *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nB'.
+  inversion H.
+  apply n with nB'.
   assumption.
   (* next case *)
-  right.
-  intro.
-  intro.
-  inversion H0.
-  apply H with nA'.
-  assumption.
-  (* next case *)
-  destruct IHA.
-  assert ((exists M' : nte, tuts_nte nte5 N M') \/
-      (forall M' : nte, ~ tuts_nte nte5 N M')) by (apply tuts_nte_dec).
-  destruct H0.
-  left.
-  destruct H.
-  destruct H0.
-  exists (typestar_nl_pi_elim x x0).
-  apply tuts_nTy_pi_elim.
-  assumption.
-  assumption.
-  (* the other sub case *)
   right.
   intro.
   intro.
   inversion H.
-  inversion H1.
-  apply H0 with nM'.
+  apply n with nA'.
+  assumption.
+  (* next case *)
+  destruct IHA.
+  assert ({exists M' : nte, tuts_nte nte5 N M'} + 
+      {forall M' : nte, ~ tuts_nte nte5 N M'}) by (apply tuts_nte_dec).
+  destruct H.
+  left.
+  destruct e.
+  destruct e0.
+  exists (typestar_nl_pi_elim x x0).
+  auto using tuts_nTy_pi_elim.
+  (* the other sub case *)
+  right.
+  intro.
+  intro.
+  inversion e.
+  inversion H.
+  apply n with nM'.
   assumption.
   (* really last case :-) *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nA'.
+  inversion H.
+  apply n with nA'.
   assumption.
   (* lemma tuts_nte_dec *)
   intros.
@@ -511,56 +502,56 @@ Proof.
   (* case ixt *)
   left.
   destruct ixt.
-  exists (N).
+  exists N.
   apply tuts_nte_ixt_zero.
   exists (termstar_nl_ixt ixt).
   apply tuts_nte_ixt_succ.
   (* case pi_intro *)  
   destruct IHM.
-  assert ((exists A' : nTy, tuts_nTy nTy5 N A') \/
-          (forall A' : nTy, ~ tuts_nTy nTy5 N A')).
+  assert ({exists A' : nTy, tuts_nTy nTy5 N A'} +
+          {forall A' : nTy, ~ tuts_nTy nTy5 N A'}).
   apply tuts_nTy_dec.
-  destruct H0.
-  left.
   destruct H.
-  destruct H0.
+  left.
+  destruct e.
+  destruct e0.
   exists (termstar_nl_pi_intro x0 x).
   auto using tuts_nte_pi_intro.
   (* subcase ~ nA' *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nA'.
+  inversion H.
+  apply n with nA'.
   assumption.
   (* subcase ~ nM' *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nM'.
+  inversion H.
+  apply n with nM'.
   assumption.
   (* case pi elim *)
   destruct IHM1.
   destruct IHM2.
   left.
-  destruct H.
-  destruct H0.
+  destruct e.
+  destruct e0.
   exists (termstar_nl_pi_elim x x0).
   auto using tuts_nte_pi_elim.
   (* subcase ~M2 *)
   right.
   intro.
   intro.
-  inversion H1.
-  apply H0 with nN'.
+  inversion H.
+  apply n with nN'.
   assumption.
   (* subcase ~M1 *)
   right.
   intro.
   intro.
-  inversion H0.
-  apply H with nM'.
+  inversion H.
+  apply n with nM'.
   assumption.
 Qed.
 
