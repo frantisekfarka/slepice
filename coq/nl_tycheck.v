@@ -8,172 +8,64 @@ Require Import defns.
 Require Import fusion.
 
 
-Lemma boundcon_dec:
-  forall (S : nsgn) (c : con),
-    {indomnCon c S} + {~(indomnCon c S)}.
-Proof.
-(*  intros.
-  induction S.
-  (* nil case *)
-  right.
-  intro.
-  destruct H.
-  destruct H.
-  destruct H.
-  decompose record H.
-  apply app_cons_not_nil in H0.
-  contradiction.
-  (* step case *)
-  destruct a.
-  (* con subcase *)
-  destruct p.
-  assert (H : {c = c0} + {c <> c0}).
-  apply eq_con.
-  destruct H.
-  rewrite <- e.
-  destruct IHS.
-  right.
-  intro.
-  destruct H0.
-  destruct H0.
-  *)
-
-
 Lemma boundnTCon_dec:
   forall (S : nsgn) (a : tcon),
-    ( exists L , boundnTCon a L S ) \/
-    ( forall L, ~ (boundnTCon a L S)).
+    { L | boundnTCon a L S } +
+    { forall L, ~ (boundnTCon a L S)}.
 Proof.
-  intros.
-  induction S.
-  (* nil case *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  decompose record H0.
-  apply app_cons_not_nil in H2.
-  contradiction.
-  (* step case *)
-  destruct a0.
-  (* subcase con *)
-  destruct p.
-  destruct IHS.
-  left.
-  destruct H.
-  exists x.
-  inversion H.
-  decompose record H0.
-  exists (inl(c,n) :: x0).
-  exists x1.
-  split.
-  rewrite H2.
-  apply app_comm_cons.
-  split.
-  intro.
-  intro.
-  apply H1 with nL'.
-  inversion H3.
-  inversion H5.
-  assumption.
-  intro.
-  apply H4.
-  right.
-  intro.
-  intro.
-  apply H with L.
-  unfold boundnTCon in H0.
-  destruct H0.
-  destruct H0.
-  destruct H0.
-  destruct H1.
-  destruct x.
-  inversion H0.
-  exists x.
-  exists x0.
-  split.
-  inversion H0.
-  reflexivity.
-  split.
-  intro.
-  intro.
-  apply H1 with nL'.
-  right.
-  assumption.
-  intro.
-  intro.
-  apply H2 with nL'.
-  assumption.
-  (* last case *)
-  destruct p.
-  assert ({a = t} + {a <> t}) by (apply eq_tcon).
-  destruct IHS.
-  destruct H.
-  (* a in head *)
-  rewrite <- e; clear e.
-  right.
-  intro.
-  intro.
-  destruct H; destruct H; destruct H; destruct H1.
-  destruct H0; destruct H0; destruct H0.  
-  destruct x.
-  inversion H.
-  destruct H0.
-  apply H2 with x1.
-  rewrite <- H5.
-  rewrite H0.
-  clear H5 H4 H2 H1 H H0 H3.
-  induction x2.
-  left.
-  reflexivity.
-  right.
-  apply IHx2.
-  inversion H.
-  rewrite <- H4 in H1.
-  apply H1 with n.
-  left.
-  reflexivity.
-  (* a <> t *)
-  left.
-  destruct H0.
-  exists x.
-  destruct H.
-  destruct H.
-  exists (inr (t, n) :: x0).
-  exists x1.
-  destruct H.
-  destruct H0.
-  split.  
-  rewrite H.
-  auto.
-  split.
-  intro.
-  intro.
-  apply H0 with nL'.
-  destruct H2.
-  inversion H2.
-  rewrite H4 in n0.
-  contradiction.
-  assumption.
-  assumption.
-  assert (~ boundnTCon a n S).
-  apply H0.
-  admit.
 Admitted.
 
-
 Lemma boundsnTCon_dec:
-  forall (sS : snsgn) (a : tcon) (kappa : snK),
-    {boundsnTCon a kappa sS} + {~ boundsnTCon a kappa sS}.
+  forall (sS : snsgn) (a : tcon),
+    {kappa | boundsnTCon a kappa sS} + {forall kappa , ~ boundsnTCon a kappa sS}.
+Proof.
+Admitted.
+
+Lemma boundnCon_dec:
+  forall (S : nsgn) (c : con),
+    { A | boundnCon c A S } +
+    { forall A, ~ (boundnCon c A S)}.
 Proof.
 Admitted.
 
 Lemma boundsnCon_dec:
   forall (sS :snsgn) (c : con),
-    {exists tau , boundsnCon c tau sS} + {forall tau, ~boundsnCon c tau sS}.
+    { tau | boundsnCon c tau sS } +
+    { forall tau, ~boundsnCon c tau sS }.
 Proof.
 Admitted.
 
+Lemma boundnTCon_determinacy:
+  forall (S : nsgn) (a : tcon) (L1 L2 : nK),
+    boundnTCon a L1 S ->
+    boundnTCon a L2 S ->
+    L1 = L2.
+Proof.
+Admitted.
+
+Lemma boundsnTCon_determinacy:
+  forall (sS : snsgn) (a : tcon) (kappa1 kappa2 : snK),
+    boundsnTCon a kappa1 sS ->
+    boundsnTCon a kappa2 sS ->
+    kappa1 = kappa2.
+Proof.
+Admitted.
+
+Lemma boundnCon_determinacy:
+  forall (S : nsgn) (c : con) (A1 A2 : nTy),
+    boundnCon c A1 S ->
+    boundnCon c A2 S ->
+    A1 = A2.
+Proof.
+Admitted.
+
+Lemma boundsnCon_determinacy:
+  forall (sS : snsgn) (a : tcon) (tau1 tau2 : snTy),
+    boundsnCon a tau1 sS ->
+    boundsnCon a tau2 sS ->
+    tau1 = tau2.
+Proof.
+Admitted.
 
 (** depth auxiliaries *)
 
@@ -221,7 +113,6 @@ Fixpoint depth_nTy (A:nTy) : nat :=
 end.
 
 Require Import Arith.Compare_dec.
-
 
 Lemma cstu_nTy_depth':
   forall (m n : nat), n <= m -> 
@@ -319,10 +210,9 @@ Fixpoint depth_nte (M :nte) : nat :=
   | (termstar_nl_pi_elim M N) => S (max (depth_nte M) (depth_nte N))
 end.
 
-
 Lemma whr_nl_te_dec:
   forall (M : nte),
-    {exists M', whr_nl_te M M'} + {forall M', ~ whr_nl_te M M'}.
+    {M' | whr_nl_te M M'} + {forall M', ~ whr_nl_te M M'}.
 Proof.
   induction M.
   right.
@@ -340,7 +230,7 @@ Proof.
   destruct M1.
   destruct IHM1.
   left.
-  destruct e.
+  destruct s.
   exists (termstar_nl_pi_elim x M2).
   apply whr_nl_te_head.
   assumption.
@@ -352,7 +242,7 @@ Proof.
   assumption.
   destruct IHM1.
   left.
-  destruct e.
+  destruct s.
   exists (termstar_nl_pi_elim x M2).
   apply whr_nl_te_head.
   assumption.
@@ -364,7 +254,7 @@ Proof.
   assumption.
   destruct IHM1.
   left.
-  destruct e.
+  destruct s.
   exists (termstar_nl_pi_elim x M2).
   apply whr_nl_te_head.
   assumption.
@@ -374,11 +264,11 @@ Proof.
   inversion H.
   apply n with nM'.
   assumption.
-  assert ({ exists N , tuts_nte M1 M2 N } + {forall N, ~ (tuts_nte M1 M2 N)}).
+  assert ({ N | tuts_nte M1 M2 N } + {forall N, ~ (tuts_nte M1 M2 N)}).
   apply tuts_nte_dec.
   destruct H.
   left.
-  destruct e.
+  destruct s.
   exists x.
   apply whr_nl_te_subst.
   assumption.
@@ -390,7 +280,7 @@ Proof.
   inversion H3.
   destruct IHM1.
   left.
-  destruct e.
+  destruct s.
   exists (termstar_nl_pi_elim x M2).
   apply whr_nl_te_head.
   assumption.
@@ -439,7 +329,7 @@ Proof.
   intros.
   inversion H.
   inversion H0.
-  apply tuts_nte_inj with M1 M2.
+  apply tuts_nte_determinacy with M1 M2.
   assumption.
   assumption.
   inversion H9.
@@ -453,7 +343,7 @@ Proof.
   assumption.
 Qed.
 
-Lemma streq_nl_te_determinacy:
+Lemma streq_nl_te_determinacy_l:
   forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
     ( streq_nl_te sS sG M N tau ) -> ~ (exists M', whr_nl_te M M').
 Proof.
@@ -517,10 +407,198 @@ Proof.
   assumption.
 Qed.  
 
+Lemma streq_nl_te_determinacy_r:
+  forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
+    ( streq_nl_te sS sG M N tau ) -> ~ (exists N', whr_nl_te N N').
+Proof.
+  intros sS sG M N.
+  generalize dependent M.
+  induction N.
+  intros.
+  intro.
+  destruct H0.
+  inversion H0.
+  intros.
+  intro.
+  destruct H0.
+  inversion H0.
+  intros.
+  intro.
+  destruct H0.
+  inversion H0.
+  intros.
+  intro.
+  destruct H0.
+  inversion H0.
+  (* step case *)
+  destruct N1.
+  intros.
+  intro.
+  inversion H0.
+  inversion H1.
+  inversion H.
+  apply IHN1 with nM1 (stype_nl_pi_intro tau2 tau).
+  assumption.
+  exists nM'.
+  assumption.
+  intros.
+  intro.
+  inversion H0.
+  inversion H1.
+  inversion H.
+  apply IHN1 with nM1 (stype_nl_pi_intro tau2 tau).
+  assumption.
+  exists nM'.
+  assumption.
+  intros.
+  intro.
+  inversion H0.
+  inversion H1.
+  inversion H.
+  apply IHN1 with nM1 (stype_nl_pi_intro tau2 tau).
+  assumption.
+  exists nM'.
+  assumption.
+  intros.
+  inversion H.
+  inversion H5.  
+  intros.
+  intro.
+  destruct H0.
+  inversion H0.
+  inversion H.
+  apply IHN1 with nM1 (stype_nl_pi_intro tau2 tau).
+  assumption.
+  exists nM'.
+  assumption.
+Qed.  
+
+
+Fixpoint strdepth_nte (M : nte) : nat :=
+  match M with
+  | (termstar_nl_con c) => 0
+  | (termstar_nl_ixc ixc) => ixc
+  | (termstar_nl_ixt ixt) => 0
+  | (termstar_nl_pi_intro A M) => 0
+  | (termstar_nl_pi_elim M N) => S (strdepth_nte M)
+end.
+
+Lemma streq_nl_te_strong_determinacy':
+  forall (n : nat) (sS : snsgn) (sG : snctx) (M N : nte) (tau1 tau2 : snTy),
+    n = strdepth_nte M ->
+    ( streq_nl_te sS sG M N tau1 ) ->
+    ( streq_nl_te sS sG M N tau2 ) ->
+    tau1 = tau2.
+Proof.
+  intros n sS.
+  induction n.
+  intros.
+  destruct M.
+  inversion H0.
+  inversion H1.
+  eauto using boundsnCon_determinacy.
+  destruct ixc.
+  inversion H0.
+  rewrite <- H4 in H1.
+  rewrite <- H7.
+  inversion H1.
+  reflexivity.
+  inversion H.
+  inversion H0.
+  inversion H0.
+  inversion H.
+  (* step case *)
+  intros.
+  destruct M.
+  inversion H0.
+  inversion H1.
+  eauto using boundsnCon_determinacy.
+  destruct ixc.
+  inversion H0.
+  rewrite <- H7.
+  rewrite <- H4 in H1.
+  inversion H1.
+  reflexivity.
+  inversion H.
+  inversion H0.
+  inversion H1. 
+  apply IHn with snctx5 (termstar_nl_ixc ixc) (termstar_nl_ixc ixc).
+  rewrite H3.
+  cbv; auto.
+  assumption.
+  rewrite <- H6 in H13; inversion H13.
+  rewrite <- H19.
+  assumption.
+  inversion H1.
+  inversion H1.
+  destruct N.
+  inversion H1.
+  inversion H1.
+  inversion H1.
+  inversion H1.
+  (* interesting case *)
+  inversion H0.
+  inversion H1.
+  assert ( (stype_nl_pi_intro tau3 tau1) =  (stype_nl_pi_intro tau5 tau2)).
+  apply IHn with sG M1 N1.
+  inversion H.
+  auto.
+  assumption.
+  assumption.
+  inversion H20.
+  auto.
+Qed.
+
+Fixpoint algdepth_snTy (tau : snTy) : nat :=
+  match tau with
+  | (stype_nl_tcon a) => 0
+  | (stype_nl_pi_intro tau1 tau2) => algdepth_snTy tau2
+end.
+
+Fixpoint algdepth_nte (M : nte) : nat :=
+  match M with
+  | (termstar_nl_con c) => 0
+  | (termstar_nl_ixc ixc) => 0
+  | (termstar_nl_ixt ixt) => 0
+  | (termstar_nl_pi_intro A M) => 0
+  | (termstar_nl_pi_elim M N) => S (algdepth_nte M)
+end.
+
+Fixpoint algdepth (M N : nte) (tau : snTy) : nat :=
+  (max (algdepth_nte M) (algdepth_nte N)) + (S (algdepth_snTy tau)).
+
+Lemma algeq_nl_te_strong_determinacy':
+  forall (m n : nat) (sS : snsgn) (sG : snctx) (M N : nte) (tau1 tau2 : snTy),
+    n <= m -> 
+    n = algdepth M N tau1 ->
+    ( algeq_nl_te sS sG M N tau1 ) ->
+    ( algeq_nl_te sS sG M N tau2 ) ->
+    tau1 = tau2.
+Proof.
+Admitted.
+
+
+Lemma streq_nl_te_strong_determinacy:
+  forall (sS : snsgn) (sG : snctx) (M N : nte) (tau1 tau2 : snTy),
+    ( streq_nl_te sS sG M N tau1 ) ->
+    ( streq_nl_te sS sG M N tau2 ) ->
+    tau1 = tau2.
+Proof.
+  eauto using streq_nl_te_strong_determinacy'.
+Qed.
+
+Lemma algeq_nl_te_strong_determinacy:
+  forall (sS : snsgn) (sG : snctx) (M N : nte) (tau1 tau2 : snTy),
+    ( algeq_nl_te sS sG M N tau1 ) ->
+    ( algeq_nl_te sS sG M N tau2 ) ->
+    tau1 = tau2.
+Proof.
+Admitted.
+
 Lemma streq_nl_te_dec:
   forall (m n : nat) (sS : snsgn) (sG : snctx) (M N : nte),
     n <= m -> n = depth_nte M -> wfssig_nl sS -> 
-    ( exists tau, streq_nl_te sS sG M N tau ) \/ (forall tau, ~ streq_nl_te sS sG M N tau).
+    { tau | streq_nl_te sS sG M N tau } + { forall tau , ~ streq_nl_te sS sG M N tau}.
 Proof.  
   intro.
   induction m.
@@ -528,15 +606,15 @@ Proof.
   intros.
   destruct M.
   destruct N.
-  assert ({exists tau , boundsnCon con5 tau sS} +
-          {forall tau, ~boundsnCon con5 tau sS}) by (apply boundsnCon_dec).
+  assert ({tau | boundsnCon con5 tau sS} +
+          {forall tau , ~boundsnCon con5 tau sS}) by (apply boundsnCon_dec).
   assert ({con5 = con0} + {con5 <> con0}) by (apply eq_tcon).
   destruct H2.
   destruct H3.
   left.
-  destruct e.
+  rewrite <- e.
+  destruct s.
   exists x.
-  rewrite <- e0.
   apply streq_nl_te_con. 
   assumption.
   assumption.
@@ -582,10 +660,10 @@ Proof.
   intros; intro.
   inversion H2.
   (* nonempty ctx *)
+  destruct ixc.
   left.
-  exists s.
   rewrite <- e.
-  destruct ixc.  
+  exists s.
   apply streq_nl_te_var_zero.
   assumption.
   replace (depth_nte (termstar_nl_ixc (S ixc))) with (S ixc) in H0 by (cbv; auto).
@@ -648,15 +726,15 @@ Proof.
   destruct M.
   (* con *)
   destruct N.
-  assert ({exists tau , boundsnCon con5 tau sS} +
-          {forall tau, ~boundsnCon con5 tau sS}) by (apply boundsnCon_dec).
+  assert ({tau | boundsnCon con5 tau sS} +
+          {forall tau , ~boundsnCon con5 tau sS}) by (apply boundsnCon_dec).
   assert ({con5 = con0} + {con5 <> con0}) by (apply eq_tcon).
   destruct H2.
   destruct H3.
   left.
-  destruct e.
+  rewrite <- e.
+  destruct s.
   exists x.
-  rewrite <- e0.
   apply streq_nl_te_con. 
   assumption.
   assumption.
@@ -710,8 +788,8 @@ Proof.
   apply streq_nl_te_var_zero.
   assumption.
   rewrite <- e.
-  assert (((exists tau : snTy, streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau)) \/
-        ((forall tau : snTy, ~ streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau))).
+  assert ({tau | streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau} +
+        {forall tau , ~ streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau}).
   apply IHm with ixc.
   replace (depth_nte (termstar_nl_ixc (S ixc))) with (S ixc) in H0 by (cbv; auto).
   rewrite H0 in H.
@@ -720,15 +798,15 @@ Proof.
   assumption.
   inversion H2.
   left.
-  inversion H3.
+  destruct H3.
   exists x.
   apply streq_nl_te_var_succ.
   assumption.
-  assumption.
+  assumption. 
   right.
   intros; intro.
-  apply H3 with tau.
   inversion H4.
+  apply H3 with tau.
   assumption.
   right; intros; intro.
   inversion H2.
@@ -775,8 +853,8 @@ Proof.
   intros; intro.
   inversion H2.
   (* pi_elim ~ pi_elim *)
-  assert ((exists tau : snTy, streq_nl_te sS sG M1 N1 tau) \/
-          (forall tau : snTy, ~ streq_nl_te sS sG M1 N1 tau)).  
+  assert ({tau | streq_nl_te sS sG M1 N1 tau} +
+          {forall tau , ~ streq_nl_te sS sG M1 N1 tau}).  
   remember (depth_nte M1).
   apply IHm with n0.
   replace (depth_nte (termstar_nl_pi_elim M1 M2)) with (S (max (depth_nte M1) (depth_nte M2))) in H0 by (cbv; auto).
@@ -789,58 +867,363 @@ Proof.
   assumption.
   assumption.
   destruct H2.
-  destruct H2.
+  destruct s.
   destruct x.
   right.
   intros; intro.
-  inversion H3.
-  admit. (* contradiction tcon <> pi_intro for stype *)
-  
-  assert ({(exists tau : snTy, algeq_nl_te sS sG M2 N2 tau)} +
-        {(forall tau : snTy, ~ algeq_nl_te sS sG M2 N2 tau)}).
+  inversion H2.
+  assert ( (stype_nl_tcon tcon5) = (stype_nl_pi_intro tau2 tau)).
+  eauto using streq_nl_te_strong_determinacy.
+  inversion H12.
+  assert ({tau1 | algeq_nl_te sS sG M2 N2 tau1} +
+        {forall tau1 , ~ algeq_nl_te sS sG M2 N2 tau1}).
   admit. (* from mutual lemma *)
-  destruct H3.
-  destruct e.
-  assert ({x1 = x} + {x1 <> x}).
-  admit.
-  destruct H4.
+  destruct H2.
+  destruct s0.
+  assert ({x = x1} + {x <> x1}) by (decide equality; apply eq_con).
+  destruct H2.
   left.
   exists x2.
   apply streq_nl_te_pi_elim with x1.
   assumption.
-  rewrite e.
+  rewrite <- e.
   assumption.
   right.
   intros; intro.
-  inversion H4.
-  admit.
+  inversion H2.
+  assert ( (stype_nl_pi_intro x1 x2) =  (stype_nl_pi_intro tau2 tau)).
+  eauto using streq_nl_te_strong_determinacy.
+  inversion H12.
+  assert (x = tau2) by (eauto using algeq_nl_te_strong_determinacy).
+  apply n0.
+  rewrite H13; rewrite H14; auto.
   right.
   intros; intro.
-  inversion H3.
+  inversion H2.
   apply n0 with tau2.
   assumption.
   right.
   intros; intro.
-  inversion H3.
-  apply H2 with (stype_nl_pi_intro tau2 tau).
+  inversion H2.
+  apply n0 with (stype_nl_pi_intro tau2 tau).
   assumption.
 Admitted.
-  
-  
-Lemma algeq_nl_te_dec:
-  forall (sS : snsgn) (sG : snctx) (M N : nte),
-    { exists tau, algeq_nl_te sS sG M N tau } + {forall tau, ~ algeq_nl_te sS sG M N tau}.
+
+
+Lemma algdepth_pi_intro:
+  forall (M N : nte) (tau1 tau2 : snTy),
+    ~ (0 = algdepth M N (stype_nl_pi_intro tau1 tau2)).
 Proof.
-  induction M.
   intros.
-  
-  assert ({(exists tau : snTy, streq_nl_te sS sG (termstar_nl_con con5) N tau)} +
-  {(forall tau : snTy, ~ streq_nl_te sS sG (termstar_nl_con con5) N tau)}).
-  apply streq_nl_Ty_dec.
+  intro.
+  destruct M.
+  destruct N.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  destruct N.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  destruct N.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  destruct N.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  destruct N.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H.
+Qed.   
+
+Lemma algdepth_whr_l:
+  forall (M N M' : nte) (tau : snTy),
+    whr_nl_te M M' ->
+    ~ (0 = algdepth M N tau).
+Proof.
+  intros.
+  intro.
+  inversion H.
+  rewrite <- H2 in H0.
+  destruct N.
+  destruct tau.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  rewrite <- H2 in H0.
+  destruct N.
+  destruct tau.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.  
+Qed.
+
+Lemma algdepth_whr_r:
+  forall (M N N' : nte) (tau : snTy),
+    whr_nl_te N N' ->
+    ~ (0 = algdepth M N tau).
+Proof.
+  intros.
+  intro.
+  inversion H.
+  rewrite <- H2 in H0.
+  destruct M.
+  destruct tau.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  rewrite <- H2 in H0.
+  destruct M.
+  destruct tau.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.
+  inversion H0.  
+Qed.
 
 
+Lemma algdepth_le_whr_l:
+  forall (M N M' : nte) (a : tcon),
+    whr_nl_te M M' ->
+    algdepth M' N (stype_nl_tcon a) < algdepth M N (stype_nl_tcon a).
+Proof.
+Admitted.
 
-  
+Lemma algdepth_le_whr_r:
+  forall (M N N' : nte) (a : tcon),
+    whr_nl_te N N' ->
+    algdepth M N' (stype_nl_tcon a) < algdepth M N (stype_nl_tcon a).
+Proof.
+Admitted.
+
+Lemma algeq_nl_te_dec:
+  forall (m n : nat) (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
+    n <= m -> n = algdepth M N tau ->
+    wfssig_nl sS ->
+    { algeq_nl_te sS sG M N tau } + {~ algeq_nl_te sS sG M N tau}.
+Proof.
+  intros m n sS.
+  generalize dependent n.
+  induction m.
+  intros.
+  assert (0 = n) by (eauto using le_n_0_eq).
+  rewrite <- H2 in H0; clear H2.
+  assert ({tau | streq_nl_te sS sG M N tau} + {forall tau, ~streq_nl_te sS sG M N tau}).
+  eauto using streq_nl_te_dec.
+  destruct H2.
+  destruct s.
+  assert ({x = tau} + {x <> tau}) by (decide equality; apply eq_con).
+  destruct H2.
+  rewrite e in s.
+  destruct tau.
+  (* 0 case by streq *)
+  left.
+  apply algeq_nl_te_streq.
+  assumption.
+  right.
+  intro.
+  inversion H2.
+  inversion H0.
+  apply algdepth_pi_intro with M N tau1 tau2.
+  assumption.
+  right.
+  intro.
+  inversion H2.
+  apply streq_nl_te_determinacy_l with sS sG M N x.
+  assumption.
+  exists nM'.
+  assumption.
+  inversion H4.
+  apply streq_nl_te_determinacy_r with sS sG M N x.
+  assumption.
+  exists nN'.
+  assumption.
+  apply streq_nl_te_determinacy_r with sS sG M N x.
+  assumption.
+  exists nN'.
+  assumption.
+  apply streq_nl_te_determinacy_r with sS sG M N x.
+  assumption.
+  exists nN'.
+  assumption.
+  apply n0.
+  apply streq_nl_te_strong_determinacy with sS sG M N.
+  assumption.
+  rewrite <- H8.
+  assumption.
+  rewrite <- H10 in H0.
+  inversion H0.
+  apply algdepth_pi_intro with M N tau1 tau2.
+  auto.
+  right.
+  intro.
+  apply n0 with tau.
+  inversion H2.
+  assert (0 <> algdepth M N tau) by (eauto using algdepth_whr_l).
+  contradiction.
+  assert (0 <> algdepth M N tau) by (eauto using algdepth_whr_r).
+  contradiction.
+  assumption.
+  rewrite <- H10 in H0.
+  inversion H0.
+  assert (0 <> algdepth M N (stype_nl_pi_intro tau1 tau2)) by (eauto using algdepth_pi_intro).
+  contradiction.
+  (* step case *)
+  intros.
+  destruct tau. 
+  assert ({M'| whr_nl_te M M'} + {forall M', ~ whr_nl_te M M'}) by (apply whr_nl_te_dec). 
+  destruct H2.
+  destruct s.
+  assert ({ algeq_nl_te sS sG x N (stype_nl_tcon tcon5) } + { ~ algeq_nl_te sS sG x N (stype_nl_tcon tcon5)}).
+  apply IHm with (algdepth x N (stype_nl_tcon tcon5)).
+  apply le_S_n.
+  apply lt_le_trans with (algdepth M N (stype_nl_tcon tcon5)).
+  apply algdepth_le_whr_l.
+  assumption.
+  rewrite <- H0.
+  assumption.
+  reflexivity.
+  assumption.
+  destruct H2.
+  left.
+  apply algeq_nl_te_whr_l with x.
+  assumption.
+  assumption.
+  right.
+  intro.
+  inversion H2.
+  assert (x = nM') by (eauto using whr_nl_te_determinacy).
+  rewrite <- H10 in H9.
+  contradiction.
+  admit. (* inversion? *)
+  eapply streq_nl_te_determinacy_l with sS sG M N (stype_nl_tcon tcon5).
+  assumption.
+  exists x.
+  assumption.
+  assert ({N'| whr_nl_te N N'} + {forall N', ~ whr_nl_te N N'}) by (apply whr_nl_te_dec).
+  destruct H2.
+  destruct s.
+  assert ({ algeq_nl_te sS sG M x (stype_nl_tcon tcon5)} + { ~ algeq_nl_te sS sG M x (stype_nl_tcon tcon5)}).
+  apply IHm with (algdepth M x (stype_nl_tcon tcon5)).
+  apply le_S_n.
+  apply lt_le_trans with (algdepth M N (stype_nl_tcon tcon5)).
+  apply algdepth_le_whr_r.
+  assumption.
+  rewrite <- H0.
+  assumption.
+  reflexivity.
+  assumption.
+  destruct H2.
+  left.
+  apply algeq_nl_te_whr_r with x.
+  assumption.
+  assumption. 
+  right.
+  intro.
+  inversion H2.
+  apply n0 with nM'.
+  assumption.
+  assert (x = nN').
+  apply whr_nl_te_determinacy with N.
+  assumption.
+  assumption.
+  rewrite <- H10 in H9.
+  contradiction.
+  eapply streq_nl_te_determinacy_r with sS sG M N (stype_nl_tcon tcon5).
+  assumption.
+  exists x.
+  assumption.
+  assert ({tau | streq_nl_te sS sG M N tau} + {forall tau, ~ streq_nl_te sS sG M N tau}) by (
+     apply streq_nl_te_dec with (depth_nte M) (depth_nte M);
+     auto with arith).
+  destruct H2.
+  destruct s.
+  assert ({x = (stype_nl_tcon tcon5)} + { x <> (stype_nl_tcon tcon5)}) by (decide equality; apply eq_con).
+  destruct H2.
+  left.
+  apply algeq_nl_te_streq.
+  rewrite <- e.
+  assumption.
+  right.
+  intro.
+  inversion H2.
+  apply n0 with nM'.
+  assumption.
+  apply n1 with nN'.
+  assumption.
+  assert (x =  stype_nl_tcon tcon5).
+  eauto using (streq_nl_te_strong_determinacy).
+  contradiction.
+  right.
+  intro.
+  inversion H2.
+  apply n0 with nM'; auto.
+  apply n1 with nN'; auto.
+  apply n2 with  (stype_nl_tcon tcon5); auto.
+  (* algeq step *)
+  assert ({ M' | cs_nte M M'}).
+  apply cs_nte_dec.
+  assert ({ N' | cs_nte N N'}).
+  apply cs_nte_dec.
+  destruct H2.
+  destruct H3.
+  assert ({algeq_nl_te sS (tau1 :: sG) (termstar_nl_pi_elim x (termstar_nl_ixc 0)) (termstar_nl_pi_elim x0 (termstar_nl_ixc 0)) tau2} +
+         {~algeq_nl_te sS (tau1 :: sG) (termstar_nl_pi_elim x (termstar_nl_ixc 0)) (termstar_nl_pi_elim x0 (termstar_nl_ixc 0)) tau2}).
+  apply IHm with (algdepth (termstar_nl_pi_elim x (termstar_nl_ixc 0)) (termstar_nl_pi_elim x0 (termstar_nl_ixc 0)) tau2).
+  apply le_S_n.
+  apply le_trans with n.
+  rewrite H0.
+  admit.
+  assumption.
+  reflexivity.
+  assumption.  
+  destruct H2.
+  left.
+  apply algeq_nl_te_eta_exp with x x0.
+  assumption.
+  assumption.
+  assumption.
+  right.
+  intro.
+  apply n0.
+  inversion H2.
+  assert (x = nM').
+  apply cs_nte_determinacy with M.
+  auto.
+  auto.
+  rewrite H12.
+  assert (x0 = nN').
+  apply cs_nte_determinacy with N.
+  auto.
+  auto.
+  rewrite H13.
+  assumption. 
+Admitted.
+
 Lemma eq_nTy':
   forall (m n : nat) (sS : snsgn) (sG : snctx) (A1 A2 : nTy) (kappa : snK),
     n <= m -> n = depth_nTy A1 ->
@@ -986,12 +1369,12 @@ Proof.
   intro.
   inversion H6.
   assert (nA2' = x).
-  apply cstu_nTy_inj with A1_2.
+  apply cstu_nTy_determinacy with A1_2.
   assumption.
   assumption.
   rewrite H18 in H17.
   assert (nB2' = x0).
-  apply cstu_nTy_inj with A2_2.
+  apply cstu_nTy_determiancy with A2_2.
   assumption.
   assumption.
   rewrite H19 in H17.
@@ -1143,10 +1526,10 @@ Proof.
   apply H5.
   inversion H7.
   assert (x = nK').
-  apply cstu_nK_inj with L1; assumption.
+  apply cstu_nK_determiancy with L1; assumption.
   rewrite H18.
   assert (x0 = nL').
-  apply cstu_nK_inj with L2; assumption.
+  apply cstu_nK_determinacy with L2; assumption.
   rewrite H19.
   assumption.
   right.

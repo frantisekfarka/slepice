@@ -114,7 +114,7 @@ defns
 Cshifting :: 'cs_' ::=
 
   defn 
-  csTy nTy nTy' :: :: cs_Ty :: 'Ty_'
+  csTy nTy nTy' :: :: nTy :: 'nTy_'
   {{ tex \overleftarrow{[[nTy]]} \equiv [[nTy']] }}
   {{ com C-shifting on types }} by
  
@@ -132,7 +132,7 @@ Cshifting :: 'cs_' ::=
   csTy ( nA nM ) (nA' nM')
 
   defn
-  cste nte  nte' :: :: cs_te :: 'te_'
+  cste nte  nte' :: :: nte :: 'nte_'
     {{ tex \overleftarrow{[[nte]]} \equiv [[nte']] }}
     {{ com C-shifting on terms }} by
  
@@ -159,7 +159,7 @@ defns
 Cshiftingctx :: '' ::=
 
   defn
-  csctx ( nctx ) ( nctx' ) :: :: cs_ctx :: 'cs_ctx_' 
+  csctx ( nctx ) ( nctx' ) :: :: cs_nctx :: 'cs_nctx_' 
     {{ tex \overleftarrow{[[nctx]]} \equiv [[nctx']] }}
     {{ com C-shift on contexts }} by
 
