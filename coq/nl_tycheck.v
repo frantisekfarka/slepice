@@ -67,7 +67,7 @@ Lemma boundsnCon_determinacy:
 Proof.
 Admitted.
 
-(** depth auxiliaries *)
+(** depth auxiliaries **)
 
 Fixpoint depth_K (L:nK) : nat :=
   match L with
@@ -208,7 +208,31 @@ Fixpoint depth_nte (M :nte) : nat :=
   | (termstar_nl_ixt ixt) => ixt
   | (termstar_nl_pi_intro A M) => S (depth_nte M)
   | (termstar_nl_pi_elim M N) => S (max (depth_nte M) (depth_nte N))
-end.
+  end.
+
+
+(*
+TODO: Accessible relation akin to:
+
+Fixpoint algdepth (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy)
+         (H1 : algeq_nl_te sS sG M N tau) : nat :=
+  match H1 with
+  | algeq_nl_te_whr_l _ _ _ _ _ _ _ algeqM'N => S (| algeqM'N |)
+  | algeq_nl_te_whr_r _ _ _ _ _ _ _ algeqMN' => S (| algeqMN' |)
+  | algeq_nl_te_streq _ _ _ _ _ streqMN => S (| streqMN |)
+  | algeq_nl_te_eta_exp _ _ _ _ _ _ _ _ _ _ algeqM'N' => S (| algeqM'N' |)
+  end.
+with strdepth ...
+  math H2 with
+  | streq_nl_te_zero               => 0
+  | streq_nl_te_succ               => 0
+  | streq_nl_te_con                => 0
+  | streq_nl_te_pi_elim            => max (| streqM1N1 |) (| algeq M2N2 |)
+  end.
+*)
+
+
+(** decidability of weak head-reduction **)
 
 Lemma whr_nl_te_dec:
   forall (M : nte),
