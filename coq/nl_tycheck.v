@@ -232,6 +232,18 @@ with strdepth ...
 *)
 
 
+(*
+Definition eqdepth (sS : nsgn) (sG : nctx) (M N : nte) (tau : snTy) : nat :=
+  match (M, N, tau) with
+  | (termstar_nl_con c0, termstar_nl_con c1, tau) => 0
+  | (termstar_nl_ixc ixc, term_nl_icx, tau) => ixc
+  | (termstar_nl_pi_elim M1 N1, termstar_nl_pi_elim M2 N2, tau) => max (M1 N1 tau) 
+  | (_, _, _) => 0
+  end.
+*)
+                                               
+                                               
+
 (** decidability of weak head-reduction **)
 
 Lemma whr_nl_te_dec:
@@ -1174,16 +1186,18 @@ with algeq_nl_te_dec' (n m : nat)
 Proof.
 *)
 
-
+(*
 Fixpoint algeq_nl_te_dec'' (n m : nat) 
   (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy) {struct m}:
     m <= n -> algdepth M N tau = m ->
     wfssig_nl sS ->
     { algeq_nl_te sS sG M N tau } + {~ algeq_nl_te sS sG M N tau}.
 Admitted.
+ *)
 
-Fixpoint streq_nl_te_dec' (n : nat)
-  (sS : snsgn) (sG : snctx) (M N : nte) {struct n}:
+Fixpoint streq_nl_te_dec' (n : nat) (sS : snsgn) (sG : snctx) (M N : nte)
+  (algeq_lemma : forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
+       wfssig_nl sS -> {algeq_nl_te sS sG M N tau} + {~ algeq_nl_te sS sG M N tau}) {struct n} :
     depth_nte M <= n -> wfssig_nl sS -> 
     { tau | streq_nl_te sS sG M N tau } + { forall tau , ~ streq_nl_te sS sG M N tau}
 .
@@ -1194,6 +1208,7 @@ Lemma streq_nl_te_dec':
     { tau | streq_nl_te sS sG M N tau } + { forall tau , ~ streq_nl_te sS sG M N tau}.
 *)
   (* Lemma 1 *)
+  intros.
 
   generalize dependent N.
   generalize dependent M.
@@ -1388,10 +1403,10 @@ Lemma streq_nl_te_dec':
   assert ({tau | streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau} +
         {forall tau , ~ streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau}).
   apply IHn.
+  assumption.
   replace (depth_nte (termstar_nl_ixc (S ixc))) with (S ixc) in H by (cbv; auto).
   apply le_S_n in H.
   cbv; auto.
-  assumption.
   inversion H1.
   left.
   destruct H2.
@@ -1452,11 +1467,11 @@ Lemma streq_nl_te_dec':
   assert ({tau | streq_nl_te sS sG M1 N1 tau} +
           {forall tau , ~ streq_nl_te sS sG M1 N1 tau}).  
   apply IHn.
+  assumption.
   replace (depth_nte (termstar_nl_pi_elim M1 M2)) with (S (max (depth_nte M1) (depth_nte M2))) in H by (cbv; auto).
   apply le_S_n in H.
   apply le_trans with (Nat.max (depth_nte M1) (depth_nte M2)).
   apply le_max_l.
-  assumption.
   assumption.
   destruct H1.
   destruct s.
@@ -1469,9 +1484,9 @@ Lemma streq_nl_te_dec':
   inversion H11.
   assert ({algeq_nl_te sS sG M2 N2 x1} +
           {~ algeq_nl_te sS sG M2 N2 x1}).
-  apply algeq_nl_te_dec'' with n (algdepth M2 N2 x1). 
-  apply phony.
-  reflexivity.
+  apply algeq_lemma. (* with n (algdepth M2 N2 x1). *)
+  (*apply phony.
+  reflexivity.*)
   assumption.
   destruct H1.
   left.
@@ -1504,15 +1519,27 @@ Qed.
   (* Lemma b 
 
 
-
 Lemma algeq_nl_te_dec:
   forall (n : nat) (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
     algdepth M N tau <= n ->
     wfssig_nl sS ->
     { algeq_nl_te sS sG M N tau } + {~ algeq_nl_te sS sG M N tau}.
 Proof. *)
-Fixpoint algeq_nl_te_dec' (n m : nat) 
-  (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy) {struct m}:
+
+(*
+Definition proofOrder (sS : snsgn) (sG : snctx) (M1 M2 N1 N2 : nte)
+           (tau1 tau2 : snTy) :=
+  algdepth M1 N1 tau1 < algdepth M2 N2 tau2.
+
+Lemma proofOrder_wf: forall (sS : snsgn) (sG : snctx) (M N : nte),
+          well_founded (proofOrder sS sG M M N N).
+Admitted.  
+ *)
+
+Fixpoint algeq_nl_te_dec' (n m : nat) (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy)
+         (streq_lemma : forall (sS : snsgn) (sG : snctx) (M N : nte),
+                          wfssig_nl sS -> { tau | streq_nl_te sS sG M N tau } + { forall tau , ~ streq_nl_te sS sG M N tau})
+         {struct m}:
     m <= n -> algdepth M N tau = m ->
     wfssig_nl sS ->
     { algeq_nl_te sS sG M N tau } + {~ algeq_nl_te sS sG M N tau}.
@@ -1527,7 +1554,7 @@ Fixpoint algeq_nl_te_dec' (n m : nat)
   (* algdepth 0 - only by streq and for tau = a  *)
   intros.
   assert ({tau | streq_nl_te sS sG M N tau} + {forall tau, ~streq_nl_te sS sG M N tau}).
-  eauto using streq_nl_te_dec'.
+  eauto using streq_lemma.
   destruct H2.
   destruct s.
   assert ({x = tau} + {x <> tau}) by (decide equality; apply eq_con).
@@ -1710,9 +1737,8 @@ Fixpoint algeq_nl_te_dec' (n m : nat)
   exists x.
   assumption.
   (* neither whr M nor whr N on tcon hence streq *)
-  assert ({tau | streq_nl_te sS sG M N tau} + {forall tau, ~ streq_nl_te sS sG M N tau}) by (
-     apply streq_nl_te_dec' with (depth_nte M);
-     auto with arith).
+  assert ({tau | streq_nl_te sS sG M N tau} + {forall tau, ~ streq_nl_te sS sG M N tau})  
+    by (apply streq_lemma; assumption). (* with (depth_nte M);  auto with arith).*)
   destruct H2.
   destruct s.
   assert ({x = (stype_nl_tcon tcon5)} + { x <> (stype_nl_tcon tcon5)}) by (decide equality; apply eq_con).
@@ -1786,19 +1812,28 @@ Qed.
 Lemma streq_nl_te_dec:
   forall (sS : snsgn) (sG : snctx) (M N : nte),
     wfssig_nl sS ->
-    { tau | streq_nl_te sS sG M N tau } + { forall tau , ~ streq_nl_te sS sG M N tau}.
-Proof.
-  intros.
-  eauto using streq_nl_te_dec'.
-Qed.
-
-Lemma algeq_nl_te_dec:
+    { tau | streq_nl_te sS sG M N tau } + { forall tau , ~ streq_nl_te sS sG M N tau}
+with algeq_nl_te_dec:
   forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
     wfssig_nl sS ->
     { algeq_nl_te sS sG M N tau } + {~ algeq_nl_te sS sG M N tau}.
 Proof.
-  intros; eauto using algeq_nl_te_dec'.
+  intros.
+  apply streq_nl_te_dec' with (depth_nte M).
+  assumption.
+  auto with arith.
+  assumption.
+  (* lemma 2 *)
+  intros.
+  apply algeq_nl_te_dec' with (algdepth M N tau) (algdepth M N tau).
+  assumption.
+  auto with arith.
+  reflexivity.
+  assumption.
 Qed.
+
+STOP.
+
 
      
 Lemma eq_nTy':

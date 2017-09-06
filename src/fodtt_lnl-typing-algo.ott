@@ -429,6 +429,115 @@ Jwelformednl_simple :: '' ::=
     |- snsgn,c:tau 
 
 
+
+defns
+Jwhr :: '' ::=
+
+  defn 
+  nM -whr-> nM' ::  :: whr_nl_te :: 'whr_nl_te_' 
+    {{ tex [[nM]] \overset{\text{whr} }{\longrightarrow} [[nM']] }} by
+    
+    tutste (nM , nN) nM'
+    ---------------------- :: subst
+    (\nA.nM) nN -whr-> nM'
+
+    nM -whr-> nM'
+    ------------------- :: head
+    nM nN -whr-> nM' nN 
+
+
+
+defns
+Jalgstreq :: '' ::=
+
+%  defn 
+%  snsgn ; snctx |- nL algeq nL' : kindS ::  :: algeq_nl_K :: 'algeq_nl_K_' 
+%    {{tex [[snsgn]] ; [[snctx]] \vdash [[nL]] \Leftrightarrow [[nL']] : \text{kind}^-}} by
+%
+%    |- snsgn 
+%    ------------------------------------------ :: type
+%    snsgn ; snctx |- typeK algeq typeK : kindS
+%
+%    snsgn ; snctx |- nA walgeq nB : typeK
+%    cstuK nK nK'
+%    cstuK nL nL'
+%    snsgn ; snctx , erasureTy(nA) |- nK' algeq nL' : kindS
+%    --------------------------------------------- :: pi_intro
+%    snsgn ; snctx |- Pi nA.nK algeq Pi nB.nL : kindS 
+
+  defn 
+  snsgn ; snctx |- nM algeq nN : tau ::  :: algeq_nl_te :: 'algeq_nl_te_' 
+    {{ tex [[snsgn]] ; [[snctx]] \vdash [[nM]] \Leftrightarrow [[nN]] : [[tau]] }} by
+
+    nM -whr-> nM'
+    snsgn ; snctx |- nM' algeq nN : a
+    --------------------------------- :: whr_l
+    snsgn ; snctx |- nM algeq nN : a
+
+    nN -whr-> nN'
+    snsgn ; snctx |- nM algeq nN' : a
+    --------------------------------- :: whr_r
+    snsgn ; snctx |- nM algeq nN : a
+
+    snsgn ; snctx |- nM streq nN : a
+    --------------------------------- :: streq
+    snsgn ; snctx |- nM algeq nN : a
+
+    cste nM nM'
+    cste nN nN'
+    snsgn ; snctx, tau1 |- (nM' zeroc) algeq (nN' zeroc) : tau2
+    ----------------------------------------------------------- :: eta_exp
+    snsgn ; snctx |- nM algeq nN : tau1 -> tau2
+
+  defn 
+  snsgn ; snctx |- nM streq nN : tau ::  :: streq_nl_te :: 'streq_nl_te_' 
+    {{ tex [[snsgn]] ; [[snctx]] \vdash [[nM]] \leftrightarrow [[nN]] : [[tau]] }} by
+
+    |- snsgn
+    -------------------------------------------- :: var_zero
+    snsgn ; snctx,tau |- zeroc streq zeroc : tau
+
+    |- snsgn
+    snsgn ; snctx |- ixc streq ixc : tau
+    --------------------------------------------------- :: var_succ
+    snsgn ; snctx,tau' |- succ ixc streq succ ixc : tau
+
+    |- snsgn
+    c : tau in snsgn
+    -------------------------------- :: con
+    snsgn ; snctx |- c streq c : tau
+
+    snsgn ; snctx |- nM1 streq nN1 : tau2 -> tau1
+    snsgn ; snctx |- nM2 algeq nN2 : tau2
+    ------------------------------------------ :: pi_elim
+    snsgn ; snctx |- nM1 nM2 streq nN1 nN2 : tau1
+
+defns
+Jwalgeq :: '' ::=
+
+  defn 
+  snsgn ; snctx |- nA walgeq nA' : kappa ::  :: walgeq_nl_Ty :: 'walgeq_nl_Ty_'
+      {{ tex [[snsgn]] ; [[snctx]] \vdash [[nA]] \rightleftharpoons [[nA']] : [[kappa]] }} by
+
+    |- snsgn 
+    a : kappa in snsgn
+    ----------------------------------- :: refl
+    snsgn ; snctx |- a walgeq a : kappa
+
+    snsgn ; snctx |- nA1 walgeq nB1 : typeK
+    cstuTy nA2 nA2'
+    cstuTy nB2 nB2'
+    snsgn ; snctx, erasureTy(nA1) |- nA2' walgeq nB2' : typeK
+    --------------------------------------------------------- :: pi_intro
+    snsgn ; snctx |- (Pi nA1.nA2) walgeq (Pi nB1.nB2) : typeK
+
+    snsgn ; snctx |- nA walgeq nB : tau -> kappa
+    snsgn ; snctx |- nM algeq nN : tau
+    ------------------------------------------- :: pi_elim
+    snsgn ; snctx |- nA nM walgeq nB nN : kappa
+
+
+
 defns
 Jwellformednl_alg :: '' ::=
 
@@ -535,101 +644,6 @@ Jwellformednl_alg :: '' ::=
     tutsTy(nA2 , nM2) nB
     ------------------------------ :: pi_elim
     nsgn ; nctx |- nM1 nM2 => nB
-
-  defn 
-  snsgn ; snctx |- nL algeq nL' : kindS ::  :: algeq_nl_K :: 'algeq_nl_K_' 
-    {{tex [[snsgn]] ; [[snctx]] \vdash [[nL]] \Leftrightarrow [[nL']] : \text{kind}^-}} by
-
-    |- snsgn 
-    ------------------------------------------ :: type
-    snsgn ; snctx |- typeK algeq typeK : kindS
-
-    snsgn ; snctx |- nA walgeq nB : typeK
-    cstuK nK nK'
-    cstuK nL nL'
-    snsgn ; snctx , erasureTy(nA) |- nK' algeq nL' : kindS
-    --------------------------------------------- :: pi_intro
-    snsgn ; snctx |- Pi nA.nK algeq Pi nB.nL : kindS 
-
-  defn 
-  snsgn ; snctx |- nA walgeq nA' : kappa ::  :: walgeq_nl_Ty :: 'walgeq_nl_Ty_'
-      {{ tex [[snsgn]] ; [[snctx]] \vdash [[nA]] \rightleftharpoons [[nA']] : [[kappa]] }} by
-
-    |- snsgn 
-    a : kappa in snsgn
-    ----------------------------------- :: refl
-    snsgn ; snctx |- a walgeq a : kappa
-
-    snsgn ; snctx |- nA1 walgeq nB1 : typeK
-    cstuTy nA2 nA2'
-    cstuTy nB2 nB2'
-    snsgn ; snctx, erasureTy(nA1) |- nA2' walgeq nB2' : typeK
-    --------------------------------------------------------- :: pi_intro
-    snsgn ; snctx |- (Pi nA1.nA2) walgeq (Pi nB1.nB2) : typeK
-
-    snsgn ; snctx |- nA walgeq nB : tau -> kappa
-    snsgn ; snctx |- nM algeq nN : tau
-    ------------------------------------------- :: pi_elim
-    snsgn ; snctx |- nA nM walgeq nB nN : kappa
-
-  defn 
-  nM -whr-> nM' ::  :: whr_nl_te :: 'whr_nl_te_' 
-    {{ tex [[nM]] \overset{\text{whr} }{\longrightarrow} [[nM']] }} by
-    
-    tutste (nM , nN) nM'
-    ---------------------- :: subst
-    (\nA.nM) nN -whr-> nM'
-
-    nM -whr-> nM'
-    ------------------- :: head
-    nM nN -whr-> nM' nN 
-
-  defn 
-  snsgn ; snctx |- nM algeq nN : tau ::  :: algeq_nl_te :: 'algeq_nl_te_' 
-    {{ tex [[snsgn]] ; [[snctx]] \vdash [[nM]] \Leftrightarrow [[nN]] : [[tau]] }} by
-
-    nM -whr-> nM'
-    snsgn ; snctx |- nM' algeq nN : a
-    --------------------------------- :: whr_l
-    snsgn ; snctx |- nM algeq nN : a
-
-    nN -whr-> nN'
-    snsgn ; snctx |- nM algeq nN' : a
-    --------------------------------- :: whr_r
-    snsgn ; snctx |- nM algeq nN : a
-
-    snsgn ; snctx |- nM streq nN : a
-    --------------------------------- :: streq
-    snsgn ; snctx |- nM algeq nN : a
-
-    cste nM nM'
-    cste nN nN'
-    snsgn ; snctx, tau1 |- (nM' zeroc) algeq (nN' zeroc) : tau2
-    ----------------------------------------------------------- :: eta_exp
-    snsgn ; snctx |- nM algeq nN : tau1 -> tau2
-
-  defn 
-  snsgn ; snctx |- nM streq nN : tau ::  :: streq_nl_te :: 'streq_nl_te_' 
-    {{ tex [[snsgn]] ; [[snctx]] \vdash [[nM]] \leftrightarrow [[nN]] : [[tau]] }} by
-
-    |- snsgn
-    -------------------------------------------- :: var_zero
-    snsgn ; snctx,tau |- zeroc streq zeroc : tau
-
-    |- snsgn
-    snsgn ; snctx |- ixc streq ixc : tau
-    --------------------------------------------------- :: var_succ
-    snsgn ; snctx,tau' |- succ ixc streq succ ixc : tau
-
-    |- snsgn
-    c : tau in snsgn
-    -------------------------------- :: con
-    snsgn ; snctx |- c streq c : tau
-
-    snsgn ; snctx |- nM1 streq nN1 : tau2 -> tau1
-    snsgn ; snctx |- nM2 algeq nN2 : tau2
-    ------------------------------------------ :: pi_elim
-    snsgn ; snctx |- nM1 nM2 streq nN1 nN2 : tau1
 
 
 
