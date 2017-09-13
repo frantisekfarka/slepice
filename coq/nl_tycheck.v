@@ -6,66 +6,7 @@ Require Import Arith.PeanoNat.
 
 Require Import defns.
 Require Import fusion.
-
-
-Lemma boundnTCon_dec:
-  forall (S : nsgn) (a : tcon),
-    { L | boundnTCon a L S } +
-    { forall L, ~ (boundnTCon a L S)}.
-Proof.
-Admitted.
-
-Lemma boundsnTCon_dec:
-  forall (sS : snsgn) (a : tcon),
-    {kappa | boundsnTCon a kappa sS} + {forall kappa , ~ boundsnTCon a kappa sS}.
-Proof.
-Admitted.
-
-Lemma boundnCon_dec:
-  forall (S : nsgn) (c : con),
-    { A | boundnCon c A S } +
-    { forall A, ~ (boundnCon c A S)}.
-Proof.
-Admitted.
-
-Lemma boundsnCon_dec:
-  forall (sS :snsgn) (c : con),
-    { tau | boundsnCon c tau sS } +
-    { forall tau, ~boundsnCon c tau sS }.
-Proof.
-Admitted.
-
-Lemma boundnTCon_determinacy:
-  forall (S : nsgn) (a : tcon) (L1 L2 : nK),
-    boundnTCon a L1 S ->
-    boundnTCon a L2 S ->
-    L1 = L2.
-Proof.
-Admitted.
-
-Lemma boundsnTCon_determinacy:
-  forall (sS : snsgn) (a : tcon) (kappa1 kappa2 : snK),
-    boundsnTCon a kappa1 sS ->
-    boundsnTCon a kappa2 sS ->
-    kappa1 = kappa2.
-Proof.
-Admitted.
-
-Lemma boundnCon_determinacy:
-  forall (S : nsgn) (c : con) (A1 A2 : nTy),
-    boundnCon c A1 S ->
-    boundnCon c A2 S ->
-    A1 = A2.
-Proof.
-Admitted.
-
-Lemma boundsnCon_determinacy:
-  forall (sS : snsgn) (a : tcon) (tau1 tau2 : snTy),
-    boundsnCon a tau1 sS ->
-    boundsnCon a tau2 sS ->
-    tau1 = tau2.
-Proof.
-Admitted.
+Require Import nl_sgn.
 
 (** depth auxiliaries **)
 

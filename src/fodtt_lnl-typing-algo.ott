@@ -18,14 +18,12 @@ Definition fstSig (e : (con*nTy)+(tcon*nK) ) := match e with
 Definition boundnCon (c : con) (nA : nTy) (S : nsgn) :=
   exists S1, exists S2,
     (S = List.app S1 (List.cons (inl(c,nA)) S2)) /\
-    (forall nA' , ~In (inl(c, nA')) S1) /\
-    (forall nA' , ~In (inl(c, nA')) S2).
+    (forall nA' , ~In (inl(c, nA')) S1). 
 
 Definition boundnTCon (a : tcon) (nL : nK) (S : nsgn) :=
   exists S1, exists S2,
     (S = List.app S1 (List.cons (inr(a,nL)) S2)) /\
-    (forall nL', ~In (inr(a, nL')) S1) /\
-    (forall nL', ~In (inr(a, nL')) S2).
+    (forall nL', ~In (inr(a, nL')) S1).
 
 Definition indomnCon c S :=
   exists nA,
@@ -34,13 +32,6 @@ Definition indomnCon c S :=
 Definition indomnTCon a S :=
   exists nL,
     boundnTCon a nL S.
-
-(*
-Definition fstsSig (e : (con*snTy)+(tcon*snK) ) := match e with
-    | inl (c, tau) => inl c
-    | inr (a, kappa) => inr a
-  end.
-*)
 
 Definition boundsnCon (c : con) (tau : snTy) (S : snsgn) :=
   exists S1, exists S2,
