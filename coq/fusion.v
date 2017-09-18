@@ -725,3 +725,83 @@ Proof.
   apply IHM2; assumption; assumption.
 Qed.
 
+(** inversion of tuts w.r.t. context shifing **)
+
+
+Lemma tuts_nTy_cs_inverse:
+  forall (nA nA' : nTy) (nN : nte),
+    tuts_nTy nA nN nA' ->
+    forall (A : nTy) (N : nte), cs_nTy A nA -> cs_nte N nN ->
+                        exists (A' : nTy), cs_nTy A' nA' /\ tuts_nTy A N A'
+with tuts_nte_cs_inverse:
+  forall (nM nM' nN : nte),
+    tuts_nte nM nN nM' ->
+    forall (M N : nte), cs_nte M nM -> cs_nte N nN ->
+                        exists (M' : nte), cs_nte M' nM' /\ tuts_nte M N M'.
+Proof.
+  (* lemma 1 *)
+  intros.
+  generalize dependent N.
+  generalize dependent A.
+  induction H.
+  intros.
+  inversion H0.
+  eexists; split; constructor. 
+  intros.
+  inversion H1.
+  eapply IHtuts_nTy1 in H6.
+  decompose record H6.
+  eapply IHtuts_nTy2 in H7.
+  decompose record H7.  
+  eexists; split; constructor; eauto.
+  auto.
+  auto.
+  (* pi_intro *)
+  intros.
+  inversion H1.
+  eapply IHtuts_nTy in H6.
+  decompose record H6.
+  eapply tuts_nte_cs_inverse in H0.
+  decompose record H0.
+  eexists; split; constructor; eauto.
+  auto.
+  auto.
+  auto.
+  (* lemma 2 *)
+  intros.
+  generalize dependent N.
+  generalize dependent M.
+  induction H.
+  intros.
+  inversion H0.
+  eexists; split; constructor.
+  intros.
+  inversion H0.
+  eexists; split; constructor.
+  intros.
+  inversion H0.
+  eexists; split; eauto; try constructor.
+  intros.
+  inversion H0.
+  eexists; split; constructor.
+  intros.
+  inversion H1.
+  eapply IHtuts_nte in H7.
+  decompose record H7.
+  eapply tuts_nTy_cs_inverse in H.
+  decompose record H.
+  eexists; split; constructor; eauto.
+  auto.
+  auto.
+  auto.
+  (* pi elim *)
+  intros.
+  inversion H1.
+  apply IHtuts_nte1 with nM0 N in H6.
+  decompose record H6.
+  apply IHtuts_nte2 with nN0 N in H7.
+  decompose record H7. 
+  eexists; split; constructor; eauto.
+  auto.
+  auto.
+Qed.

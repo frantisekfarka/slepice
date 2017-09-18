@@ -45,6 +45,9 @@ OTT=../ott/bin/ott
 
 COQ=$(COQ_DIR)defns.v\
     $(COQ_DIR)fusion.v\
+    $(COQ_DIR)transport.v\
+    $(COQ_DIR)nl_sgn.v\
+    $(COQ_DIR)nl_whr.v\
     $(COQ_DIR)nl_tycheck.v
 
 .PHONY: clean veryclean

@@ -1,6 +1,7 @@
 Require Import List.
-
 Require Import defns.
+
+(** decidability of boundnCon **)
 
 Lemma boundnCon_dec:
   forall (S : nsgn) (c : con),
@@ -108,6 +109,8 @@ Proof.
   assumption.
 Qed.  
 
+(** decidability of boundsnCon **)
+
 Lemma boundsnCon_dec:
   forall (sS :snsgn) (c : con),
     { tau | boundsnCon c tau sS } +
@@ -213,6 +216,8 @@ Proof.
   right.
   assumption.
 Qed.  
+
+(** decidability of boundnTCon **)
 
 Lemma boundnTCon_dec:
   forall (S : nsgn) (a : tcon),
@@ -321,6 +326,8 @@ Proof.
   assumption.
 Qed.  
 
+(** decidability of boundsnTCon **)
+
 Lemma boundsnTCon_dec:
   forall (sS : snsgn) (a : tcon),
     {kappa | boundsnTCon a kappa sS} + {forall kappa , ~ boundsnTCon a kappa sS}.
@@ -427,6 +434,8 @@ Proof.
   assumption.
 Qed.
 
+(** determianacy of boundnCon **)
+
 Lemma boundnCon_weak_r:
   forall (S : nsgn) (c : con) (a : tcon) (A : nTy) (L : nK),
     boundnCon c A (inr (a , L) :: S) ->
@@ -532,6 +541,8 @@ Proof.
   apply IHwfsig_nl; eauto using boundnCon_weak_l; auto.
 Qed.
 
+(** determianacy of boundsnCon **)
+
 Lemma boundsnCon_weak_r:
   forall (sS : snsgn) (c : con) (a : tcon) (tau : snTy) (kappa : snK),
     boundsnCon c tau (inr (a , kappa) :: sS) ->
@@ -636,6 +647,8 @@ Proof.
   reflexivity.
   apply IHwfssig_nl; eauto using boundsnCon_weak_l; auto.
 Qed.
+
+(** determianacy of boundnTCon **)
 
 Lemma boundnTCon_weak_l:
   forall (S : nsgn) (c : tcon) (a : tcon) (A : nTy) (L : nK),
@@ -743,6 +756,8 @@ Proof.
   apply IHwfsig_nl; eauto using boundnTCon_weak_l.  
 Qed.
 
+(** determianacy of boundsnTCon **)
+
 Lemma boundsnTCon_weak_l:
   forall (sS : snsgn) (c : con) (a : tcon) (tau : snTy) (kappa : snK),
     boundsnTCon a kappa (inl (c , tau) :: sS) ->
@@ -848,3 +863,4 @@ Proof.
   eauto using boundsnTCon_weak_r; auto.
   apply IHwfssig_nl; eauto using boundsnTCon_weak_l.  
 Qed.
+
