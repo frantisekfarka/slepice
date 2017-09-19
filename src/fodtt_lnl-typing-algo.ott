@@ -160,13 +160,13 @@ Cshiftingctx :: '' ::=
   csctx( nctx ) (nctx')
   csTy nA nA'
   --------------------------- :: var
-  csctx( nctx,nA ) (nctx,nA')
+  csctx( nctx,nA ) (nctx',nA')
 
 defns
 Cunshifting :: 'cu_' ::=
 
   defn
-  cuTy nTy nTy' :: :: cunshifting_Ty :: 'Ty_' 
+  cuTy nTy nTy' :: :: nTy :: 'nTy_' 
     {{ tex \overrightarrow{[[nTy]]} \equiv [[nTy']] }} 
     {{ com C-unshifting on types }} by
  
@@ -184,7 +184,7 @@ Cunshifting :: 'cu_' ::=
   cuTy( nA nM ) (nA' nM')
 
   defn
-  cute nte nte' :: :: cunshifting_te :: 'te_'
+  cute nte nte' :: :: nte :: 'nte_'
     {{ tex \overrightarrow{[[nte]]} \equiv [[nte']] }} 
     {{ com C-unshifting on terms }} by
 

@@ -45,6 +45,23 @@ Proof.
   assumption.
 Qed.
 
+Lemma cs_nctx_dec:
+  forall (G : nctx),
+    { G' : nctx | cs_nctx G G' }.
+Proof.
+  intros.
+  induction G.
+  exists nil.
+  constructor.
+  assert ({A' : nTy | cs_nTy a A'}) by (apply cs_nTy_dec).
+  destruct IHG.
+  destruct H.
+  eexists.
+  eapply cs_nctx_var; eauto.
+Qed.
+
+(** determinacy of context shifting **)
+
 Lemma cs_nTy_determinacy:
   forall (A B1 B2 : nTy),
     cs_nTy A B1 -> cs_nTy A B2 ->
@@ -125,150 +142,61 @@ Qed.
 
 Lemma cstu_nTy_dec:
   forall (A : nTy),
-    { A' : nTy | cstu_nTy A A' } + {forall A',  ~ (cstu_nTy A A')}
+    { A' : nTy | cstu_nTy A A' }
 with cstu_nte_dec:
   forall (M : nte),
-    {  M' : nte | cstu_nte M M' } + {forall M',  ~ (cstu_nte M M')}.
+    {  M' : nte | cstu_nte M M' }.
 Proof.
   intros.
   induction A.
-  left.
-  exists (typestar_nl_tcon tcon5); trivial using cstu_nTy_tcon.
+  (* case con *)
+  eexists; constructor.
+  (* case pi intro *)
   destruct IHA1; destruct IHA2.
-  left.
-  destruct s;  destruct s0.
-  exists (typestar_nl_pi_intro x x0); auto using cstu_nTy_pi_intro.
-  (* next case *)
-  right.
-  intros.
-  intro.
-  inversion H; eapply n with nB'; assumption.
-  (* next case *)
-  right.
-  intros.
-  intro.
-  inversion H; apply n with nA'; assumption.
-  (* pi intro ~ pi intro *)
-  right.
-  intros.
-  intro.
-  inversion H; apply n with nA'; assumption.
-  (* next case *)
+  eexists; constructor; eauto.
+  (* pi_elim *)
   destruct IHA.
-  assert ({M' : nte |  cstu_nte nte5 M'} +
-      {forall M' : nte, ~ cstu_nte nte5 M'}) by (apply cstu_nte_dec).
+  assert ({M' : nte |  cstu_nte nte5 M'}) by (apply cstu_nte_dec).
   destruct H.
-  left.
-  destruct s.
-  destruct s0.
-  exists (typestar_nl_pi_elim x x0); apply cstu_nTy_pi_elim; assumption.
-  (* the other sub case *)
-  right.
-  intro.
-  intro.
-  inversion s; inversion H; apply n with nM'; assumption.
-  (* really last case :-) *)
-  right.
-  intro.
-  intro.
-  inversion H; apply n with nA'; assumption.
+  eexists; constructor; eauto.
   (* lemma cstu_nte_dec *)
   intros.
   induction M.
   (* case con *)
-  left.
-  exists (termstar_nl_con con5); auto using cstu_nte_con.
+  eexists; constructor.
   (* case ixc *)
-  left.
-  exists (termstar_nl_ixc (S ixc)); auto using cstu_nte_ixc.
+  eexists; constructor.
   (* case ixt *)
-  left.
   destruct ixt.
-  exists (termstar_nl_ixc 0).
-  apply cstu_nte_zerot.
-  exists (termstar_nl_ixt ixt).
-  apply cstu_nte_suct.
+  eexists; constructor.
+  eexists; constructor.
   (* case pi_intro *)  
   destruct IHM.
-  assert ({A' : nTy | cstu_nTy nTy5 A'} +
-          {forall A' : nTy, ~ cstu_nTy nTy5 A'}).
-  apply cstu_nTy_dec.
+  assert ({A' : nTy | cstu_nTy nTy5 A'}) by (apply cstu_nTy_dec).
   destruct H.
-  left.
-  destruct s.
-  destruct s0.
-  exists (termstar_nl_pi_intro x0 x).
-  auto using cstu_nte_pi_intro.
-  (* subcase ~ nA' *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nA'.
-  assumption.
-  (* subcase ~ nM' *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nM'.
-  assumption.
+  eexists; constructor; eauto.
   (* case pi elim *)
   destruct IHM1.
   destruct IHM2.
-  left.
-  destruct s.
-  destruct s0.
-  exists (termstar_nl_pi_elim x x0).
-  auto using cstu_nte_pi_elim.
-  (* subcase ~M2 *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nN'.
-  assumption.
-  (* subcase ~M1 *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nM'.
-  assumption.
+  eexists; constructor; eauto.
 Defined.
 
 Lemma cstu_nK_dec:
   forall (L : nK),
-    { L' | cstu_nK L L'} + {forall L',  ~ (cstu_nK L L')}.
+    { L' | cstu_nK L L'}.
 Proof.
   intros.
   induction L.
-  left.
+  (* base case *)
   exists kindstar_nl_type.
   apply cstu_K_type.
   (* step case *)
-  assert ({A' : nTy | cstu_nTy nTy5 A'} + 
-          {forall A' : nTy, ~ cstu_nTy nTy5 A'}).
+  assert ({A' : nTy | cstu_nTy nTy5 A'}).
   apply cstu_nTy_dec.
   destruct IHL.
   destruct H.
-  left.
-  destruct s.
-  destruct s0.
   exists (kindstar_nl_pi_intro x0 x).
   auto using cstu_K_pi_intro.
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nA'.
-  assumption.
-  right.
-  intro.
-  intro.
-  inversion H0.
-  apply n with nL'.
-  assumption.
 Qed.
 
 Lemma cstu_nTy_determinacy:

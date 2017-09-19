@@ -142,10 +142,97 @@ Proof.
   reflexivity.
 Qed.
 
+(** inversion of algdepth w.r.t whr **)
+
+Lemma algeq_nl_te_whr_inversion_l:
+  forall (sS : snsgn) (sG : snctx) (M M' N : nte) (a : tcon),
+    ( whr_nl_te M M' ) ->
+    ( algeq_nl_te sS sG M N (stype_nl_tcon a)) ->
+    ( algeq_nl_te sS sG M' N (stype_nl_tcon a )).
+Proof.
+  intros.
+  remember (stype_nl_tcon a).
+  generalize dependent M'.
+  generalize dependent Heqs.
+  induction H0.
+  intros.
+  assert (nM' = M') by (eapply whr_nl_te_determinacy; eauto).
+  rewrite <- H2.
+  assumption.
+  intros.
+  apply algeq_nl_te_whr_r with nN'.
+  assumption.
+  apply IHalgeq_nl_te.
+  assumption.
+  assumption.
+  intros.
+  apply streq_nl_te_determinacy_l in H.
+  destruct H.
+  exists M'.
+  assumption.
+  (* step case *)
+  intros.
+  inversion Heqs.
+Qed.  
+
+Lemma algeq_nl_te_whr_inversion_r:
+  forall (sS : snsgn) (sG : snctx) (M N N' : nte) (a : tcon),
+    ( whr_nl_te N N' ) ->
+    ( algeq_nl_te sS sG M N (stype_nl_tcon a)) ->
+    ( algeq_nl_te sS sG M N' (stype_nl_tcon a )).
+Proof.
+  intros.
+  eauto using algeq_nl_te_symmetry, algeq_nl_te_whr_inversion_l.
+Qed.  
+
+(** lifting of algdepth along whr **)
+
+Lemma algeq_nl_te_whr_lift_l:
+  forall (sS : snsgn) (sG : snctx) (M M' N : nte) (tau : snTy),
+    whr_nl_te M M' ->
+    algeq_nl_te sS sG M N (tau) ->
+    algeq_nl_te sS sG M' N (tau).
+Proof.
+  intros.
+  generalize dependent M'.
+  induction H0.
+  intros.
+  assert (M' = nM') by (eauto using whr_nl_te_determinacy).
+  rewrite H2.
+  assumption.
+  intros.
+  eapply algeq_nl_te_whr_r; eauto.
+  intros.
+  apply streq_nl_te_determinacy_l in H.
+  destruct H.
+  exists M'; eauto.
+  (* step *)
+  intros.
+  assert ({csM' | cs_nte M' csM' }) by (apply cs_nte_dec).
+  destruct H3.
+  eapply algeq_nl_te_eta_exp.
+  exact c.
+  exact H0.
+  apply IHalgeq_nl_te.
+  apply whr_nl_te_head.
+  eapply whr_nl_te_cs; eauto.  
+Qed.  
+
+Lemma algeq_nl_te_whr_lift_r:
+  forall (sS : snsgn) (sG : snctx) (M N N': nte) (tau : snTy),
+    whr_nl_te N N' ->
+    algeq_nl_te sS sG M N (tau) ->
+    algeq_nl_te sS sG M N' (tau).
+Proof.
+  eauto using algeq_nl_te_symmetry, algeq_nl_te_whr_lift_l.
+Qed.
+
+
+
 
 
 (** depth auxiliaries **)
-
+(*
 Fixpoint depth_K (L:nK) : nat :=
   match L with
   | kindstar_nl_type => 0
@@ -287,7 +374,7 @@ Fixpoint depth_nte (M :nte) : nat :=
   | (termstar_nl_pi_elim M N) => S (max (depth_nte M) (depth_nte N))
   end.
 
-
+*)
 (*
 TODO: Accessible relation akin to:
 
@@ -425,7 +512,8 @@ Proof.
   inversion H7.
 Qed.   
  *)
-  Admitted.
+(*
+Admitted.
 
 Lemma algdepth_pi_intro_l:
   forall (M N : nte) (tau0 tau1 tau2 : snTy),
@@ -462,94 +550,7 @@ Lemma algdepth_whr:
     algdepth_nte M' < algdepth_nte M.
 Proof.
 Admitted.
-
-
-(** inversion of algdepth w.r.t whr **)
-
-Lemma algeq_nl_te_whr_inversion_l:
-  forall (sS : snsgn) (sG : snctx) (M M' N : nte) (a : tcon),
-    ( whr_nl_te M M' ) ->
-    ( algeq_nl_te sS sG M N (stype_nl_tcon a)) ->
-    ( algeq_nl_te sS sG M' N (stype_nl_tcon a )).
-Proof.
-  intros.
-  remember (stype_nl_tcon a).
-(*  generalize H0.
-  generalize dependent H. *)
-  generalize dependent M'.
-  generalize dependent Heqs.
-  induction H0.
-  intros.
-  assert (nM' = M') by (eapply whr_nl_te_determinacy; eauto).
-  rewrite <- H2.
-  assumption.
-  intros.
-  apply algeq_nl_te_whr_r with nN'.
-  assumption.
-  apply IHalgeq_nl_te.
-  assumption.
-  assumption.
-  intros.
-  apply streq_nl_te_determinacy_l in H.
-  destruct H.
-  exists M'.
-  assumption.
-  (* step case *)
-  intros.
-  inversion Heqs.
-Qed.  
-
-Lemma algeq_nl_te_whr_inversion_r:
-  forall (sS : snsgn) (sG : snctx) (M N N' : nte) (a : tcon),
-    ( whr_nl_te N N' ) ->
-    ( algeq_nl_te sS sG M N (stype_nl_tcon a)) ->
-    ( algeq_nl_te sS sG M N' (stype_nl_tcon a )).
-Proof.
-  intros.
-  eauto using algeq_nl_te_symmetry, algeq_nl_te_whr_inversion_l.
-Qed.  
-
-(** liftin if algdepth along whr **)
-
-Lemma algeq_nl_te_whr_lift_l:
-  forall (sS : snsgn) (sG : snctx) (M M' N : nte) (tau : snTy),
-    whr_nl_te M M' ->
-    algeq_nl_te sS sG M N (tau) ->
-    algeq_nl_te sS sG M' N (tau).
-Proof.
-  intros.
-  generalize dependent M'.
-  induction H0.
-  intros.
-  assert (M' = nM') by (eauto using whr_nl_te_determinacy).
-  rewrite H2.
-  assumption.
-  intros.
-  eapply algeq_nl_te_whr_r; eauto.
-  intros.
-  apply streq_nl_te_determinacy_l in H.
-  destruct H.
-  exists M'; eauto.
-  (* step *)
-  intros.
-  assert ({csM' | cs_nte M' csM' }) by (apply cs_nte_dec).
-  destruct H3.
-  eapply algeq_nl_te_eta_exp.
-  exact c.
-  exact H0.
-  apply IHalgeq_nl_te.
-  apply whr_nl_te_head.
-  eapply whr_nl_te_cs; eauto.  
-Qed.  
-
-Lemma algeq_nl_te_whr_lift_r:
-  forall (sS : snsgn) (sG : snctx) (M N N': nte) (tau : snTy),
-    whr_nl_te N N' ->
-    algeq_nl_te sS sG M N (tau) ->
-    algeq_nl_te sS sG M N' (tau).
-Proof.
-  eauto using algeq_nl_te_symmetry, algeq_nl_te_whr_lift_l.
-Qed.
+*)
 
 Lemma swap:
   forall (sS : snsgn) (sG : snctx) 
@@ -1128,7 +1129,7 @@ Admitted.
 
 *)
 
-
+(*
 Lemma streq_nl_te_dec:
   forall (m n : nat) (sS : snsgn) (sG : snctx) (M N : nte),
     n <= m -> n = depth_nte M -> wfssig_nl sS -> 
@@ -1442,7 +1443,7 @@ Proof.
   apply n0 with (stype_nl_pi_intro tau2 tau).
   assumption.
 Admitted.
-
+*)
 
 
 (* MAIN THEOREM *)
@@ -2107,7 +2108,7 @@ Qed.
 STOP.
 *)
 
-     
+(*     
 Lemma eq_nTy':
   forall (m n : nat) (sS : snsgn) (sG : snctx) (A1 A2 : nTy) (kappa : snK),
     n <= m -> n = depth_nTy A1 ->
@@ -2330,6 +2331,8 @@ Proof.(*
   assumption.
 Admitted.
 *)
+*)
+
 Lemma eq_nTy:
   forall (sS : snsgn) (sG : snctx) (A1 A2 : nTy) (kappa : snK),
     wfssig_nl sS ->
@@ -2434,6 +2437,33 @@ Qed.
 *)  
 
 
+Lemma eq_nTy_dec:
+  forall (A B : nTy),
+    {A = B} + {A <> B}
+with eq_nte_dec:
+  forall (M N : nte),
+    {M = N} + {M <> N}.
+Proof.
+  (* lemma 1 *)
+  intros.
+  decide equality.
+  apply eq_tcon.
+  (* lemma 2 *)
+  intros.
+  decide equality.
+  apply eq_con.
+  decide equality.
+  decide equality.
+Qed.
+
+Lemma eq_nK:
+  forall (K L : nK),
+    {K = L} + {K <> L}.
+Proof.
+  decide equality.
+  apply eq_nTy_dec.
+Qed.
+
 Lemma wftype_nl_dec:
   forall (S : nsgn) (G : nctx) (A : nTy),
     wfsig_nl S -> wfctx_nl S G ->
@@ -2475,24 +2505,227 @@ Proof.
   destruct H2.
   destruct s.
   destruct s0.
+  assert ({x = kindstar_nl_type} + {x <> kindstar_nl_type}) by (apply eq_nK).
+  assert ({x0 = kindstar_nl_type} + {x0 <> kindstar_nl_type}) by (apply eq_nK).
+  destruct H1.
+  destruct H2.
+  (* the valid subcase *)
+  assert ({ G' | cs_nctx (A1 :: G) G'}) by (apply cs_nctx_dec).
+  assert ({ A2' | cstu_nTy A2 A2'}) by (apply cstu_nTy_dec).
+  destruct H1.  
+  destruct H2. 
+  left.
+  exists kindstar_nl_type.
+  eapply ty_nl_pi_intro.
+  rewrite <- e; assumption.
+  (* after shifting *)
+  exact c.
+  exact c0.
 
 
+Lemma cs_nctx_determinacy:
+  forall (G G'1 G'2 : nctx),
+    cs_nctx G G'1 -> cs_nctx G G'2 ->
+    G'1 = G'2.
+Proof.
+  induction G.
+  intros.
+  inversion H; inversion H0; auto.
+  intros.
+  inversion H; inversion H0.
+  f_equal.
+  eauto using cs_nTy_determinacy.
+  apply IHG; auto.
+Qed.
 
+Lemma wftype_nl_transport_l:
+  forall (S : nsgn) (G' : nctx) (A' : nTy) (L' : nK),
+    wftype_nl S G' A' L' ->
+    forall (G : nctx) (A : nTy) (L : nK),
+      cs_nctx G G' ->
+      cs_nTy A A' ->
+      wftype_nl S G A L.    
+  
+Lemma wftype_nl_transport_r:
+  forall (S : nsgn) (G : nctx) (A : nTy) (L : nK),
+    wftype_nl S G A L ->
+    forall (G' : nctx) (C A' : nTy),
+      cs_nctx G G' ->
+      cs_nTy A A' ->
+      wftype_nl S G' A' L.
+Proof.
+  intros.
+  generalize dependent A'.
+  generalize dependent G'.
+  induction H.
+  (* tcon *)
+  intros.
+  inversion H2.
+  constructor.
+  admit.
+  assumption.
+  (* pi intro *)
+  intros.
+  inversion H4.
+  assert ({ G'' | cs_nctx (nA' :: G') G''}) by (apply cs_nctx_dec).
+  assert ({nB'' : nTy | cstu_nTy nB'0 nB''}) by (apply cstu_nTy_dec).
+  destruct H10.
+  destruct H11.
+  apply ty_nl_pi_intro with x x0.  
+  apply IHwftype_nl1.
+  assumption.
+  assumption.
+  assumption.
+  assumption.
+  assert (wftype_nl nsgn5 x x0 kindstar_nl_type).
+  apply IHwftype_nl2.
+  destruct nctx'.
+  inversion H0.
+  destruct x.
+  inversion c.
+  apply cs_nctx_var.
+  inversion H0.
+  assert (nctx' = G').
+  eapply cs_nctx_determinacy.
+  exact H13.
+  exact H3.
+  inversion c.
+  rewrite H16.
+  exact H20.
+  inversion H0.
+  inversion c.
+  assert (n = nA').
+  eapply cs_nTy_determinacy.
+  exact H15.
+  assumption.
+  rewrite H22.
+  assumption.
+
+Lemma cs_nTy_cstu:
+  forall (B C : nTy),
+    cs_nTy B C ->
+    forall (B' C' : nTy),
+      cstu_nTy B B' -> cstu_nTy C C' ->
+      cs_nTy B' C'
+with cs_nte_cstu:
+  forall (M N : nte),
+    cs_nte M N ->
+    forall (M' N' : nte),
+      cstu_nte M M' -> cstu_nte N N' ->
+      cs_nte M' N'.
+Proof.
+  (* Lemma 1 *)
+  intros.
+  generalize dependent C'.
+  generalize dependent B'.
+  induction H.
+  (* tcon *)
+  intros.
+  inversion H0; inversion H1.
+  constructor.
+  (* pi_intro *)
+  intros.
+  inversion H1; inversion H2.
+  apply cs_nTy_pi_intro.
+  apply IHcs_nTy1; auto.
+  apply IHcs_nTy2; auto.
+  (* pi_elim *)
+  intros.
+  inversion H1; inversion H2.
+  apply cs_nTy_pi_elim.
+  apply IHcs_nTy; auto.
+  eapply cs_nte_cstu; eauto.
+  (* Lemma 2 *)
+  intros.
+  generalize dependent N'.
+  generalize dependent M'.
+  induction H.
+  (* con *)
+  intros.
+  inversion H0; inversion H1.
+  apply cs_nte_con.
+  (* ixc S *)
+  intros.
+  inversion H0; inversion H1.
+  apply cs_nte_ixc.
+  (* ixc 0 *)
+  intros.
+  destruct ixt.
+  inversion H0; inversion H1.
+  admit.
+  inversion H0; inversion H1.
+  admit.
+  (* pi_intro *)
+  intros.
+  inversion H1; inversion H2.
+  apply cs_nte_pi_intro.
+  eapply cs_nTy_cstu; eauto.
+  apply IHcs_nte; auto.
+  (* pi_elim *)
+  intros.
+  inversion H1; inversion H2.
+  apply cs_nte_pi_elim.
+  apply IHcs_nte1; eauto.
+  apply IHcs_nte2; eauto.
+  
+  STOP
+  
+  cs_nctx (nA :: nctx5) nctx'
+
+  cs_nTy nA nA'
+  cs_nctx (nA' :: G') x
+  -----
+  cs_nctx nctx' x
+  
+          
+  admit.
+  exact H3.
+
+  cstu_nTy nB nB'
+
+  cs_nTy nB nB'0 o cstu_nTy nB'0 x0
+    
+  apply IHwftype_nl2.
+  destruct x
+  eapply cs_nctx_var.
+  
+  inversion H0.
+  inversion H4.
+  apply ty_nl_pi_intro with nctx'0 nB'.
+  apply IHwftype_nl1 with l C.
+  assumption.
+  assumption.
+  assumption.
+  
+  
+  admit.
+  (* pi elim *)
+  intros.
+  inversion H4.
+  apply ty_nl_pi_elim with nB' nL nB.
+  apply IHwftype_nl with l C.
+  assumption.
+  assumption.
+  assumption.
+  admit.
+  admit.
+  admit.
+  
+  
  (* 
 Lemma eq_nTy:
   forall (sS : snsgn) (sG : snctx) (kappa : snK) (A B : nTy),
     { walgeq_nl_Ty sS sG A B kappa } + {~ (walgeq_nl_Ty sS sG A B kappa)}.
-Proof.
+Proof
   intros.
 *)
 
 
   
   
-Lemma tycheck_dec:
+Lemma wfterm_nl_dec:
   forall (S : nsgn) (G : nctx) (M : nte) (A : nTy),
-    { A : nTy |  wfterm_nl S G M A
-    (forall (A : nTy), ~(wfterm_nl S G M A)).
+    { A : nTy |  wfterm_nl S G M A} + (forall (A : nTy), ~(wfterm_nl S G M A)).
 Proof.
   intros.
   generalize dependent G.
