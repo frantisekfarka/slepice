@@ -60,46 +60,68 @@ type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
 
 
 funs
-FerasureTy ::=
+FerasurenTy ::=
 
   fun
-  erasureTy( nA ) :: snTy :: erasure_Ty 
+  erasurenTy( nA ) :: snTy :: erasure_nTy 
     {{ tex ( [[nA]] )^- }} by
 
-  erasureTy( a ) === a
-  erasureTy( nA nM ) === erasureTy( nA )
-  erasureTy( Pi nA . nB ) === erasureTy(nA) -> erasureTy(nB)
+  erasurenTy( a ) === a
+  erasurenTy( nA nM ) === erasurenTy( nA )
+  erasurenTy( Pi nA . nB ) === erasurenTy(nA) -> erasurenTy(nB)
 
 funs
-FerasureK ::=
+FerasurenK ::=
 
   fun
-  erasureK( nL ) :: snK :: erasure_K 
+  erasurenK( nL ) :: snK :: erasure_nK 
     {{ tex ( [[nL]] )^- }} by
 
-  erasureK( typeK ) === typeK
-  erasureK( Pi nA . nL ) === erasureTy(nA) -> erasureK(nL)
+  erasurenK( typeK ) === typeK
+  erasurenK( Pi nA . nL ) === erasurenTy(nA) -> erasurenK(nL)
 
 funs
-Ferasuresgn ::=
+Ferasurensgn ::=
 
   fun
-  erasuresgn( nsgn ) :: snsgn :: erasure_sgn
+  erasurensgn( nsgn ) :: snsgn :: erasure_nsgn
     {{ tex ( [[nsgn]] )^- }} by
 
-  erasuresgn( empty ) === empty
-  erasuresgn( nsgn , a : nL ) === erasuresgn(nsgn) , a : erasureK(nL)
-  erasuresgn( nsgn , c : nA ) === erasuresgn(nsgn) , c : erasureTy(nA)
+  erasurensgn( empty ) === empty
+  erasurensgn( nsgn , a : nL ) === erasurensgn(nsgn) , a : erasurenK(nL)
+  erasurensgn( nsgn , c : nA ) === erasurensgn(nsgn) , c : erasurenTy(nA)
 
 funs
-Ferasurectx ::=
+Ferasurenctx ::=
 
   fun
-  erasurectx( nctx ) :: snctx :: erasure_ctx
+  erasurenctx( nctx ) :: snctx :: erasure_nctx
     {{ tex ( [[nctx]] )^- }} by
 
-  erasurectx( empty ) === empty
-  erasurectx( nctx , nA ) === erasurectx(nctx) , erasureTy(nA)
+  erasurenctx( empty ) === empty
+  erasurenctx( nctx , nA ) === erasurenctx(nctx) , erasurenTy(nA)
+
+funs
+Fstruct ::=
+
+  fun
+  structnTy( nTy ) :: sTy :: struct_nTy 
+    {{ tex | [[nTy]] | }} by
+
+  structnTy( a ) === Leaf
+  structnTy( nA nM ) === structnTy( nA ) structnte( nM )
+  structnTy( Pi nA . nB ) === Pi structnTy(nA) . structnTy(nB)
+
+  fun
+  structnte( nte ) :: ste :: struct_nte
+    {{ tex | [[nte]] | }} by
+
+  structnte( con ) === Leaf
+  structnte( ixc ) === Leaf
+  structnte( ixt ) === Leaf
+  structnte( nM nN ) === structnte( nM ) structnte( nN )
+  structnte( \ nA . nM ) === \ structnTy( nA ) . structnte( nM )
+
 
 defns
 Cshifting :: 'cs_' ::=
@@ -145,6 +167,22 @@ Cshifting :: 'cs_' ::=
   cste nN nN'
   ------------------------ :: pi_elim
   cste ( nM nN ) (nM' nN')
+
+defns
+CshiftingnK :: '' ::=
+
+  defn
+  csK ( nK ) ( nK' ) :: :: cs_nK :: 'cs_nK_' 
+    {{ tex \overleftarrow{[[nK]]} \equiv [[nK']] }}
+    {{ com C-shift on kinds }} by
+
+  --------------------- :: type
+  csK (typeK) (typeK)
+
+  csTy nA nA'
+  csK (nL) (nL')
+  ------------------------------------ :: pi_intro
+  csK (Pi nA . nL) (Pi nA' . nL')
 
 defns
 Cshiftingctx :: '' ::=
@@ -227,65 +265,65 @@ defns
 CshiftingTunshifting :: 'cstu_' ::=
 
   defn
-  cstuTy nTy nTy' :: :: nTy :: 'nTy_'
-    {{ tex \overleftarrow{[[nTy]] [ 0_\Gamma / 0_T ]  } \equiv [[nTy']] }} 
+  cstuTy nTy ixc nTy' :: :: nTy :: 'nTy_'
+    {{ tex \overleftarrow{[[nTy]] [ [[ixc]] / 0_T ]  } \equiv [[nTy']] }} 
     {{ com C-shifting T-unshifting on types }} by
  
-  ----------- :: tcon
-  cstuTy a  a
+  --------------- :: tcon
+  cstuTy a ixc  a
 
-  cstuTy nA nA'
-  cstuTy nB nB'
-  ---------------------------------- :: pi_intro
-  cstuTy (Pi nA . nB) (Pi nA' . nB')
+  cstuTy nA ixc nA'
+  cstuTy nB ixc nB'
+  -------------------------------------- :: pi_intro
+  cstuTy (Pi nA . nB) ixc (Pi nA' . nB')
 
-  cstuTy nA nA'
-  cstute nM nM'
-  -------------------------- :: pi_elim
-  cstuTy ( nA nM ) (nA' nM')
+  cstuTy nA ixc nA'
+  cstute nM ixc nM'
+  ------------------------------ :: pi_elim
+  cstuTy ( nA nM ) ixc (nA' nM')
 
   defn
-  cstute nte nte'  :: :: nte :: 'nte_'
-    {{ tex \overleftarrow{[[nte]] [ 0_\Gamma / 0_T ]  } \equiv [[nte']] }} 
+  cstute nte ixc nte'  :: :: nte :: 'nte_'
+    {{ tex \overleftarrow{[[nte]] [ [[ixc]] / 0_T ]  } \equiv [[nte']] }} 
     {{ com C-shifting T-unshifting on terms }} by
  
-  ----------- :: con
-  cstute c  c
+  -------------- :: con
+  cstute c ixc c
 
-  ---------------------- :: ixc
-  cstute ixc  (succ ixc)
+  ------------------------- :: ixc
+  cstute ixc' ixc (succ ixc')
 
-  ------------------- :: zerot
-  cstute zerot  zeroc
+  -------------------- :: zerot
+  cstute zerot ixc ixc
 
-  ---------------------- :: suct
-  cstute (suct ixt)  ixt
+  -------------------------- :: suct
+  cstute (suct ixt) ixc  ixt
 
-  cstuTy nA nA'
-  cstute nM nM'
-  --------------------------------- :: pi_intro
-  cstute (\ nA . nM) (\ nA' . nM' )
+  cstuTy nA ixc nA'
+  cstute nM ixc nM'
+  ------------------------------------- :: pi_intro
+  cstute (\ nA . nM) ixc (\ nA' . nM' )
 
-  cstute nM nM'
-  cstute nN nN'
-  -------------------------- :: pi_elim
-  cstute ( nM nN ) (nM' nN')
+  cstute nM ixc nM'
+  cstute nN ixc nN'
+  ----------------------------- :: pi_elim
+  cstute ( nM nN ) ixc (nM' nN')
 
 defns
 CshiftingTunshiftingK :: '' ::=
 
   defn
-  cstuK nK nK' :: :: cstu_nK :: 'cstu_K_'
-    {{ tex \overleftarrow{[[nK]] [ 0_\Gamma / 0_T ]  } \equiv [[nK']] }} 
+  cstuK nK ixc nK' :: :: cstu_nK :: 'cstu_K_'
+    {{ tex \overleftarrow{[[nK]] [ [[ixc]] / 0_T ]  } \equiv [[nK']] }} 
     {{ com C-shifting T-unshifting on kinds }} by
 
-  ------------------ :: type
-  cstuK typeK  typeK
+  --------------------- :: type
+  cstuK typeK ixc typeK
 
-  cstuTy nA nA'
-  cstuK nL nL'
-  --------------------------------- :: pi_intro
-  cstuK (Pi nA . nL) (Pi nA' . nL')
+  cstuTy nA ixc nA'
+  cstuK nL ixc nL'
+  ------------------------------------ :: pi_intro
+  cstuK (Pi nA . nL) ixc (Pi nA' . nL')
 
 defns
 CunshiftingTshifting :: 'cuts_' ::=
@@ -452,7 +490,7 @@ Jalgstreq :: '' ::=
 %    snsgn ; snctx |- nA walgeq nB : typeK
 %    cstuK nK nK'
 %    cstuK nL nL'
-%    snsgn ; snctx , erasureTy(nA) |- nK' algeq nL' : kindS
+%    snsgn ; snctx , erasurenTy(nA) |- nK' algeq nL' : kindS
 %    --------------------------------------------- :: pi_intro
 %    snsgn ; snctx |- Pi nA.nK algeq Pi nB.nL : kindS 
 
@@ -516,9 +554,9 @@ Jwalgeq :: '' ::=
     snsgn ; snctx |- a walgeq a : kappa
 
     snsgn ; snctx |- nA1 walgeq nB1 : typeK
-    cstuTy nA2 nA2'
-    cstuTy nB2 nB2'
-    snsgn ; snctx, erasureTy(nA1) |- nA2' walgeq nB2' : typeK
+    cstuTy nA2 zeroc nA2'
+    cstuTy nB2 zeroc nB2'
+    snsgn ; snctx, erasurenTy(nA1) |- nA2' walgeq nB2' : typeK
     --------------------------------------------------------- :: pi_intro
     snsgn ; snctx |- (Pi nA1.nA2) walgeq (Pi nB1.nB2) : typeK
 
@@ -574,7 +612,7 @@ Jwellformednl_alg :: '' ::=
 
     nsgn ; nctx |- nA => typeK
     csctx (nctx,nA) (nctx')
-    cstuK nL nL'
+    cstuK nL ixc nL'
     nsgn ; nctx' |- nL' => kindS
     ---------------------------------------- :: pi_intro
     nsgn ; nctx |- Pi nA . nL => kindS
@@ -589,14 +627,14 @@ Jwellformednl_alg :: '' ::=
 
     nsgn ; nctx |- nA => typeK
     csctx (nctx,nA) (nctx')
-    cstuTy nB nB'
+    cstuTy nB ixc nB'
     nsgn ; nctx' |- nB' => typeK
     ---------------------------------- :: pi_intro
     nsgn ; nctx |- Pi nA . nB => typeK 
 
     nsgn ; nctx |- nA => Pi nB' . nL
     nsgn ; nctx |- nM => nB
-    erasuresgn(nsgn) ; erasurectx(nctx) |- nB walgeq nB' : typeK
+    erasurensgn(nsgn) ; erasurenctx(nctx) |- nB walgeq nB' : typeK
     tutsK (nL , nM) nL'
     ------------------------------------------------------------ :: pi_elim
     nsgn ; nctx |- nA nM => nL'
@@ -623,7 +661,7 @@ Jwellformednl_alg :: '' ::=
 
     nsgn ; nctx |- nA1 => typeK
     csctx (nctx,nA1) (nctx')
-    cstute nM2 nM2'
+    cstute nM2 ixc nM2'
     nsgn ; nctx' |- nM2' => nA2 
     cutsTy nA2 nA2'
     ---------------------------------------------------------- :: pi_intro
@@ -631,7 +669,7 @@ Jwellformednl_alg :: '' ::=
 
     nsgn ; nctx |- nM1 => Pi nA2' . nA1
     nsgn ; nctx |- nM2 => nA2
-    erasuresgn(nsgn) ; erasurectx(nctx) |- nA2 walgeq nA2' : typeK
+    erasurensgn(nsgn) ; erasurenctx(nctx) |- nA2 walgeq nA2' : typeK
     tutsTy(nA2 , nM2) nB
     ------------------------------ :: pi_elim
     nsgn ; nctx |- nM1 nM2 => nB

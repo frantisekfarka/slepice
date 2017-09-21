@@ -17,4 +17,5 @@ terminals :: 'terminals_' ::=
   | ->           ::   :: rarrow    {{ tex \rightarrow }}
   | <-           ::   :: larrow    {{ tex \leftarrow }}
   | &            ::   :: and       {{ tex \land }}
+  | Leaf         ::   :: leaf      {{ tex \bullet }}
 
