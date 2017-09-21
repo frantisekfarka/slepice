@@ -1,6 +1,10 @@
 Require Import List.
 Require Import defns.
 
+(**
+  * boundnCon
+ **)
+
 (** decidability of boundnCon **)
 
 Lemma boundnCon_dec:
@@ -109,6 +113,117 @@ Proof.
   assumption.
 Qed.  
 
+(** determianacy of boundnCon **)
+
+Lemma boundnCon_weak_r:
+  forall (S : nsgn) (c : con) (a : tcon) (A : nTy) (L : nK),
+    boundnCon c A (inr (a , L) :: S) ->
+    boundnCon c A S.
+Proof.
+  intros.
+  unfold boundnCon in H.
+  decompose record H.
+  destruct x.
+  inversion H0.
+  exists x.
+  exists x0.
+  inversion H0.
+  split.
+  auto.
+  intros.
+  intro.
+  apply H2 with nA'.
+  right.
+  assumption.
+Qed.  
+
+Lemma boundnCon_weak_l:
+  forall (S : nsgn) (c d : con) (A B : nTy),
+    boundnCon c A (inl (d , B) :: S) ->
+    c <> d ->
+    boundnCon c A S.
+Proof.
+  intros.
+  unfold boundnCon in H.
+  decompose record H.
+  destruct x.
+  inversion H1.
+  destruct H0.
+  symmetry; assumption.
+  exists x.
+  exists x0.
+  inversion H1.
+  split.
+  auto.
+  intros.
+  intro.
+  apply H3 with nA'.
+  right.
+  assumption.
+Qed.  
+
+Lemma boundnCon_weak_determinacy:
+  forall (S : nsgn) (c : con) (A1 A2 : nTy),
+    boundnCon c A1 (inl (c, A2) :: S) ->
+    ~ indomnCon c S
+    -> A1 = A2.
+Proof.
+  intros.
+  unfold boundnCon in H.
+  decompose record H.
+  destruct x.
+  inversion H1.
+  reflexivity.
+  destruct H0.
+  exists A1.
+  exists x.
+  exists x0.
+  split.
+  inversion H1.
+  reflexivity.
+  intros; intro.
+  apply H3 with nA'.
+  right.
+  assumption.
+Qed.
+    
+Lemma boundnCon_determinacy:
+  forall (S : nsgn) (c : con) (A1 A2 : nTy),
+    wfsig_nl S ->
+    boundnCon c A1 S ->
+    boundnCon c A2 S ->
+    A1 = A2.
+Proof.
+  intros.
+  induction H.
+  (* nil case *)
+  intros.
+  unfold boundnCon in H0.
+  decompose record H0.
+  apply app_cons_not_nil in H.
+  contradiction.
+  (* step case *)
+  intros.
+  apply IHwfsig_nl; eapply boundnCon_weak_r ; eauto.
+  (* *)
+  assert ({c = c0} + {c <> c0}) by (apply eq_con).
+  destruct H4.
+  rewrite e in H0.
+  rewrite e in H1.
+  assert (A1 = nA).
+  eauto using boundnCon_weak_determinacy; auto.
+  assert (A2 = nA).
+  eauto using boundnCon_weak_determinacy; auto.
+  rewrite H4.
+  rewrite H5.
+  reflexivity.
+  apply IHwfsig_nl; eauto using boundnCon_weak_l; auto.
+Qed.
+
+(**
+  * boundsnCon
+ **)
+
 (** decidability of boundsnCon **)
 
 Lemma boundsnCon_dec:
@@ -216,6 +331,117 @@ Proof.
   right.
   assumption.
 Qed.  
+
+(** determianacy of boundsnCon **)
+
+Lemma boundsnCon_weak_r:
+  forall (sS : snsgn) (c : con) (a : tcon) (tau : snTy) (kappa : snK),
+    boundsnCon c tau (inr (a , kappa) :: sS) ->
+    boundsnCon c tau sS.
+Proof.
+  intros.
+  unfold boundsnCon in H.
+  decompose record H.
+  destruct x.
+  inversion H0.
+  exists x.
+  exists x0.
+  inversion H0.
+  split.
+  auto.
+  intros.
+  intro.
+  apply H2 with tau'.
+  right.
+  assumption.
+Qed.  
+
+Lemma boundsnCon_weak_l:
+  forall (sS : snsgn) (c d : con) (tau1 tau2 : snTy),
+    boundsnCon c tau1 (inl (d , tau2) :: sS) ->
+    c <> d ->
+    boundsnCon c tau1 sS.
+Proof.
+  intros.
+  unfold boundsnCon in H.
+  decompose record H.
+  destruct x.
+  inversion H1.
+  destruct H0.
+  symmetry; assumption.
+  exists x.
+  exists x0.
+  inversion H1.
+  split.
+  auto.
+  intros.
+  intro.
+  apply H3 with tau'.
+  right.
+  assumption.
+Qed.  
+
+Lemma boundsnCon_weak_determinacy:
+  forall (sS : snsgn) (c : con) (tau1 tau2 : snTy),
+    boundsnCon c tau1 (inl (c, tau2) :: sS) ->
+    ~ indomsnCon c sS
+    -> tau1 = tau2.
+Proof.
+  intros.
+  unfold boundsnCon in H.
+  decompose record H.
+  destruct x.
+  inversion H1.
+  reflexivity.
+  destruct H0.
+  exists tau1.
+  exists x.
+  exists x0.
+  split.
+  inversion H1.
+  reflexivity.
+  intros; intro.
+  apply H3 with tau'.
+  right.
+  assumption.
+Qed.
+
+Lemma boundsnCon_determinacy:
+  forall (sS : snsgn) (a : tcon) (tau1 tau2 : snTy),
+    wfssig_nl sS ->
+    boundsnCon a tau1 sS ->
+    boundsnCon a tau2 sS ->
+    tau1 = tau2.
+Proof.
+  intros.
+  induction H.
+  (* nil case *)
+  intros.
+  unfold boundsnCon in H0.
+  decompose record H0.
+  apply app_cons_not_nil in H.
+  contradiction.
+  (* step case *)
+  intros.
+  apply IHwfssig_nl; eapply boundsnCon_weak_r ; eauto.
+  (* *)
+  assert ({c = a} + {c <> a}) by (apply eq_con).
+  destruct H3.
+  rewrite <- e in H0.
+  rewrite <- e in H1.
+  assert (tau1 = tau).
+  eauto using boundsnCon_weak_determinacy; auto.
+  assert (tau2 = tau).
+  eauto using boundsnCon_weak_determinacy; auto.
+  rewrite H3.
+  rewrite H4.
+  reflexivity.
+  apply IHwfssig_nl; eauto using boundsnCon_weak_l; auto.
+Qed.
+
+(**
+  * boundnTCon
+ **)
 
 (** decidability of boundnTCon **)
 
@@ -326,328 +552,6 @@ Proof.
   assumption.
 Qed.  
 
-(** decidability of boundsnTCon **)
-
-Lemma boundsnTCon_dec:
-  forall (sS : snsgn) (a : tcon),
-    {kappa | boundsnTCon a kappa sS} + {forall kappa , ~ boundsnTCon a kappa sS}.
-Proof.
-  intros.
-  induction sS.
-  right.
-  intros.
-  intro.
-  unfold boundsnTCon in H.
-  decompose record H.
-  apply app_cons_not_nil in H0.
-  contradiction.
-  destruct a0.
-  (* inl cases *)
-  destruct IHsS.
-  left.
-  destruct s.
-  exists x.
-  unfold boundsnTCon in b.
-  decompose record b.
-  rewrite H.
-  exists (inl p :: x0).
-  exists x1.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H1 with kappa'.
-  inversion H0.
-  inversion H2.
-  assumption.
-  (* not bound at all *)
-  right.
-  intros.
-  intro.
-  apply n with kappa.
-  unfold boundsnTCon in H.
-  decompose record H.
-  destruct x.
-  inversion H0.
-  inversion H0.
-  exists x.
-  exists x0.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H2 with kappa'.
-  right.
-  assumption.
-  (* int cases *)  
-  destruct p.
-  assert ({a = t} + {a <> t}) by (apply eq_con).
-  destruct H.
-  rewrite e.
-  left.
-  exists s.
-  exists nil.
-  exists sS.
-  split.
-  auto.
-  intros.
-  intro.
-  inversion H.
-  destruct IHsS.
-  left.
-  destruct s0.
-  exists x.
-  unfold boundsnTCon in b.
-  decompose record b.
-  exists (inr (t, s) :: x0).
-  exists x1.
-  rewrite H.
-  split.
-  auto.
-  intros.
-  intro.
-  inversion H0.
-  inversion H2.
-  apply n; auto.
-  apply H1 with kappa'; auto.
-  right.
-  intros.
-  intro.  
-  unfold boundsnTCon in H.
-  decompose record H.
-  destruct x.
-  inversion H0.
-  apply n; auto.
-  assert (sS = x ++ inr (a, kappa) :: x0).
-  inversion H0.
-  auto.
-  apply n0 with kappa.
-  rewrite H1.
-  exists x.
-  exists x0.
-  split.
-  auto.
-  intro.
-  intro.
-  apply H2 with kappa'.
-  right.
-  assumption.
-Qed.
-
-(** determianacy of boundnCon **)
-
-Lemma boundnCon_weak_r:
-  forall (S : nsgn) (c : con) (a : tcon) (A : nTy) (L : nK),
-    boundnCon c A (inr (a , L) :: S) ->
-    boundnCon c A S.
-Proof.
-  intros.
-  unfold boundnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H0.
-  exists x.
-  exists x0.
-  inversion H0.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H2 with nA'.
-  right.
-  assumption.
-Qed.  
-
-Lemma boundnCon_weak_l:
-  forall (S : nsgn) (c d : con) (A B : nTy),
-    boundnCon c A (inl (d , B) :: S) ->
-    c <> d ->
-    boundnCon c A S.
-Proof.
-  intros.
-  unfold boundnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H1.
-  destruct H0.
-  symmetry; assumption.
-  exists x.
-  exists x0.
-  inversion H1.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H3 with nA'.
-  right.
-  assumption.
-Qed.  
-
-Lemma boundnCon_weak_determinacy:
-  forall (S : nsgn) (c : con) (A1 A2 : nTy),
-    boundnCon c A1 (inl (c, A2) :: S) ->
-    ~ indomnCon c S
-    -> A1 = A2.
-Proof.
-  intros.
-  unfold boundnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H1.
-  reflexivity.
-  destruct H0.
-  exists A1.
-  exists x.
-  exists x0.
-  split.
-  inversion H1.
-  reflexivity.
-  intros; intro.
-  apply H3 with nA'.
-  right.
-  assumption.
-Qed.
-    
-Lemma boundnCon_determinacy:
-  forall (S : nsgn) (c : con) (A1 A2 : nTy),
-    wfsig_nl S ->
-    boundnCon c A1 S ->
-    boundnCon c A2 S ->
-    A1 = A2.
-Proof.
-  intros.
-  induction H.
-  (* nil case *)
-  intros.
-  unfold boundnCon in H0.
-  decompose record H0.
-  apply app_cons_not_nil in H.
-  contradiction.
-  (* step case *)
-  intros.
-  apply IHwfsig_nl; eapply boundnCon_weak_r ; eauto.
-  (* *)
-  assert ({c = c0} + {c <> c0}) by (apply eq_con).
-  destruct H4.
-  rewrite e in H0.
-  rewrite e in H1.
-  assert (A1 = nA).
-  eauto using boundnCon_weak_determinacy; auto.
-  assert (A2 = nA).
-  eauto using boundnCon_weak_determinacy; auto.
-  rewrite H4.
-  rewrite H5.
-  reflexivity.
-  apply IHwfsig_nl; eauto using boundnCon_weak_l; auto.
-Qed.
-
-(** determianacy of boundsnCon **)
-
-Lemma boundsnCon_weak_r:
-  forall (sS : snsgn) (c : con) (a : tcon) (tau : snTy) (kappa : snK),
-    boundsnCon c tau (inr (a , kappa) :: sS) ->
-    boundsnCon c tau sS.
-Proof.
-  intros.
-  unfold boundsnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H0.
-  exists x.
-  exists x0.
-  inversion H0.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H2 with tau'.
-  right.
-  assumption.
-Qed.  
-
-Lemma boundsnCon_weak_l:
-  forall (sS : snsgn) (c d : con) (tau1 tau2 : snTy),
-    boundsnCon c tau1 (inl (d , tau2) :: sS) ->
-    c <> d ->
-    boundsnCon c tau1 sS.
-Proof.
-  intros.
-  unfold boundsnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H1.
-  destruct H0.
-  symmetry; assumption.
-  exists x.
-  exists x0.
-  inversion H1.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H3 with tau'.
-  right.
-  assumption.
-Qed.  
-
-Lemma boundsnCon_weak_determinacy:
-  forall (sS : snsgn) (c : con) (tau1 tau2 : snTy),
-    boundsnCon c tau1 (inl (c, tau2) :: sS) ->
-    ~ indomsnCon c sS
-    -> tau1 = tau2.
-Proof.
-  intros.
-  unfold boundsnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H1.
-  reflexivity.
-  destruct H0.
-  exists tau1.
-  exists x.
-  exists x0.
-  split.
-  inversion H1.
-  reflexivity.
-  intros; intro.
-  apply H3 with tau'.
-  right.
-  assumption.
-Qed.
-
-Lemma boundsnCon_determinacy:
-  forall (sS : snsgn) (a : tcon) (tau1 tau2 : snTy),
-    wfssig_nl sS ->
-    boundsnCon a tau1 sS ->
-    boundsnCon a tau2 sS ->
-    tau1 = tau2.
-Proof.
-  intros.
-  induction H.
-  (* nil case *)
-  intros.
-  unfold boundsnCon in H0.
-  decompose record H0.
-  apply app_cons_not_nil in H.
-  contradiction.
-  (* step case *)
-  intros.
-  apply IHwfssig_nl; eapply boundsnCon_weak_r ; eauto.
-  (* *)
-  assert ({c = a} + {c <> a}) by (apply eq_con).
-  destruct H3.
-  rewrite <- e in H0.
-  rewrite <- e in H1.
-  assert (tau1 = tau).
-  eauto using boundsnCon_weak_determinacy; auto.
-  assert (tau2 = tau).
-  eauto using boundsnCon_weak_determinacy; auto.
-  rewrite H3.
-  rewrite H4.
-  reflexivity.
-  apply IHwfssig_nl; eauto using boundsnCon_weak_l; auto.
-Qed.
-
 (** determianacy of boundnTCon **)
 
 Lemma boundnTCon_weak_l:
@@ -754,6 +658,118 @@ Proof.
   (* *)
   eauto using boundnTCon_weak_r; auto.
   apply IHwfsig_nl; eauto using boundnTCon_weak_l.  
+Qed.
+
+(**
+  * boundsnTCon
+ **)
+
+(** decidability of boundsnTCon **)
+
+Lemma boundsnTCon_dec:
+  forall (sS : snsgn) (a : tcon),
+    {kappa | boundsnTCon a kappa sS} + {forall kappa , ~ boundsnTCon a kappa sS}.
+Proof.
+  intros.
+  induction sS.
+  right.
+  intros.
+  intro.
+  unfold boundsnTCon in H.
+  decompose record H.
+  apply app_cons_not_nil in H0.
+  contradiction.
+  destruct a0.
+  (* inl cases *)
+  destruct IHsS.
+  left.
+  destruct s.
+  exists x.
+  unfold boundsnTCon in b.
+  decompose record b.
+  rewrite H.
+  exists (inl p :: x0).
+  exists x1.
+  split.
+  auto.
+  intros.
+  intro.
+  apply H1 with kappa'.
+  inversion H0.
+  inversion H2.
+  assumption.
+  (* not bound at all *)
+  right.
+  intros.
+  intro.
+  apply n with kappa.
+  unfold boundsnTCon in H.
+  decompose record H.
+  destruct x.
+  inversion H0.
+  inversion H0.
+  exists x.
+  exists x0.
+  split.
+  auto.
+  intros.
+  intro.
+  apply H2 with kappa'.
+  right.
+  assumption.
+  (* int cases *)  
+  destruct p.
+  assert ({a = t} + {a <> t}) by (apply eq_con).
+  destruct H.
+  rewrite e.
+  left.
+  exists s.
+  exists nil.
+  exists sS.
+  split.
+  auto.
+  intros.
+  intro.
+  inversion H.
+  destruct IHsS.
+  left.
+  destruct s0.
+  exists x.
+  unfold boundsnTCon in b.
+  decompose record b.
+  exists (inr (t, s) :: x0).
+  exists x1.
+  rewrite H.
+  split.
+  auto.
+  intros.
+  intro.
+  inversion H0.
+  inversion H2.
+  apply n; auto.
+  apply H1 with kappa'; auto.
+  right.
+  intros.
+  intro.  
+  unfold boundsnTCon in H.
+  decompose record H.
+  destruct x.
+  inversion H0.
+  apply n; auto.
+  assert (sS = x ++ inr (a, kappa) :: x0).
+  inversion H0.
+  auto.
+  apply n0 with kappa.
+  rewrite H1.
+  exists x.
+  exists x0.
+  split.
+  auto.
+  intro.
+  intro.
+  apply H2 with kappa'.
+  right.
+  assumption.
 Qed.
 
 (** determianacy of boundsnTCon **)
