@@ -28,6 +28,7 @@ TRANS=$(SRC_DIR)trans.ott
 
 
 FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott\
+	     $(SRC_DIR)fodtt_struct-syntax.ott\
 	     $(SRC_DIR)fodtt_lnl-typing-algo.ott
 
 FODTTLNL=$(SRC_DIR)fodtt_lnl-syntax.ott\
@@ -45,9 +46,11 @@ OTT=../ott/bin/ott
 
 COQ=$(COQ_DIR)defns.v\
     $(COQ_DIR)fusion.v\
+    $(COQ_DIR)fusion_supl.v\
     $(COQ_DIR)transport.v\
     $(COQ_DIR)nl_sgn.v\
     $(COQ_DIR)nl_whr.v\
+    $(COQ_DIR)nl_eq.v\
     $(COQ_DIR)nl_tycheck.v
 
 .PHONY: clean veryclean
@@ -99,7 +102,7 @@ exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANS
 	    $(TERMINALS) 
 
 
-coqdoc: $(COQ)
+doc: $(COQ)
 	$(COQDOC) --no-glob $(COQ) -d $(DOC_DIR)
 
 coqc: $(COQ)
