@@ -1,7 +1,6 @@
 Require Import defns.
 
-Require Import fusion.
-
+Require Import nl_fusion.
 Require Import nl_sgn.
 Require Import nl_whr.
 

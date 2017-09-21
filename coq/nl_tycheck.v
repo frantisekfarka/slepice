@@ -6,11 +6,9 @@ Require Import Arith.PeanoNat.
 Require Import Arith.Plus.
 
 Require Import defns.
-Require Import fusion.
-Require Import fusion_supl.
+Require Import nl_fusion.
 Require Import nl_sgn.
 Require Import nl_whr.
-Require Import transport.
 Require Import nl_eq.
 
 

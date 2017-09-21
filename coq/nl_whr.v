@@ -1,6 +1,5 @@
 Require Import defns.
-Require Import fusion.
-Require Import transport.
+Require Import nl_fusion.
 
 (**
     * Weak-head reduction
