@@ -249,7 +249,7 @@ defns
 Cunshiftingctx :: '' ::=
 
   defn
-  cuctx ( nctx ) ( nctx' ) ::  :: cu_ctx :: 'cu_ctx_'
+  cuctx ( nctx ) ( nctx' ) ::  :: cu_nctx :: 'cu_nctx_'
     {{ tex \overrightarrow{[[nctx]]} \equiv [[nctx']] }} 
     {{ com C-unshifting on contexts }} by
 
@@ -596,9 +596,8 @@ Jwellformednl_alg :: '' ::=
     --------------------  :: empty
     nsgn |- empty => ctx
 
-    cuctx (nctx) (nctx')
+    cuctx (nctx, nA) (nctx', nA')
     nsgn |- nctx' => ctx
-    cuTy nA nA'
     nsgn ; nctx' |- nA'  => typeK
     ----------------------------- :: var
     nsgn |- nctx,nA => ctx
@@ -612,7 +611,7 @@ Jwellformednl_alg :: '' ::=
 
     nsgn ; nctx |- nA => typeK
     csctx (nctx,nA) (nctx')
-    cstuK nL ixc nL'
+    cstuK nL zeroc nL'
     nsgn ; nctx' |- nL' => kindS
     ---------------------------------------- :: pi_intro
     nsgn ; nctx |- Pi nA . nL => kindS
@@ -627,7 +626,7 @@ Jwellformednl_alg :: '' ::=
 
     nsgn ; nctx |- nA => typeK
     csctx (nctx,nA) (nctx')
-    cstuTy nB ixc nB'
+    cstuTy nB zeroc nB'
     nsgn ; nctx' |- nB' => typeK
     ---------------------------------- :: pi_intro
     nsgn ; nctx |- Pi nA . nB => typeK 
@@ -661,7 +660,7 @@ Jwellformednl_alg :: '' ::=
 
     nsgn ; nctx |- nA1 => typeK
     csctx (nctx,nA1) (nctx')
-    cstute nM2 ixc nM2'
+    cstute nM2 zeroc nM2'
     nsgn ; nctx' |- nM2' => nA2 
     cutsTy nA2 nA2'
     ---------------------------------------------------------- :: pi_intro

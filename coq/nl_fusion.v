@@ -248,6 +248,51 @@ Proof.
 Defined.
 
 (**
+   * Context unshifting
+ **)
+
+(** context unshifting is an inversion of context shifting **)
+
+Lemma cu_nTy_inverse_cs:
+  forall (A A' : nTy),
+    cs_nTy A A' -> cu_nTy A' A
+with cu_nte_inverse_cs:
+  forall (M M' : nte),
+    cs_nte M M' -> cu_nte M' M.
+Proof.
+  (* lemma 1 *)
+  intros.
+  induction H.
+  constructor.
+  constructor; auto.
+  constructor.
+  auto.
+  apply cu_nte_inverse_cs; auto.
+  (* lemma 2 *)
+  intros.
+  induction H.
+  constructor.
+  constructor.
+  constructor.
+  constructor.
+  apply cu_nTy_inverse_cs; auto.
+  auto.
+  constructor; auto.
+Qed.
+
+Lemma cu_nctx_inverse_cs:
+  forall (G G' : nctx),
+    cs_nctx G G' -> cu_nctx G' G.
+Proof.
+  intros.
+  induction H.
+  constructor.
+  constructor.
+  auto.
+  apply cu_nTy_inverse_cs; auto.
+Qed.  
+
+(**
    * Context-shifting type-unshifting
  **)
 

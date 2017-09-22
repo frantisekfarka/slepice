@@ -2465,7 +2465,7 @@ Proof.
   eapply IHwalgeq_nl_Ty1; eauto.
   exact c.
   exact c0.
-  assert (erasure_Ty nA1 = erasure_Ty nA') by (apply eq_nTy_erasure; auto).
+  assert (erasure_nTy nA1 = erasure_nTy nA') by (apply eq_nTy_erasure; auto).
   rewrite <- H15.
   eapply IHwalgeq_nl_Ty2.
   eapply cs_nTy_cstu.
@@ -2582,57 +2582,187 @@ intros.
 *)
 Admitted.
 
+(** 
+    context shifting preservers well-formedness of context
+
+    proof by induction on length of the context
+
+ **)
+
+Lemma wfctx_nl_cs:
+  forall (S : nsgn) (G G' : nctx) (A : nTy),
+    wfctx_nl S G -> wftype_nl S G A kindstar_nl_type -> cs_nctx (A :: G) G' ->
+    wfctx_nl S G'.
+Proof.    
+  intros.
+  remember (length G).
+  generalize dependent A.
+  generalize dependent G'.
+  generalize dependent G.
+  induction n.
+  intros.
+  destruct G.
+  inversion H1.
+  eapply ctx_nl_var.
+  econstructor.
+  eapply cu_nctx_inverse_cs; eauto.
+  eapply cu_nTy_inverse_cs; eauto.
+  auto.
+  auto.
+  inversion Heqn.
+  (* step *)
+  intros.
+  inversion H1.
+  econstructor.
+  rewrite <- H5 in H1.
+  eapply cu_nctx_inverse_cs; eauto.
+  auto.
+  auto.
+Qed.
+
+
 Lemma wftype_nl_dec:
-  forall (S : nsgn) (G : nctx) (A : nTy),
+  forall (S : nsgn) (G : nctx) (sA : sTy) (A : nTy),
     wfsig_nl S -> wfctx_nl S G ->
+    sA = struct_nTy A ->
     { L | wftype_nl S G A L } +
     { forall L, ~ (wftype_nl S G A L)}.
 Proof.
   intros.
+  generalize dependent A.
   generalize dependent G.
-  induction A.
-  (* base case tcon *)
+  induction sA.
+  (* struct ~ leaf *)
   intros.
+  destruct A.
+  (* tcon *)
   assert ({ L | boundnTCon tcon5 L S } +
     { forall L, ~ (boundnTCon tcon5 L S)}) by (apply boundnTCon_dec).
-  destruct H1.
+  destruct H2.
+  (* bound con *)
   left.
   destruct s.
   exists x.
-  apply ty_nl_tcon.
-  assumption.
-  assumption.
+  constructor; auto.
+  (* not bound con *)
   right.
   intro.
   intro.
+  inversion H2.
+  apply n with L; auto.
+  (* pi intro on leaf *)
   inversion H1.
-  apply n with L.
-  assumption.
+  (* pi elim on leaf *)
+  inversion H1.
   (* step case pi_intro *)
   intros.
+  destruct A.
+  inversion H1.
+  inversion H1.
   assert ({L | wftype_nl S G A1 L}
           + {forall L, ~ wftype_nl S G A1 L}).
-  apply IHA1.
-  assumption.
-  
-  assert ({L | wftype_nl S G A2 L}
-          + {forall L, ~ wftype_nl S G A2 L}).
-  apply IHA2.
-  
-  assumption.
-  destruct H1.
+  apply IHsA1; auto.
   destruct H2.
   destruct s.
-  destruct s0.
   assert ({x = kindstar_nl_type} + {x <> kindstar_nl_type}) by (apply eq_nK).
-  assert ({x0 = kindstar_nl_type} + {x0 <> kindstar_nl_type}) by (apply eq_nK).
-  destruct H1.
   destruct H2.
-  (* the valid subcase *)
+  rewrite e in w.
   assert ({ G' | cs_nctx (A1 :: G) G'}) by (apply cs_nctx_dec).
+  destruct H2.
   assert ({ A2' | cstu_nTy A2 0 A2'}) by (apply cstu_nTy_dec).
-  destruct H1.  
-  destruct H2. 
+  destruct H2.
+  assert ({L | wftype_nl S x0 x1 L}
+          + {forall L, ~ wftype_nl S x0 x1 L}).
+  apply IHsA2.
+  eapply wfctx_nl_cs; eauto.
+
+Lemma struct_nTy_cstu:
+  forall (sA : sTy) (A A' : nTy) (i : Ixc) ,
+    sA = struct_nTy A -> cstu_nTy A i A' ->
+    sA = struct_nTy A'
+with struct_nte_cstu:
+  forall (sM : ste) (M M' : nte) (i : Ixc),
+    sM = struct_nte M -> cstu_nte M i M' ->
+    sM = struct_nte M'.
+Proof.
+  (* lemma 1 *)
+  induction sA.
+  intros.
+  destruct A.
+  inversion H0; auto.
+  inversion H.
+  inversion H.
+  intros.
+  destruct A.
+  inversion H.
+  inversion H.
+  inversion H0.
+  replace (struct_nTy (typestar_nl_pi_intro nA' nB')) with
+    (type_str_pi_intro (struct_nTy nA') (struct_nTy nB')) by (cbv; auto).
+  f_equal.
+  rewrite <- H2.
+  eapply IHsA1; eauto.
+  rewrite <- H3.
+  eapply IHsA2; eauto.
+  inversion H.
+  intros.
+  destruct A.
+  inversion H.
+  inversion H.
+  inversion H.
+  inversion H0.
+  replace (struct_nTy (typestar_nl_pi_elim nA' nM')) with
+    (type_str_pi_elim (struct_nTy nA') (struct_nte nM')) by (cbv; auto). 
+  f_equal.
+  rewrite <- H2.
+  eapply IHsA; eauto.
+  rewrite <- H3.
+  eapply struct_nte_cstu; eauto.
+  (* lemma 2 *)
+  induction sM.
+  intros.
+  destruct M.
+  inversion H0.
+  constructor.
+  inversion H0.
+  constructor.
+  inversion H0.
+  constructor.
+  constructor.
+  inversion H.
+  inversion H.
+  (* step *)
+  intros.
+  destruct M; try (inversion H).
+  inversion H.
+  inversion H0.
+  replace (struct_nte (termstar_nl_pi_intro nA' nM')) with
+    (term_str_pi_intro (struct_nTy nA') (struct_nte nM')) by (cbv; auto). 
+  f_equal.
+  eapply struct_nTy_cstu; eauto.
+  rewrite <- H3.
+  eapply IHsM; eauto.
+  (* elim *)
+  intros.
+  destruct M; try (inversion H).
+  inversion H0.
+  replace (struct_nte (termstar_nl_pi_elim nM' nN')) with
+    (term_str_pi_elim (struct_nte nM') (struct_nte nN')) by (cbv; auto). 
+  f_equal.
+  rewrite <- H2.
+  eapply IHsM1; eauto.
+  rewrite <- H3.
+  eapply IHsM2; eauto.
+Qed.
+
+auto.
+  destruct H2.
+  destruct s0.
+
+  assert ({x2 = kindstar_nl_type} + {x2 <> kindstar_nl_type}) by (apply eq_nK).
+  destruct H2.
+  destruct H5.
+  (* the valid subcase *)
   left.
   exists kindstar_nl_type.
   eapply ty_nl_pi_intro.
@@ -2640,8 +2770,25 @@ Proof.
   (* after shifting *)
   exact c.
   exact c0.
-  inversion c.
-
+  rewrite <- e0.
+  exact w0.
+  (* x2 <> typeK case *)
+  right.
+  intros.
+  intro.
+  inversion H2.
+  admit. (* wftype determinacy w0 ? *)
+  right.
+  intro.
+  intro.
+  inversion H2.
+  admit. (* wftype determinacy *)
+  right.
+  intros.
+  intro.
+  inversion H2.
+  eapply n.
+  admit.
 
   assert ({L : nK | wftype_nl S (nA' :: nctx') x2 L } +
          {(forall L : nK, ~ wftype_nl S (nA' :: nctx') x2 L )}).

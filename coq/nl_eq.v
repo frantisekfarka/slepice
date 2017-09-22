@@ -42,7 +42,7 @@ Qed.
 Lemma eq_nTy_erasure:
   forall (A A' : nTy),
     cs_nTy A A' ->
-    (erasure_Ty A) = (erasure_Ty A').
+    (erasure_nTy A) = (erasure_nTy A').
 Proof.
   intros.
   induction H; auto.
@@ -54,7 +54,7 @@ Qed.
 Lemma eq_nctx_cs_erasure:
   forall (G G' : nctx),
     cs_nctx G G' ->
-    (erasure_ctx G) = (erasure_ctx G').
+    (erasure_nctx G) = (erasure_nctx G').
 Proof.
   intros.
   induction H.

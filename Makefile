@@ -45,9 +45,7 @@ GOALS=$(SRC_DIR)fodtt_lnl-goal.ott
 OTT=../ott/bin/ott
 
 COQ=$(COQ_DIR)defns.v\
-    $(COQ_DIR)fusion.v\
-    $(COQ_DIR)fusion_supl.v\
-    $(COQ_DIR)transport.v\
+    $(COQ_DIR)nl_fusion.v\
     $(COQ_DIR)nl_sgn.v\
     $(COQ_DIR)nl_whr.v\
     $(COQ_DIR)nl_eq.v\
