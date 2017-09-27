@@ -281,3 +281,41 @@ Lemma algeq_nl_te_whr_inversion_r:
 Proof.
   eauto using algeq_nl_te_symmetry, algeq_nl_te_whr_inversion_l.
 Qed.
+
+(** determinacy of algeq in case of tcon a **)
+Lemma algeq_nl_te_determinacy_tcon:
+  forall (sS : snsgn) (sG : snctx) (M N : nte) (a1 a2 : tcon),
+    ( algeq_nl_te sS sG M N (stype_nl_tcon a1)) ->
+    ( algeq_nl_te sS sG M N (stype_nl_tcon a2)) ->
+    a1 = a2.
+Proof.
+  intros.
+  generalize dependent a2.
+  remember (stype_nl_tcon a1).
+  generalize dependent a1.
+  induction H.
+  intros.
+  eapply algeq_nl_te_whr_inversion_l in H1.
+  apply IHalgeq_nl_te; eauto.
+  auto.
+  (* right *)
+  intros.
+  eapply algeq_nl_te_whr_inversion_r in H1.
+  apply IHalgeq_nl_te; eauto.
+  auto.
+  (* streq *)
+  intros.
+  inversion H0.
+  eapply streq_nl_te_determinacy_l in H.
+  destruct H.
+  eexists; eauto.
+  eapply streq_nl_te_determinacy_r in H.
+  destruct H.
+  eexists; eauto.
+  assert (stype_nl_tcon a = stype_nl_tcon a2) by (eapply streq_nl_te_strong_determinacy; eauto).
+  inversion H7.
+  inversion Heqs.
+  rewrite <- H9; rewrite <- H10; auto.
+  intros.
+  inversion Heqs.
+Qed.  

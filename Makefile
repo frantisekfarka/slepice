@@ -49,6 +49,7 @@ COQ=$(COQ_DIR)defns.v\
     $(COQ_DIR)nl_sgn.v\
     $(COQ_DIR)nl_whr.v\
     $(COQ_DIR)nl_eq.v\
+    $(COQ_DIR)nl_struct.v\
     $(COQ_DIR)nl_tycheck.v
 
 .PHONY: clean veryclean

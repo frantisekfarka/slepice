@@ -120,10 +120,10 @@ Qed.
 (** context shifting preserves weak head-reduction **)
 
 Lemma whr_nl_te_cs:
-  forall (M M' : nte),
+  forall (M M' N N' : nte),
     whr_nl_te M M' ->
-    forall (N N' : nte), cs_nte M N -> cs_nte M' N' ->
-                         whr_nl_te N N'.
+    cs_nte M N -> cs_nte M' N' ->
+    whr_nl_te N N'.
  Proof.
   intros.
   generalize dependent N'.
@@ -147,10 +147,9 @@ Qed.
 (** context shifting preservs weak head-reduction in inverse **)
  
 Lemma whr_nl_te_cs_inversion:
-  forall (N N' : nte),
-    whr_nl_te N N' ->
-    forall (M M' : nte), 
-      cs_nte M N -> cs_nte M' N' -> whr_nl_te M M'.
+  forall (N N' M M'  : nte),
+    whr_nl_te N N' -> cs_nte M N -> cs_nte M' N' ->
+    whr_nl_te M M'.
 Proof.
   intros.
   generalize dependent M'.

@@ -122,6 +122,21 @@ Fstruct ::=
   structnte( nM nN ) === structnte( nM ) structnte( nN )
   structnte( \ nA . nM ) === \ structnTy( nA ) . structnte( nM )
 
+funs
+Fcsmstralgeq ::=
+
+  fun
+  csmstralgeq( d ) :: mstralgeq :: mstralgeq_cs
+    {{ tex \overset{\leftarrow} {  [[d]]  } }} by
+
+  csmstralgeq( whr_l mstralgeq )               === whr_l csmstralgeq( mstralgeq )
+  csmstralgeq( whr_r mstralgeq )               === whr_r csmstralgeq( mstralgeq )
+  csmstralgeq( str mstralgeq )                 === str csmstralgeq( mstralgeq )
+  csmstralgeq( eta_exp mstralgeq )             === eta_exp csmstralgeq( mstralgeq )
+  csmstralgeq( zeroc )                         === succ zeroc
+  csmstralgeq( succ mstralgeq )                === succ csmstralgeq( )
+  csmstralgeq( con )                           === con
+  csmstralgeq( pi_elim mstralgeq1 mstralgeq2 ) === pi_elim csmstralgeq( mstralgeq1 ) csmstralgeq( mstralgeq2 )
 
 defns
 Cshifting :: 'cs_' ::=
@@ -145,60 +160,60 @@ Cshifting :: 'cs_' ::=
   csTy ( nA nM ) (nA' nM')
 
   defn
-  cste nte  nte' :: :: nte :: 'nte_'
-    {{ tex \overleftarrow{[[nte]]} \equiv [[nte']] }}
+  cste nte ixc nte' :: :: nte :: 'nte_'
+    {{ tex \overleftarrow{[[nte]]} [ [[ixc]]  ] \equiv [[nte']] }}
     {{ com C-shifting on terms }} by
  
-  -------- :: con
-  cste c c
+  ------------- :: con
+  cste c ixc c
   
-  ------------------- :: ixc
-  cste ixc (succ ixc)
+  ------------------------ :: ixc
+  cste ixc ixc' (succ ixc)
 
-  ------------ :: ixt
-  cste ixt ixt
+  ---------------- :: ixt
+  cste ixt ixc ixt
 
-  csTy nA nA'
-  cste nM nM'
-  ------------------------------ :: pi_intro
-  cste (\ nA . nM) (\ nA' . nM') 
+  csTy nA ixc nA'
+  cste nM ixc nM'
+  ---------------------------------- :: pi_intro
+  cste (\ nA . nM) ixc (\ nA' . nM') 
 
-  cste nM nM'
-  cste nN nN'
-  ------------------------ :: pi_elim
-  cste ( nM nN ) (nM' nN')
+  cste nM ixc nM'
+  cste nN ixc nN'
+  ---------------------------- :: pi_elim
+  cste ( nM nN ) ixc (nM' nN')
 
 defns
 CshiftingnK :: '' ::=
 
   defn
-  csK ( nK ) ( nK' ) :: :: cs_nK :: 'cs_nK_' 
-    {{ tex \overleftarrow{[[nK]]} \equiv [[nK']] }}
+  csK ( nK ) ixc ( nK' ) :: :: cs_nK :: 'cs_nK_' 
+    {{ tex \overleftarrow{[[nK]]} [ [[ixc]] ] \equiv [[nK']] }}
     {{ com C-shift on kinds }} by
 
   --------------------- :: type
-  csK (typeK) (typeK)
+  csK (typeK) ixc (typeK)
 
-  csTy nA nA'
-  csK (nL) (nL')
-  ------------------------------------ :: pi_intro
-  csK (Pi nA . nL) (Pi nA' . nL')
+  csTy nA ixc nA'
+  csK (nL) ixc (nL')
+  ----------------------------------- :: pi_intro
+  csK (Pi nA . nL) ixc (Pi nA' . nL')
 
 defns
 Cshiftingctx :: '' ::=
 
   defn
-  csctx ( nctx ) ( nctx' ) :: :: cs_nctx :: 'cs_nctx_' 
-    {{ tex \overleftarrow{[[nctx]]} \equiv [[nctx']] }}
+  csctx ( nctx ) ixc ( nctx' ) :: :: cs_nctx :: 'cs_nctx_' 
+    {{ tex \overleftarrow{[[nctx]]} [ [[ixc]] ] \equiv [[nctx']] }}
     {{ com C-shift on contexts }} by
 
-  ------------------------ :: empty
-  csctx( empty ) ( empty ) 
+  ---------------------------- :: empty
+  csctx( empty ) ixc ( empty ) 
 
-  csctx( nctx ) (nctx')
-  csTy nA nA'
-  --------------------------- :: var
-  csctx( nctx,nA ) (nctx',nA')
+  csctx( nctx ) ixc (nctx')
+  csTy nA ixc nA'
+  -------------------------------- :: var
+  csctx( nctx,nA ) ixc (nctx',nA')
 
 defns
 Cunshifting :: 'cu_' ::=
@@ -474,7 +489,55 @@ Jwhr :: '' ::=
     ------------------- :: head
     nM nN -whr-> nM' nN 
 
+defns
+JalgstreqB :: '' ::=
 
+  defn 
+  snsgn ; snctx ; mstralgeq |- nM algeq nN : tau ::  :: algeqB_nl_te :: 'algeqB_nl_te_' 
+    {{ tex [[snsgn]] ; [[snctx]] ; [[mstralgeq]] \vdash [[nM]] \overset{\text{d.b.} }{\Leftrightarrow} [[nN]] : [[tau]] }} by
+
+    nM -whr-> nM'
+    snsgn ; snctx ; d |- nM' algeq nN : a
+    ------------------------------------------ :: whr_l
+    snsgn ; snctx ; whr_l d |- nM algeq nN : a
+
+    nN -whr-> nN'
+    snsgn ; snctx ; d |- nM algeq nN' : a
+    -------------------------------------- :: whr_r
+    snsgn ; snctx ; whr_r d |- nM algeq nN : a
+
+    snsgn ; snctx ; d |- nM streq nN : a
+    -------------------------------------- :: streq
+    snsgn ; snctx ; str d |- nM algeq nN : a
+
+    cste nM nM'
+    cste nN nN'
+    snsgn ; snctx, tau1 ; d |- (nM' zeroc) algeq (nN' zeroc) : tau2
+    --------------------------------------------------------------- :: eta_exp
+    snsgn ; snctx ; eta_exp d |- nM algeq nN : tau1 -> tau2
+
+  defn 
+  snsgn ; snctx ; mstralgeq |- nM streq nN : tau ::  :: streqB_nl_te :: 'streqB_nl_te_' 
+    {{ tex [[snsgn]] ; [[snctx]] ; [[mstralgeq]] \vdash [[nM]] \overset{\text{d.b.} }{\leftrightarrow} [[nN]] : [[tau]] }} by
+
+    |- snsgn
+    ---------------------------------------------------- :: var_zero
+    snsgn ; snctx,tau ; zeroc |- zeroc streq zeroc : tau
+
+    |- snsgn
+    snsgn ; snctx ; d |- ixc streq ixc : tau
+    ------------------------------------------------------------ :: var_succ
+    snsgn ; snctx,tau' ; succ d |- succ ixc streq succ ixc : tau
+
+    |- snsgn
+    c : tau in snsgn
+    --------------------------------------------- :: con
+    snsgn ; snctx ; con |- c streq c : tau
+
+    snsgn ; snctx ; d1 |- nM1 streq nN1 : tau2 -> tau1
+    snsgn ; snctx ; d2 |- nM2 algeq nN2 : tau2
+    ------------------------------------------------------------- :: pi_elim
+    snsgn ; snctx ; pi_elim d1 d2 |- nM1 nM2 streq nN1 nN2 : tau1
 
 defns
 Jalgstreq :: '' ::=

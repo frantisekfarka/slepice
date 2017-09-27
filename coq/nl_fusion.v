@@ -815,6 +815,23 @@ Proof.
   apply IHtuts_nte2; auto.
 Qed.
 
+Lemma tuts_nK_determinacy:
+  forall (L L1 L2: nK) (N : nte),
+    tuts_nK L N L1 -> tuts_nK L N L2 ->
+    L1 = L2.
+Proof.
+  intros.
+  generalize dependent L2.
+  induction H.
+  intros.
+  inversion H0; auto.
+  intros.
+  inversion H1.
+  f_equal.
+  eapply tuts_nTy_determinacy; eauto.
+  eapply IHtuts_nK; eauto.
+Qed.  
+  
 (** context shifting preserves tuts **)
 
 Fixpoint tuts_nTy_cs (A B A' B': nTy) (N N' : nte) (H : tuts_nTy A N B) {struct H}:
