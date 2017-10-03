@@ -134,7 +134,7 @@ Fcsmstralgeq ::=
   csmstralgeq( str mstralgeq )                 === str csmstralgeq( mstralgeq )
   csmstralgeq( eta_exp mstralgeq )             === eta_exp csmstralgeq( mstralgeq )
   csmstralgeq( zeroc )                         === succ zeroc
-  csmstralgeq( succ mstralgeq )                === succ csmstralgeq( )
+  csmstralgeq( succ mstralgeq )                === succ csmstralgeq( mstralgeq )
   csmstralgeq( con )                           === con
   csmstralgeq( pi_elim mstralgeq1 mstralgeq2 ) === pi_elim csmstralgeq( mstralgeq1 ) csmstralgeq( mstralgeq2 )
 
@@ -142,33 +142,40 @@ defns
 Cshifting :: 'cs_' ::=
 
   defn 
-  csTy nTy nTy' :: :: nTy :: 'nTy_'
-  {{ tex \overleftarrow{[[nTy]]} \equiv [[nTy']] }}
+  csTy nTy ixc nTy' :: :: nTy :: 'nTy_'
+  {{ tex \overleftarrow{[[nTy]]} [ [[ixc]] ]  \equiv [[nTy']] }}
   {{ com C-shifting on types }} by
  
-  -------- :: tcon
-  csTy a a
+  ------------ :: tcon
+  csTy a ixc a
 
-  csTy nA nA'
-  csTy nB nB'
-  --------------------------------- :: pi_intro
-  csTy (Pi nA . nB)  (Pi nA' . nB')
+  csTy nA ixc nA'
+  csTy nB ixc nB'
+  ------------------------------------ :: pi_intro
+  csTy (Pi nA . nB) ixc (Pi nA' . nB')
 
-  csTy nA nA'
-  cste nM nM'
-  ------------------------ :: pi_elim
-  csTy ( nA nM ) (nA' nM')
+  csTy nA ixc nA'
+  cste nM ixc nM'
+  ---------------------------- :: pi_elim
+  csTy ( nA nM ) ixc (nA' nM')
 
   defn
   cste nte ixc nte' :: :: nte :: 'nte_'
-    {{ tex \overleftarrow{[[nte]]} [ [[ixc]]  ] \equiv [[nte']] }}
+    {{ tex \overleftarrow{[[nte]]} [ [[ixc]] ] \equiv [[nte']] }}
     {{ com C-shifting on terms }} by
  
-  ------------- :: con
+  ------------ :: con
   cste c ixc c
   
-  ------------------------ :: ixc
-  cste ixc ixc' (succ ixc)
+  ------------------------- :: ixc_gt
+  cste ixc zeroc (succ ixc)
+
+  ---------------------------- :: ixc_zeroc
+  cste zeroc succ ixc' (zeroc)
+
+  cste ixc ixc' ixc''
+  ------------------------------------ :: ixc_succ
+  cste succ ixc succ ixc' (succ ixc'')
 
   ---------------- :: ixt
   cste ixt ixc ixt
@@ -191,7 +198,7 @@ CshiftingnK :: '' ::=
     {{ tex \overleftarrow{[[nK]]} [ [[ixc]] ] \equiv [[nK']] }}
     {{ com C-shift on kinds }} by
 
-  --------------------- :: type
+  ----------------------- :: type
   csK (typeK) ixc (typeK)
 
   csTy nA ixc nA'
@@ -199,82 +206,141 @@ CshiftingnK :: '' ::=
   ----------------------------------- :: pi_intro
   csK (Pi nA . nL) ixc (Pi nA' . nL')
 
+%defns
+%Cshiftingctx_update :: '' ::=
+%
+%  defn
+%  csctx_update ( nctx ) ( nctx' ) :: :: cs_nctx_update :: 'cs_nctx_update_' 
+%    {{ tex \overleftarrow{[[nctx]]} ^{\text{update} } \equiv [[nctx']] }}
+%    {{ com C-shift on contexts, update only }} by
+%
+%  -------------------------------- :: empty
+%  csctx_update ( empty ) ( empty ) 
+%
+%  csctx_update( nctx ) (nctx')
+%  csTy nA nA'
+%  ------------------------------ :: var
+%  csctx( nctx, nA ) (nctx', nA')
+
 defns
 Cshiftingctx :: '' ::=
 
   defn
-  csctx ( nctx ) ixc ( nctx' ) :: :: cs_nctx :: 'cs_nctx_' 
-    {{ tex \overleftarrow{[[nctx]]} [ [[ixc]] ] \equiv [[nctx']] }}
+  csctx ( nctx ) ixc nTy ( nctx' ) :: :: cs_nctx :: 'cs_nctx_' 
+    {{ tex \overleftarrow{[[nctx]]} [ [[ixc]] / [[nTy]] ] \equiv [[nctx']] }}
     {{ com C-shift on contexts }} by
 
-  ---------------------------- :: empty
-  csctx( empty ) ixc ( empty ) 
 
-  csctx( nctx ) ixc (nctx')
+  ------------------------------------------ :: empty
+  csctx( empty ) zeroc nB ( empty, nB ) 
+
+  csctx( nctx ) zeroc nA (nctx')
+  csTy nB zeroc nB'
+  ----------------------------------------- :: var_zero
+  csctx( nctx,nA ) zeroc nB (nctx', nB')
+
+%  --------------------------------------- :: empty_succ
+%  csctx( empty ) succ ixc nB ( empty ) 
+
+  csctx( nctx ) ixc nB (nctx')
   csTy nA ixc nA'
-  -------------------------------- :: var
-  csctx( nctx,nA ) ixc (nctx',nA')
+  ------------------------------------------ :: var_succ
+  csctx( nctx, nA ) succ ixc nB (nctx',nA')
+
+defns
+Cshiftingsctx :: '' ::=
+
+  defn
+  cssctx ( snctx ) ixc snTy ( snctx' ) :: :: cs_snctx :: 'cs_snctx_' 
+    {{ tex \overleftarrow{[[snctx]]} [ [[ixc]] / [[snTy]] ] \equiv [[snctx']] }}
+    {{ com C-shift on simple contexts }} by
+
+
+  ------------------------------------------ :: empty
+  cssctx( empty ) zeroc tau ( empty, tau ) 
+
+  cssctx( snctx ) zeroc tau' ( snctx' )
+  ------------------------------------------------ :: var_zeroc
+  cssctx( snctx, tau' ) zeroc tau (snctx',tau )
+
+  cssctx( snctx ) ixc tau ( snctx' )
+  -------------------------------------------------- :: var_succ
+  cssctx( snctx, tau' ) succ ixc tau (snctx', tau' )
+
 
 defns
 Cunshifting :: 'cu_' ::=
 
   defn
-  cuTy nTy nTy' :: :: nTy :: 'nTy_' 
-    {{ tex \overrightarrow{[[nTy]]} \equiv [[nTy']] }} 
+  cuTy nTy ixc nTy' :: :: nTy :: 'nTy_' 
+    {{ tex \overrightarrow{[[nTy]]} [ [[ixc]] ] \equiv [[nTy']] }} 
     {{ com C-unshifting on types }} by
  
-  -------- :: 1
-  cuTy a a
+  ------------ :: tcon
+  cuTy a ixc a
 
-  cuTy nA nA'
-  cuTy nB nB'
-  --------------------------------- :: 2
-  cuTy( Pi nA . nB ) (Pi nA' . nB')
+  cuTy nA ixc nA'
+  cuTy nB ixc nB'
+  ------------------------------------- :: pi_intro
+  cuTy( Pi nA . nB ) ixc (Pi nA' . nB')
 
-  cuTy nA nA'
-  cute nM nM'
-  ----------------------- :: 3
-  cuTy( nA nM ) (nA' nM')
+  cuTy nA ixc nA'
+  cute nM ixc nM'
+  --------------------------- :: pi_elim
+  cuTy( nA nM ) ixc (nA' nM')
 
   defn
-  cute nte nte' :: :: nte :: 'nte_'
-    {{ tex \overrightarrow{[[nte]]} \equiv [[nte']] }} 
+  cute nte ixc nte' :: :: nte :: 'nte_'
+    {{ tex \overrightarrow{[[nte]]} [ [[ixc]] ]  \equiv [[nte']] }} 
     {{ com C-unshifting on terms }} by
 
-  -------- :: 1
-  cute c c
+  ------------ :: con
+  cute c ixc c
 
-  ------------------- :: 2
-  cute (succ ixc) ixc
+  ------------------------ :: ixc_lt
+  cute (succ ixc) zeroc ixc
  
-  ------------ :: 3
-  cute ixt ixt
+  ------------------------- :: ixc_zeroc
+  cute zeroc succ ixc zeroc
+ 
 
-  cuTy nA nA'
-  cute nM nM'
-  ---------------------------------- :: 4
-  cute ( \ nA . nM ) ( \ nA' . nM' )
+  cute (ixc) ixc' ixc''
+  ------------------------------------ :: ixc_succ
+  cute (succ ixc) succ ixc' succ ixc''
 
-  cute nM nM'
-  cute nN nN'
-  ------------------------ :: 5
-  cute ( nM nN ) (nM' nN')
+  ---------------- :: ixt
+  cute ixt ixc ixt
+
+  cuTy nA ixc nA'
+  cute nM ixc nM'
+  -------------------------------------- :: pi_intro
+  cute ( \ nA . nM ) ixc ( \ nA' . nM' )
+
+  cute nM ixc nM'
+  cute nN ixc nN'
+  ---------------------------- :: pi_elim
+  cute ( nM nN ) ixc (nM' nN')
 
 defns
 Cunshiftingctx :: '' ::=
 
   defn
-  cuctx ( nctx ) ( nctx' ) ::  :: cu_nctx :: 'cu_nctx_'
-    {{ tex \overrightarrow{[[nctx]]} \equiv [[nctx']] }} 
+  cuctx ( nctx ) ixc ( nctx' ) nTy ::  :: cu_nctx :: 'cu_nctx_'
+    {{ tex \overrightarrow{[[nctx]]} [[ixc]] \equiv [[nctx']] \mid [[nTy]] }} 
     {{ com C-unshifting on contexts }} by
 
-  ------------------------- :: empty
-  cuctx ( empty ) ( empty )
+  ----------------------------------- :: empty
+  cuctx ( empty,nB ) zeroc (empty) nB
 
-  cuctx ( nctx ) (nctx')
-  cuTy nA nA'
-  ----------------------------- :: var
-  cuctx ( nctx,nA ) (nctx',nA')
+  cuTy nB zeroc nB'
+  cuctx (nctx) zeroc (nctx') nA
+  --------------------------------------- ::  var_zeroc
+  cuctx ( nctx,nB ) zeroc ( nctx',nA ) nB'
+
+  cuctx ( nctx ) ixc ( nctx' ) nB
+  cuTy nA ixc nA'
+  ----------------------------------------- :: var_succ
+  cuctx ( nctx,nA ) succ ixc (nctx',nA') nB
 
 defns
 CshiftingTunshifting :: 'cstu_' ::=
@@ -510,8 +576,8 @@ JalgstreqB :: '' ::=
     -------------------------------------- :: streq
     snsgn ; snctx ; str d |- nM algeq nN : a
 
-    cste nM nM'
-    cste nN nN'
+    cste nM zeroc nM'
+    cste nN zeroc nN'
     snsgn ; snctx, tau1 ; d |- (nM' zeroc) algeq (nN' zeroc) : tau2
     --------------------------------------------------------------- :: eta_exp
     snsgn ; snctx ; eta_exp d |- nM algeq nN : tau1 -> tau2
@@ -575,8 +641,8 @@ Jalgstreq :: '' ::=
     --------------------------------- :: streq
     snsgn ; snctx |- nM algeq nN : a
 
-    cste nM nM'
-    cste nN nN'
+    cste nM zeroc nM'
+    cste nN zeroc nN'
     snsgn ; snctx, tau1 |- (nM' zeroc) algeq (nN' zeroc) : tau2
     ----------------------------------------------------------- :: eta_exp
     snsgn ; snctx |- nM algeq nN : tau1 -> tau2
@@ -659,7 +725,7 @@ Jwellformednl_alg :: '' ::=
     --------------------  :: empty
     nsgn |- empty => ctx
 
-    cuctx (nctx, nA) (nctx', nA')
+    cuctx (nctx, nA) zeroc (nctx') nA'
     nsgn |- nctx' => ctx
     nsgn ; nctx' |- nA'  => typeK
     ----------------------------- :: var
@@ -673,7 +739,7 @@ Jwellformednl_alg :: '' ::=
     nsgn ; nctx |- typeK => kindS
 
     nsgn ; nctx |- nA => typeK
-    csctx (nctx,nA) (nctx')
+    csctx (nctx) zeroc nA (nctx')
     cstuK nL zeroc nL'
     nsgn ; nctx' |- nL' => kindS
     ---------------------------------------- :: pi_intro
@@ -688,7 +754,7 @@ Jwellformednl_alg :: '' ::=
     nsgn ; nctx |- a => nL
 
     nsgn ; nctx |- nA => typeK
-    csctx (nctx,nA) (nctx')
+    csctx (nctx) zeroc nA (nctx')
     cstuTy nB zeroc nB'
     nsgn ; nctx' |- nB' => typeK
     ---------------------------------- :: pi_intro
@@ -713,16 +779,16 @@ Jwellformednl_alg :: '' ::=
     ----------------------------  :: var_zero
     nsgn ; nctx,nA |- zeroc => nA
 
-    cuctx (nctx) (nctx')
+    cuctx (nctx,nB) zeroc (nctx') nB'
     nsgn ; nctx' |- ixc => nA
-    csTy nA nA'
+    csTy nA zeroc nA'
     ------------------------------------------------  :: var_succ
     nsgn ; nctx,nB |- succ ixc => nA'
 
 
 
     nsgn ; nctx |- nA1 => typeK
-    csctx (nctx,nA1) (nctx')
+    csctx (nctx) zeroc nA1 (nctx')
     cstute nM2 zeroc nM2'
     nsgn ; nctx' |- nM2' => nA2 
     cutsTy nA2 nA2'
