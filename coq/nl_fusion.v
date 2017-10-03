@@ -715,6 +715,157 @@ Qed.
    * Context unshifting
  **)
 
+(** decidability of context unshifting **)
+
+Lemma cu_nTy_dec:
+  forall (A : nTy) (i : Ixc),
+    { A' : nTy | cu_nTy A i A' } + {forall (A' : nTy), ~ cu_nTy A i A'}
+with cu_nte_dec:
+  forall (M : nte) (i : Ixc),
+    {  M' : nte | cu_nte M i M' } + {forall (M' : nte), ~ cu_nte M i M'}.
+Proof.
+  { (* lemma 1 *)
+    intros.
+    induction A as [ a | A IH_A B IH_B | A IH_A M ].
+    - left.
+      eexists; constructor.
+    - destruct IH_A as [ [A'] | ].
+      + destruct IH_B as [ [B'] | ].
+        * left; eexists; constructor; eauto.
+        *  right; intros; intro.
+           inversion H.
+           eapply n; eauto.
+      + right; intros; intro.
+        inversion H.
+        eapply n; eauto.
+    - destruct IH_A as [ [A'] | ].
+      + assert (H_M : {M' : nte | cu_nte M i M'} +
+                      {(forall M' : nte, ~ cu_nte M i M')})
+          by (apply cu_nte_dec).
+        destruct H_M as [ [M'] | ].
+        * left; eexists; constructor; eauto.        
+        * right; intros; intro.
+          inversion H.
+          eapply n; eauto.
+      + right; intros; intro.
+        inversion H.
+        eapply n; eauto.
+  }
+  { (* lemma 2 *) 
+    intros.
+    induction M as [ a |  | | A M | M IH_M N IH_N ].
+    - intros; left.
+      eexists; econstructor.
+    - generalize dependent ixc.
+      induction i.
+      + intros.
+        destruct ixc.
+        * right; intros; intro.
+          inversion H.
+        * left; eexists; constructor.
+      + intros.
+        destruct ixc.
+        * left; eexists; constructor.
+        * assert ({M' : nte | cu_nte (termstar_nl_ixc ixc) i M'} +
+                  {(forall M' : nte, ~ cu_nte (termstar_nl_ixc ixc) i M')}) 
+            by (eapply IHi).
+          destruct H as [ [M'] | ].
+          { destruct M'.
+            - exfalso; inversion c.
+            - left; eexists; constructor; eauto.
+            - exfalso; inversion c.
+            - exfalso; inversion c.
+            - exfalso; inversion c.
+          }
+          { right; intro; intro.
+            inversion H.
+            eapply n; eauto.
+          }
+    - destruct ixt.
+      + left; eexists; constructor.
+      + left; eexists; constructor.
+    - destruct IHM as [ [M'] | ].
+      + assert ({A' : nTy | cu_nTy A i A'} +
+                {(forall A' : nTy, ~ cu_nTy A i A')})
+          by (apply cu_nTy_dec).
+        destruct H as [ [A'] | ].
+        * left; eexists; constructor; eauto.
+        * right; intros; intro.
+          inversion H.
+          eapply n; eauto.
+      + right; intros; intro.
+        inversion H.
+        eapply n; eauto.
+    - destruct IH_M as [ [M'] | ].
+      destruct IH_N as [ [N'] | ].
+      + left; eexists; constructor; eauto.
+      + right; intros; intro.
+        inversion H.
+        eapply n; eauto.
+      + right; intros; intro.
+        inversion H.
+        eapply n; eauto.
+  }
+Qed.              
+
+Lemma cu_nctx_dec:
+  forall (G : nctx)  (i : Ixc),
+    { G'A' : nctx * nTy | cu_nctx G i (fst G'A') (snd G'A')  }
+    + {forall (A' : nTy) (G' : nctx), ~ cu_nctx G i G' A'}.
+Proof.                                       
+  intros.
+  generalize dependent G.
+  induction i.
+  - intros.
+    induction G.
+    + right; intros; intro.
+      inversion H.
+    + destruct IHG as [ [ [ ?G' ?A' ] ] | ].
+      * assert ({a' | cu_nTy a 0 a'} + {forall a', ~ cu_nTy a 0 a'})
+          by (apply cu_nTy_dec).
+        destruct H as [ [a'] | ].
+        { left.
+          exists (A' :: G', a').
+          apply cu_nctx_var_zeroc; auto. }
+        { right; intros; intro.
+          cbn in c.
+          inversion H.
+          rewrite <- H2 in c; inversion c.
+          eapply n; eauto. }
+      * destruct G.
+        { left; exists (nil, a).
+          cbn.
+          constructor. }
+        { right; intros; intro.
+          inversion H.
+          eapply n; eauto. }
+  - intros.
+    induction G.
+    + intros.
+      right; intros; intro.
+      inversion H.
+    + intros.
+      assert ({G'A' : nctx * nTy | cu_nctx G i (fst G'A') (snd G'A')} +
+              {(forall (A' : nTy) (G' : nctx), ~ cu_nctx G i G' A')})
+             by (apply IHi).
+      destruct H as [ [ [?G' ?A' ]  w  ] | ].
+      *  cbn in w.
+
+         assert ({a' | cu_nTy a i a'} + {forall a', ~ cu_nTy a i a'})
+           by (apply cu_nTy_dec).
+         destruct H as [[a'] | ].
+
+         { left.
+           exists (a' :: G' , A').
+           constructor; auto. }
+         { right; intros; intro.
+           inversion H.
+           eapply n; eauto. }
+      * right; intros; intro.
+        inversion H.
+        eapply n; eauto.
+Qed.
+      
 (** context unshifting is an inversion of context shifting **)
 
 Lemma cu_nTy_inverse_cs:
@@ -1181,6 +1332,20 @@ Proof.
   exists (termstar_nl_pi_elim x x0).
   auto using tuts_nte_pi_elim.
 Qed.
+
+Lemma tuts_nK_dec:
+  forall (L : nK) (N : nte) ,
+    { L' | tuts_nK L N L' }.
+Proof.
+  intros.
+  induction L as [ | A ] .
+  - eexists; constructor.
+  - destruct IHL as [ L' ].
+    assert ({A' | tuts_nTy A N A'})
+      by (apply tuts_nTy_dec).
+    destruct H as [ A' ].
+    eexists; constructor; eauto.
+Qed.    
 
 (** determinacy of tuts *)
 
