@@ -865,7 +865,101 @@ Proof.
         inversion H.
         eapply n; eauto.
 Qed.
-      
+
+(** determinacy of context shifting **)
+
+Fixpoint cu_nTy_determinacy (A B1 B2 : nTy) (i : Ixc)
+         (H : cu_nTy A i B1) {struct H}:
+  cu_nTy A i B2 -> B1 = B2           
+with cu_nte_determinacy (M N1 N2 : nte) (i : Ixc)
+                        (H :  cu_nte M i N1) {struct H}:
+       cu_nte M i N2 -> N1 = N2.
+Proof.
+  (* lemma 1 *)
+  - intros.
+    generalize dependent B2.
+    induction H.
+    + intros.
+      inversion H0; auto.
+    + intros.
+      inversion H1.
+      f_equal; eauto using IHcu_nTy1 , IHcu_nTy2.
+    + intros.
+      inversion H1.
+      f_equal; eauto using IHcu_nTy , cu_nte_determinacy.
+  - intros.
+    generalize dependent N2.
+    induction H.
+    + intros.
+      inversion H0; auto.
+    + intros.
+      inversion H0; auto.
+    + intros.
+      inversion H0; auto.
+    + intros.
+      inversion H0.
+      assert (termstar_nl_ixc ixc'' = termstar_nl_ixc ixc''0)
+        by (eauto using IHcu_nte).
+      inversion H5.
+      rewrite <- H7; auto.
+    + destruct ixt.
+      * intros.
+        inversion H0; auto.
+      * intros.
+        inversion H0; auto.
+    + intros.
+      inversion H1.
+      f_equal; eauto using IHcu_nte, cu_nTy_determinacy.
+    + intros.
+      inversion H1.
+      f_equal; eauto using IHcu_nte1, IHcu_nte2.
+Qed.
+
+Lemma cu_nctx_determinacy:
+  forall (G G1 G2 : nctx) (A1 A2 : nTy) (i : Ixc),
+    cu_nctx G i G1 A1 -> cu_nctx G i G2 A2 ->
+    G1 = G2 /\ A1 = A2.
+Proof.
+  intros.
+  generalize dependent G.
+  generalize dependent G1.
+  generalize dependent G2.
+  generalize dependent A1.
+  generalize dependent A2.
+  induction i.
+  - intros.
+    generalize dependent G1.
+    generalize dependent G2.
+    generalize dependent A1.
+    generalize dependent A2.
+    induction G.
+    + intros.
+      inversion H.
+    + intros.
+      inversion H.
+      * rewrite <- H3 in H0.
+        inversion H0.
+        rewrite H4 in H8.
+        split; auto.
+        inversion H8.
+      * inversion H0.
+        rewrite <- H9 in H4; inversion H4.
+        split.
+        f_equal; eapply IHG; eauto.
+        eapply cu_nTy_determinacy; eauto.
+  - intros.
+    inversion H.
+    inversion H0.
+    rewrite <- H3 in H9; inversion H9.
+    rewrite H14 in H10.
+    rewrite H15 in H8.
+    split.
+    f_equal.
+    eapply cu_nTy_determinacy; eauto.
+    eapply IHi; eauto.   
+    eapply IHi; eauto.
+Qed.
+  
 (** context unshifting is an inversion of context shifting **)
 
 Lemma cu_nTy_inverse_cs:
@@ -1108,130 +1202,32 @@ Defined.
 
 Lemma cuts_nTy_dec:
   forall (A : nTy),
-    { A' | cuts_nTy A A' } + {forall A',  ~ (cuts_nTy A A')}
+    { A' | cuts_nTy A A' }
 with cuts_nte_dec:
   forall (M : nte),
-    { M' | cuts_nte M M' } + {forall M',  ~ (cuts_nte M M')}.
+    { M' | cuts_nte M M' }.
 Proof.
-  intros.
-  induction A.
-  left.
-  exists (typestar_nl_tcon tcon5).
-  trivial using cuts_nTy_tcon.
-  destruct IHA1.
-  destruct IHA2.
-  left.
-  destruct s.
-  destruct s0.
-  exists (typestar_nl_pi_intro x x0).
-  auto using cuts_nTy_pi_intro.
-  (* next case *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nB'.
-  assumption.
-  (* next case *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nA'.
-  assumption.
-  (* next case *)
-  destruct IHA.
-  assert ({M' |  cuts_nte nte5 M'} +
-      {forall M' : nte, ~ cuts_nte nte5 M'}) by (apply cuts_nte_dec).
-  destruct H.
-  left.
-  destruct s.
-  destruct s0.
-  exists (typestar_nl_pi_elim x x0).
-  apply cuts_nTy_pi_elim.
-  assumption.
-  assumption.
-  (* the other sub case *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  inversion s.
-  apply n with nM'.
-  assumption.
-  (* really last case :-) *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nA'.
-  assumption.
-  (* lemma cstu_nte_dec *)
-  intros.
-  induction M.
-  (* case con *)
-  left.
-  exists (termstar_nl_con con5).
-  auto using cuts_nte_con.
-  (* case ixc *)
-  left.
-  destruct ixc.
-  exists (termstar_nl_ixt (0)).
-  apply cuts_nte_zeroc.
-  exists (termstar_nl_ixc ixc).
-  apply cuts_nte_succ.
-  (* case ixt *)
-  left.
-  exists (termstar_nl_ixt (S ixt)).
-  apply cuts_nte_ixt.
-  (* case pi_intro *)  
-  destruct IHM.
-  assert ({A' | cuts_nTy nTy5 A'} +
-          {forall A' : nTy, ~ cuts_nTy nTy5 A'}).
-  apply cuts_nTy_dec.
-  destruct H.
-  left.
-  destruct s.
-  destruct s0.
-  exists (termstar_nl_pi_intro x0 x).
-  auto using cuts_nte_pi_intro.
-  (* subcase ~ nA' *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nA'.
-  assumption.
-  (* subcase ~ nM' *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nM'.
-  assumption.
-  (* case pi elim *)
-  destruct IHM1.
-  destruct IHM2.
-  left.
-  destruct s.
-  destruct s0.
-  exists (termstar_nl_pi_elim x x0).
-  auto using cuts_nte_pi_elim.
-  (* subcase ~M2 *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nN'.
-  assumption.
-  (* subcase ~M1 *)
-  right.
-  intro.
-  intro.
-  inversion H.
-  apply n with nM'.
-  assumption.
-Qed.
+  - (* lemma 1 *)
+    intros.
+    induction A as [ a | A [ A' ]  B [ B' ] | A [ A' ] M ].
+    + eexists; constructor.
+    + eexists; constructor; eauto.
+    + assert ({M' | cuts_nte M M'}) as [ M' ]
+        by (apply cuts_nte_dec).
+      eexists; constructor; eauto.
+  - (* lemma 2 *)
+    intros.
+    induction M as [ c | |  | A M [M'] | M1 [M1'] M2 [M2'] ].
+    + eexists; constructor.
+    + destruct ixc.
+      * eexists; constructor.
+      * eexists; constructor.
+    + eexists; constructor.
+    + assert ({A' | cuts_nTy A A'}) as [ A' ]
+          by (apply cuts_nTy_dec).
+      eexists; constructor; eauto.
+    + eexists; constructor; eauto.
+Qed.      
 
 (** determinacy of cuts **)
 

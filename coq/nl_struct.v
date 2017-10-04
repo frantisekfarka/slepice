@@ -1,21 +1,23 @@
 Require Import defns.
 
 
-Fixpoint struct_nTy_cs (A A' : nTy) (H : cs_nTy A A'):
+Fixpoint struct_nTy_cs (A A' : nTy) (i : Ixc) (H : cs_nTy A i A'):
   struct_nTy A = struct_nTy A'
-with struct_nte_cs (M M' : nte) (H : cs_nte M M'):
+with struct_nte_cs (M M' : nte) (i : Ixc) (H : cs_nte M i M'):
   struct_nte M = struct_nte M'.
 Proof.
   induction H.
   constructor.
-  cbv; f_equal;  auto.
-  cbv; f_equal; auto using struct_nte_cs.
+  cbv; f_equal;  eauto.
+  cbv; f_equal; eauto using struct_nte_cs.
   induction H.
   constructor.
   constructor.
   constructor.
-  cbv; f_equal; auto using struct_nTy_cs.
-  cbv; f_equal; auto.
+  constructor.
+  constructor.
+  cbv; f_equal; eauto using struct_nTy_cs.
+  cbv; f_equal; eauto.
 Qed.
 
 Fixpoint struct_nTy_cstu (A A' : nTy) (i : Ixc) (H : cstu_nTy A i A'):
