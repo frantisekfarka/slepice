@@ -1,6 +1,8 @@
 Require Import List.
 Require Import defns.
 
+Require Import nl_eq.
+
 (**
   * boundnCon
  **)
@@ -771,7 +773,7 @@ Proof.
   right.
   assumption.
 Qed.
-
+  
 (** determianacy of boundsnTCon **)
 
 Lemma boundsnTCon_weak_l:
@@ -880,3 +882,283 @@ Proof.
   apply IHwfssig_nl; eauto using boundsnTCon_weak_l.  
 Qed.
 
+
+(**  checking of boundsnTcon **)
+
+Lemma boundsnTCon_check:
+  forall (sS : snsgn) (a : tcon) (kappa : snK),
+    wfssig_nl sS ->
+    {boundsnTCon a kappa sS} + {~ boundsnTCon a kappa sS}.
+Proof.
+  intros.
+  assert ({ kappa' | boundsnTCon a kappa' sS} +
+          { forall kappa', ~ boundsnTCon a kappa' sS})
+    as [ [kappa'] | ]
+      by (apply boundsnTCon_dec).
+  - assert ({kappa = kappa'} + {kappa <> kappa'})
+      as [ eq_kappa | ]
+        by ( apply eq_snK).
+    + (* kappa = kappa' *)
+      rewrite eq_kappa.
+      left; auto.
+    + (* kappa <> kappa' *)
+      right; intro Hb.
+      assert (kappa = kappa')
+        by (eauto using boundsnTCon_determinacy).
+      contradiction.
+  - right; intro.
+    eapply n; eauto.
+Qed.
+
+  
+(** erausre stability for TCon **)
+Lemma indomsnTCon_stable:
+  forall (S : nsgn) (a : tcon),
+    indomsnTCon a (erasure_nsgn S) ->
+    indomnTCon a S.
+Proof.
+  
+  intros S a.
+
+  induction S.
+
+  - intro H.
+    unfold indomsnTCon in H.
+    unfold boundsnTCon in H.
+    decompose record H.
+    cbn in H1.
+    apply app_cons_not_nil in H1.
+    contradiction.
+
+  - destruct a0.
+    destruct p.
+    cbn.
+
+    intro H.
+
+    assert (indomnTCon a S).
+    apply IHS.
+    
+    unfold indomsnTCon.
+    unfold boundsnTCon.
+    unfold indomsnTCon in H.
+    unfold boundsnTCon in H.
+
+    decompose record H.
+    exists x.
+
+    destruct x0.
+    cbn in H1; inversion H1.
+
+    exists x0.
+    exists x1.
+
+    cbn in H1.
+    inversion H1.
+    split; auto.
+    intros; intro.
+    eapply H2.
+    right; eauto.
+
+    unfold indomnTCon in H0.
+    unfold boundnTCon in H0.
+    decompose record H0.
+
+    unfold indomnTCon.
+    unfold boundnTCon.
+    exists x.
+    exists (inl (c, n) :: x0).
+    exists x1.
+    split.
+    cbn.
+    f_equal; auto.
+
+    intros; intro.
+    eapply H3.
+    destruct H1.
+    inversion e.
+    eauto.
+
+    destruct p.
+    cbn.
+
+    assert ({t = a} + {t <> a}) as [ | ] by (apply eq_tcon).
+
+    + rewrite e.
+      intros.
+      unfold indomnTCon.
+      unfold boundnTCon.
+
+      exists n.
+      exists nil.
+      exists S.
+      split.
+      cbn; auto.
+      intros; intro.
+      inversion H0.
+
+    + intros.
+      assert (indomnTCon a S).
+      apply IHS.
+
+      unfold indomsnTCon in H.
+      unfold boundsnTCon in H.
+      decompose record H.
+
+      destruct x0.
+      cbn in H1.
+      inversion H1.
+      contradiction.
+
+      unfold indomsnTCon.
+      unfold boundsnTCon.
+      exists x. 
+      exists x0.
+      exists x1.
+
+      split.
+      cbn in H1.
+      inversion H1.
+      auto.
+
+      intros; intro.
+      eapply H2.
+      right; eauto.
+
+      unfold indomnTCon in H0.
+      unfold boundnTCon in H0.
+      decompose record H0.
+
+      unfold indomnTCon.
+      unfold boundnTCon.
+      exists x.
+      exists (inr (t, n) :: x0).
+      exists (x1).
+      split.
+      cbn.
+      f_equal; auto.
+      intros; intro.
+      eapply H3.
+      destruct H1.
+      inversion e; contradiction.
+      eauto.
+Qed.
+
+(** * Stability if indomsnCon and indomsnTCon * **)
+  
+(** erausre stability for con **)
+Lemma indomsnCon_stable:
+  forall (S : nsgn) (c : con),
+    indomsnCon c (erasure_nsgn S) ->
+    indomnCon c S.
+Proof. 
+  intros S a; 
+  unfold indomsnCon;
+  unfold boundsnCon;
+  unfold indomnCon;
+  unfold boundnCon.
+  induction S.
+  
+  - intro H.
+    decompose record H.
+    cbn in H1.
+    apply app_cons_not_nil in H1.
+    contradiction.
+
+  - destruct a0; destruct p;
+    cbn.
+
+    + assert ({c = a} + {c <> a}) as [ | ] by (apply eq_con).
+    
+      * rewrite e.
+        intros.
+        
+        exists n.
+        exists nil.
+        exists S.
+        split.
+        cbn; auto.
+        intros; intro.
+        inversion H0.
+
+      * intros.
+        assert (indomnCon a S).
+        
+        { apply IHS.
+          decompose record H.
+
+          destruct x0.
+          cbn in H1.
+          inversion H1.
+          contradiction.
+
+          exists x. 
+          exists x0.
+          exists x1.
+
+          split.
+          cbn in H1.
+          inversion H1.
+          auto. 
+
+          intros; intro.
+          eapply H2.
+          right; eauto. }
+
+      unfold indomnCon in H0.
+      unfold boundnCon in H0.
+      decompose record H0.
+
+      exists x.
+      exists (inl (c, n) :: x0).
+      exists (x1).
+      split.
+      cbn.
+      f_equal; auto.
+      intros; intro.
+      eapply H3.
+      destruct H1.
+      inversion e; contradiction.
+      eauto.
+
+    + 
+    intro H.
+    decompose record H.
+
+    assert (indomnCon a S).
+    { apply IHS.   
+      
+      exists x.
+      destruct x0.
+      cbn in H1; inversion H1.
+
+      exists x0.
+      exists x1.
+
+      cbn in H1.
+      inversion H1.
+      split; auto.
+      intros; intro.
+      eapply H2.
+      right; eauto. }
+
+    unfold indomnCon in H0.
+    unfold boundnCon in H0.
+    decompose record H0.
+
+    exists x2.
+    exists (inr (t, n) :: x3).
+    exists x4.
+    split.
+    cbn.
+    f_equal; auto.
+
+    intros; intro.
+    eapply H5.
+    destruct H3.
+    inversion e.
+    eauto.
+Qed.
+
+
+     

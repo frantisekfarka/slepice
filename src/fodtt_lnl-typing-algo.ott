@@ -656,9 +656,9 @@ Jalgstreq :: '' ::=
     snsgn ; snctx,tau |- zeroc streq zeroc : tau
 
     |- snsgn
-    snsgn ; snctx |- ixc streq ixc : tau
+    snsgn ; snctx |- ixc streq ixc' : tau
     --------------------------------------------------- :: var_succ
-    snsgn ; snctx,tau' |- succ ixc streq succ ixc : tau
+    snsgn ; snctx,tau' |- succ ixc streq succ ixc' : tau
 
     |- snsgn
     c : tau in snsgn

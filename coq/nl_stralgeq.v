@@ -1,3 +1,13 @@
+Require Import List.
+
+Require Import defns.
+
+Require Import nl_fusion.
+Require Import nl_eq.
+Require Import nl_sgn.
+Require Import nl_whr.
+
+
 (**
     * Structural and algorithmic equality 
 
@@ -78,30 +88,27 @@ Qed.
 
 
 Lemma streq_nl_te_ixc_determinacy:
-  forall (ixc : Ixc) (sS : snsgn) (sG : snctx) (tau : snTy),
-  streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau ->
+  forall (ixc ixc': Ixc) (sS : snsgn) (sG : snctx) (tau : snTy),
+  streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc') tau ->
   forall (tau' : snTy),
-    streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc) tau' ->
+    streq_nl_te sS sG (termstar_nl_ixc ixc) (termstar_nl_ixc ixc') tau' ->
     tau = tau'.
 Proof.
   intro.
-  induction ixc.
-  intros.
-  inversion H.
-  inversion H0.
-  rewrite <- H10.
-  rewrite <- H6.
-  rewrite <- H7 in H3; inversion H3.
-  reflexivity.
-  (* step *)
-  intros.
-  inversion H.
-  inversion H0.
-  apply IHixc with sS snctx5.
-  assumption.
-  rewrite <- H4 in H10; inversion H10.
-  rewrite <- H15.
-  assumption.
+  induction ixc; intros ixc' sS sG tau Hstreq1 tau' Hstreq2.
+  - inversion Hstreq1 as [ sS' sG' tau0 HwfsS HsS' HsG' | | | ].
+    inversion Hstreq2 as [ sS'' sG'' tau1 HwfsS'' HsS'' HsG'' | | | ].
+    rewrite <- HsG' in HsG''.
+    inversion HsG''.
+    eauto using eq_trans.
+  - (* step *)
+    inversion Hstreq1 as [ sS' sG' tau0 HwfsS HsS' HsG' | | | ].
+    inversion Hstreq2 as [ sS'' sG'' tau1 HwfsS'' HsS'' HsG'' | | | ].
+    eapply IHixc. 
+    eauto.
+    rewrite <- H11 in H4; inversion H4.
+    rewrite <- H9 in H2; inversion H2.
+    eauto.
 Qed.
 
 Lemma streq_nl_te_strong_determinacy:
@@ -179,9 +186,6 @@ Proof.
   rewrite <- H6 in H3; inversion H3.  
   rewrite <- H6 in H2; inversion H2.
   
-  assert (termstar_nl_ixc ( ixc'') = termstar_nl_ixc (ixc''0)).  
-  eapply cs_nte_determinacy; eauto.
-  inversion H18.
   constructor; auto.
   eapply IHstreq_nl_te; eauto.
 
@@ -379,6 +383,10 @@ Proof.
   rewrite H14 in H0.
   inversion H0.
   constructor; auto.
+
+
+  destruct ixc'.
+  inversion H0.
   
   constructor; auto.
   eapply IHstreq_nl_te.
@@ -388,9 +396,6 @@ Proof.
   
   rewrite <- H6 in H3; inversion H3.  
   rewrite <- H6 in H2; inversion H2.
-  assert (termstar_nl_ixc ( ixc0) = termstar_nl_ixc (ixc1)).  
-  eapply cs_nte_surjectivity; eauto.
-  inversion H18.
   constructor; auto.
   eapply IHstreq_nl_te; eauto.
 
@@ -505,310 +510,6 @@ Proof.
   exact H.
 Qed.  
 
-(*
-(** determinacy of algeq in case of tcon a **)
-Lemma algeq_nl_te_determinacy_tcon:
-  forall (sS : snsgn) (sG : snctx) (M N : nte) (tau1 tau2 : snTy),
-    ( algeq_nl_te sS sG M N tau1) ->
-    ( algeq_nl_te sS sG M N tau2) ->
-    tau1 = tau2.
-Proof.
-  intros.
-  generalize dependent tau2.
-  induction H.
-  (* left *)
-  intros.
-  eapply algeq_nl_te_whr_inversion_l in H1.
-  apply IHalgeq_nl_te; eauto.
-  auto.
-  (* right *)
-  intros.
-  eapply algeq_nl_te_whr_inversion_r in H1.
-  apply IHalgeq_nl_te; eauto.
-  auto.
-  (* streq *)
-  intros.
-  inversion H0.
-  eapply streq_nl_te_determinacy_l in H.
-  destruct H.
-  eexists; eauto.
-  eapply streq_nl_te_determinacy_r in H.
-  destruct H.
-  eexists; eauto.
-  assert (stype_nl_tcon a = stype_nl_tcon a0) by (eapply streq_nl_te_strong_determinacy; eauto).
-  inversion H7.
-  auto.
-
-  admit.
-
-  intros.
-  inversion H2.
-
-  admit.
-  admit.
-  admit.
-  
-  apply algeq_nl_te_cs with (sG' := snctx5)
-                              (M' := termstar_nl_pi_elim nM' (termstar_nl_ixc 1) )
-                              (N' := termstar_nl_pi_elim nN' (termstar_nl_ixc 1) )
-                              (tau' := tau1) (i := 0)
-    in H1.
-  
-  apply IHalgeq_nl_te.
-  
-  inversion Heqs.
-  rewrite <- H9; rewrite <- H10; auto.
-  intros.
-  inversion Heqs.
-Qed.  
- *)
-
-(*
-Require Import nl_sgn.
-
-Lemma streq_nl_te_dec:
-  forall (sS : snsgn) (sG : snctx) (M N : nte),
-    wfssig_nl sS ->
-    { tau | streq_nl_te sS sG M N tau } + { forall tau , ~ streq_nl_te sS sG M N tau}
-with algeq_nl_te_dec:
-  forall (sS : snsgn) (sG : snctx) (M N : nte),
-    wfssig_nl sS ->
-    { tau | algeq_nl_te sS sG M N tau } + {forall tau, ~ algeq_nl_te sS sG M N tau}.
-Proof.
-  intros.
-  generalize dependent N.
-  induction M.
-
-  intros.
-  destruct N.
-  2-5: (right; intros; intro; inversion H0).
-  assert ({con5 = con0} + {con5 <> con0}) by (decide equality).
-  destruct H0.
-  assert ({tau | boundsnCon con0 tau sS} +
-          {forall tau, ~ boundsnCon con0 tau sS})
-    by (apply boundsnCon_dec).  
-  destruct H0.
-  rewrite e.
-  destruct s.
-  left; eexists; econstructor; eauto.
-  right; intros; intro.
-  inversion H0.
-  eapply n; eauto.
-  right; intros; intro.
-  inversion H0; contradiction.
-
-  (* ixc *)
-  intros.
-  destruct N.
-  1,3-6: (right; intro; intro; inversion H0).
-  
-  assert ({ixc = ixc0} + {ixc <> ixc0}) by (decide equality).
-  destruct H0.
-  rewrite e.
-  clear e. clear ixc.
-  generalize dependent sG.
-  induction ixc0.
-  intros.
-  destruct sG.
-  right; intro; intro; inversion H0.
-  left; exists s.
-  constructor; auto.
-  intros.
-  destruct sG.
-  right; intros; intro; inversion H0.
-  assert ({tau : snTy |
-           streq_nl_te sS sG (termstar_nl_ixc ixc0) 
-             (termstar_nl_ixc ixc0) tau} +
-           {(forall tau : snTy,
-             ~
-             streq_nl_te sS sG (termstar_nl_ixc ixc0) 
-               (termstar_nl_ixc ixc0) tau)}).
-  apply IHixc0.
-  destruct H0.
-  destruct s0.
-  left; exists x; constructor; auto.
-  right; intros; intro.
-  inversion H0.
-  eapply n; eauto.
-
-  right.
-  intros; intro.
-  inversion H0.
-  rewrite H1 in H4; contradiction.
-  rewrite H1 in H2; contradiction.
-
-  right; intros; intro.
-  inversion H0.
-
-  (* pi elim *)
-  intros.
-  destruct N.
-  1-4: right; intros; intro; inversion H0.
-
-  assert ({tau : snTy | streq_nl_te sS sG M1 N1 tau} +
-         {(forall tau : snTy, ~ streq_nl_te sS sG M1 N1 tau)}).
-  apply IHM1.
-  destruct H0.
-  destruct s.
-  destruct x.
-  right; intros; intro.
-  inversion H0.
-  assert (stype_nl_tcon tcon5 = stype_nl_pi_intro tau2 tau).
-  eapply streq_nl_te_strong_determinacy; eauto.
-  inversion H10.
-
-  assert ({tau : snTy | streq_nl_te sS sG M2 N2 tau} +
-         {(forall tau : snTy, ~ streq_nl_te sS sG M2 N2 tau)}).
-  apply IHM2.
-  destruct H0.
-  destruct s0.
-
-  assert ({x = x1} + {x <> x1}) by (apply eq_snTy_dec).
-  destruct H0.
-  rewrite e in s0.
-
-  left; exists (x2).
-  econstructor.
-  exact s.
-  apply streq_nl_te_algeq; auto.
-
-  right; intros; intro; inversion H0.
-  admit.
-
-  right; intros; intro; inversion H0.
-  admit.
-
-  right; intros; intro; inversion H0.
-  eapply n.
-  exact H8.
-
-
-  (* lemma 2 *)
-
-  intros.
-  generalize dependent N.
-  generalize dependent sG.
-  induction M.
-*)
-(*  
-Lemma streq_nl_te_dec':
-  forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
-    wfssig_nl sS ->
-    { streq_nl_te sS sG M N tau } + { ~ streq_nl_te sS sG M N tau}
-with algeq_nl_te_dec':
-  forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
-    wfssig_nl sS ->
-    { algeq_nl_te sS sG M N tau } + { ~ algeq_nl_te sS sG M N tau}.
-Proof.
-  intros.
-  generalize dependent N.
-  generalize dependent tau.
-  induction M.
-
-  intros.
-  destruct N.
-  2-5: (right; intros; intro; inversion H0).
-  assert ({con5 = con0} + {con5 <> con0}) by (decide equality).
-  destruct H0.
-  assert ({tau | boundsnCon con0 tau sS} +
-          {forall tau, ~ boundsnCon con0 tau sS})
-    by (apply boundsnCon_dec).  
-  destruct H0.
-  rewrite e.
-  destruct s.
-  assert ({x = tau} + {x <> tau}) by (eapply eq_snTy_dec).
-  destruct H0.
-  rewrite <- e0.
-  left; econstructor; eauto.
-  right; intros; intro.
-  inversion H0.
-  assert (x = tau) by (eapply boundsnCon_determinacy; eauto).
-  contradiction.
-  right; intros; intro.
-  inversion H0.
-  eapply n; eauto.
-  right; intros; intro.
-  inversion H0.
-  contradiction.
-  
-  (* ixc *)
-  intros.
-  destruct N.
-  1,3-6: (right; intro; inversion H0).
-  
-  assert ({ixc = ixc0} + {ixc <> ixc0}) by (decide equality).
-  destruct H0.
-  rewrite e.
-  clear e. clear ixc.
-  generalize dependent sG.
-  induction ixc0.
-  intros.
-  destruct sG.
-  right; intro; inversion H0.
-  assert ({s = tau} + {s <> tau}) by (apply eq_snTy_dec).
-  destruct H0.
-  left.
-  rewrite e.
-  constructor; auto.
-  right; intro.
-  inversion H0.
-  contradiction.
-  intros.
-  destruct sG.
-  right; intros; intro; inversion H0.
-  assert ({streq_nl_te sS sG (termstar_nl_ixc ixc0) 
-             (termstar_nl_ixc ixc0) tau} +
-           { ~ streq_nl_te sS sG (termstar_nl_ixc ixc0) 
-               (termstar_nl_ixc ixc0) tau}).
-  apply IHixc0.
-  destruct H0.
-  left; constructor; auto.
-  right; intros; intro.
-  inversion H0.
-  eapply n; eauto.
-
-  right.
-  intros; intro.
-  inversion H0.
-  rewrite H1 in H4; contradiction.
-  rewrite H1 in H2; contradiction.
-
-  right; intros; intro.
-  inversion H0.
-
-  (* pi elim *)
-  intros.
-  destruct N.
-  1-4: right; intros; intro; inversion H0.
-
-  assert ({tau1 | algeq_nl_te sS sG M2 N2 tau1} + {forall tau1 , ~ algeq_nl_te sS sG M2 N2 tau1}).
-  admit.
-
-  destruct H0.
-  - destruct s as [tau1].
-    assert ({streq_nl_te sS sG M1 N1 (stype_nl_pi_intro tau1 tau)} +
-         { ~ streq_nl_te sS sG M1 N1 (stype_nl_pi_intro tau1 tau)}).
-     apply IHM1.  
-     destruct H0.
-     + left. econstructor; eauto.
-     + right.
-       intro; inversion H0.
-       assert (tau1 = tau2).
-       admit.
-       apply n. rewrite H10; auto.
-  - right; intro.
-    inversion H0.
-    eapply n; eauto.
-
-  (* lemma 2 *)
-
-  -
-    intros.
-    generalize dependent N.
-    generalize dependent sG.
-    generalize dependent tau.
-    induction M.
- *)
 
 (**
 * Weak algorithmic equality 

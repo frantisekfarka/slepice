@@ -112,6 +112,7 @@ Proof.
   assumption.
 Qed.
 
+
 (** context shifting preserves weak head-reduction **)
 
 Lemma whr_nl_te_cs:
