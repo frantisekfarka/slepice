@@ -2,7 +2,10 @@ Require Import List.
 
 Require Import defns.
 
+(*
 Require Import nl_fusion.
+ *)
+
 
 (**
    * Standard equality
@@ -21,10 +24,12 @@ Proof.
   intros.
   decide equality.
   apply eq_tcon.
+  decide equality.
   (* lemma 2 *)
   intros.
   decide equality.
   apply eq_con.
+  decide equality.
   decide equality.
   decide equality.
 Qed.
@@ -44,6 +49,7 @@ Lemma eq_nK:
 Proof.
   decide equality.
   apply eq_nTy_dec.
+  decide equality.
 Qed.
 
 Lemma eq_snK:
@@ -56,10 +62,11 @@ Qed.
   
 (** equality under erasure w.r.t context shifting **)
 
+(*
 Lemma eq_nTy_erasure:
   forall (A A' : nTy) (i : Ixc),
     cs_nTy A i A' ->
-    (erasure_nTy A) = (erasure_nTy A').
+    (erasure_snTy A) = (erasure_snTy A').
 Proof.
   intros.
   induction H; auto.
@@ -67,7 +74,7 @@ Proof.
   apply IHcs_nTy1.
   apply IHcs_nTy2.
 Qed.
-
+*)
 (*
 Lemma eq_nctx_cs_erasure:
   forall (G G' : nctx) (i : Ixc) (A : nTy),

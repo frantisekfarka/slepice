@@ -15,51 +15,23 @@ Ixt {{tex I_T }}, ixt {{tex \iota_T }} :: 'ixTy_' ::= {{com deBruijn indices for
   {{ coq (S [[Ixt]]) }}
 
 grammar
-nK {{ tex K^{n}{} }} , nL {{ tex L^{n}{} }} :: 'kindstar_nl_' ::= {{ com Extended Locally Nameless Kinds }}
+nK {{ tex K }} , nL {{ tex L }} :: 'kindstar_nl_' ::= {{ com Extended Locally Nameless Kinds }}
   | typeK                ::   :: type                {{ com kind of all types }} 
   | Pi nTy . nK          ::   :: pi_intro            {{ com kind of dependent functions }}
   | ( nK )               :: S :: paren                        
      {{ coq [[nK]] }}
-%     {{ ocaml nK }}
-%  | cstuK enK             :: M :: cstuing
-%     {{ tex \overleftarrow{ [[enK]] }^{0_T \rightarrow 0_\Gamma} }} 
-%     {{ coq ??TODO }}
-%  | tutsK( enK , ente )   :: M :: tutsing
-%     {{ tex { [[enK]] }^{0_T \leftarrow [[ente]]} }} 
-%     {{ coq ??TODO }}
-%  | translK( eK ; ctx )  ::   :: transl
-%     {{ tex \transl{ [[eK]] ; [[ctx]] } }} 
-%     {{ coq ??TODO }}
-%  | mkvar                 ::   :: mkvar               {{ com kind level metavariables }}
+  | mkvar                 ::   :: mkvar               {{ com kind level metavariables }}
 
-nTy {{ tex T^{n}{} }}, nA {{ tex A^{n}{} }}, nB {{ tex B^{n}{} }} :: 'typestar_nl_' ::= {{ com Extended Locally Nameless Types }}
+nTy {{ tex T }}, nA {{ tex A }}, nB {{ tex B }} :: 'typestar_nl_' ::= {{ com Extended Locally Nameless Types }}
   | tcon                  ::   :: tcon                {{ com type constant }}
   | Pi nTy1 . nTy2      ::   :: pi_intro            {{ com type of dependente functions }}
   | nTy nte             ::   :: pi_elim             {{ com application of a type former }}
   | ( nTy )              :: S :: paren                        
      {{ coq [[nTy]] }}
-%     {{ ocaml nTy }}
-%  | csTy enTy             :: M :: cshifting
-%     {{ tex \overleftarrow{ [[enTy]] } }} 
-%     {{ coq ??TODO }}
-%  | cuTy enTy             :: M :: cunshifting
-%     {{ tex \overrightarrow{ [[enTy]] } }} 
-%     {{ coq ??TODO }}
-%  | cstuTy enTy           :: M :: cstuing
-%     {{ tex \overleftarrow{ [[enTy]] }^{0_T \rightarrow 0_\Gamma} }} 
-%     {{ coq ??TODO }}
-%  | cutsTy enTy           :: M :: cutsing
-%     {{ tex \overrightarrow{ [[enTy]] }^{0_T \leftarrow 0_\Gamma} }} 
-%     {{ coq ??TODO }}
-%  | tutsTy( enTy , ente ) :: M :: tutsing
-%     {{ tex { [[enTy]] }^{0_T \leftarrow [[ente]] } }} 
-%     {{ coq ??TODO }}
-%  | translTy( eTy ; ctx )  ::   :: transl
-%     {{ tex \transl{ [[eTy]] ; [[ctx]] } }} 
-%     {{ coq ??TODO }}
-%  | mtvar                 ::   :: mtvar               {{ com type level metavariables }}
+     {{ ocaml ([[nTy]]) }}
+  | mtvar                 ::   :: mtvar               {{ com type level metavariables }}
 
-nte {{ tex t^{n}{} }}, nM {{ tex M^{n}{} }}, nN {{ tex N^{n}{} }} :: 'termstar_nl_' ::= {{ com Extended Locally Nameless Terms }}
+nte {{ tex t }}, nM {{ tex M }}, nN {{ tex N }} :: 'termstar_nl_' ::= {{ com Extended Locally Nameless Terms }}
   | con                   ::   :: con                 {{ com term constant }} 
   | ixc                   ::   :: ixc                 {{ com indices left of $\vdash$ (context) }} 
   | ixt                   ::   :: ixt                 {{ com indices right of $\vdash$ ($\Pi$ and $\Sigma$ types) }} 
@@ -67,28 +39,10 @@ nte {{ tex t^{n}{} }}, nM {{ tex M^{n}{} }}, nN {{ tex N^{n}{} }} :: 'termstar_n
   | nte1 nte2           ::   :: pi_elim             {{ com application }}
   | ( nte )              :: S :: paren                        
      {{ coq [[nte]] }}
-%     {{ ocaml nte }}
-%  | cste nte             :: M :: cshifting
-%     {{ tex \overleftarrow{ [[ente]] } }} 
-%     {{ coq ??TODO }}
-%  | cute ente             :: M :: cunshifting
-%     {{ tex \overrightarrow{ [[ente]] } }} 
-%     {{ coq ??TODO }}
-%  | cstute ente           :: M :: cstuing
-%     {{ coq ??TODO }}
-%     {{ tex \overleftarrow{ [[ente]] }^{0_T \rightarrow 0_\Gamma } }} 
-%  | cutste ente           :: M :: cutsing
-%     {{ tex \overrightarrow{ [[ente]] }^{0_T \leftarrow 0_\Gamma} }} 
-%     {{ coq ??TODO }}
-%  | tutste( ente1 , ente2 ) :: M :: tutsing
-%     {{ tex { [[ente1]] }^{0_T \leftarrow [[ente2]] } }} 
-%     {{ coq ??TODO }}
-%  | translte( ete ; ctx )  ::   :: transl
-%     {{ tex \transl{ [[ete]] ; [[ctx]] } }} 
-%     {{ coq ??TODO }}
-%  | mvar                 ::   :: mvar               {{ com term level metavariables }}
+     {{ ocaml ([[nte]]) }}
+  | mvar                 ::   :: mvar               {{ com term level metavariables }}
 
-nsgn {{ tex \mathcal{S}^{n}{} }} :: 'signaturestar_nl_' ::= {{ com Extended Locally Nameless Signature }}
+nsgn {{tex Sig }}, nS {{ tex \mathcal{S} }} :: 'signaturestar_nl_' ::= {{ com Extended Locally Nameless Signature }}
     {{ coq list (con*nTy+tcon*nK) }}
 %    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
   | empty                 ::   :: empty               {{ com empty signature }}
@@ -98,7 +52,7 @@ nsgn {{ tex \mathcal{S}^{n}{} }} :: 'signaturestar_nl_' ::= {{ com Extended Loca
   | nsgn , tcon : nK    ::   :: tcon
      {{ coq (cons (inr([[tcon]],[[nK]])) [[nsgn]]) }}
 
-nctx {{ tex \Gamma^{n}{} }} :: 'contextstar_nl_' ::= {{ com Extended Locally Nameless Context }}
+nctx {{tex Ctx }}, nG {{ tex \Gamma }} :: 'contextstar_nl_' ::= {{ com Extended Locally Nameless Context }}
     {{ coq list (nTy) }}
   | empty                 ::   :: empty              {{ com empty context }}
      {{ coq nil }}
@@ -112,20 +66,20 @@ nctx {{ tex \Gamma^{n}{} }} :: 'contextstar_nl_' ::= {{ com Extended Locally Nam
 %     {{ coq ??TODO }}
 
 grammar
-snTy {{ tex sT^{n}{} }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Types }}
+snTy {{ tex T^{-}{} }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Types }}
   | tcon                 ::   :: tcon                {{ com type constant }}
   | snTy1 -> snTy2       ::   :: pi_intro            {{ com type of functions }}
   | ( snTy )             :: S :: paren                        
      {{ coq [[snTy]] }}
 
 grammar
-snK {{ tex sK^{n}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple Kinds }}
+snK {{ tex K^{-}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple Kinds }}
   | typeK                ::   :: type                {{ com kind of all types }} 
   | snTy -> snK          ::   :: pi_intro            {{ com kind of functions }}
   | ( snK )              :: S :: paren                        
      {{ coq [[snK]] }}
 
-snsgn {{ tex s\mathcal{S}^{n}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signature }}
+snsgn {{ tex \mathcal{S}^{-}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signature }}
     {{ coq list (con*snTy+tcon*snK) }}
 %    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
   | empty                 ::   :: empty               {{ com empty signature }}
@@ -135,7 +89,7 @@ snsgn {{ tex s\mathcal{S}^{n}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signatu
   | snsgn , tcon : snK    ::   :: tcon
      {{ coq (cons (inr([[tcon]],[[snK]])) [[snsgn]]) }}
 
-snctx {{ tex \Delta^{n}{} }} :: 'scontext_nl_' ::= {{ com Simple Context }}
+snctx {{ tex Ctx^{-} }} , nD {{ tex \Delta^{}{} }} :: 'scontext_nl_' ::= {{ com Simple Context }}
     {{ coq list (snTy) }}
   | empty                 ::   :: empty              {{ com empty context }}
      {{ coq nil }}

@@ -1,16 +1,8 @@
 Require Import List.
-(*
-Require Import Arith.Max.
-Require Import Arith.Lt.
-Require Import Arith.Le.
-Require Import Arith.PeanoNat.
-Require Import Arith.Plus.
-*)
 
 Require Import defns.
 Require Import nl_fusion.
 Require Import nl_sgn.
-(* Require Import nl_whr. *)
 Require Import nl_eq.
 Require Import nl_struct.
 
@@ -532,13 +524,13 @@ Proof.
           assert ({walgeq_nl_Ty (erasure_nsgn S) (erasure_nctx G)
                                 A1' A1 skind_nl_type} +
                   {~ (walgeq_nl_Ty (erasure_nsgn S) (erasure_nctx G)
-                                   A1' A1 skind_nl_type)}).
-          apply walgeq_nTy_determinacy.
-          apply wfsig_nl_erasure; auto.
+                                   A1' A1 skind_nl_type)})
+            as [ | ]
+              by (eauto using walgeq_nTy_check,wfsig_nl_erasure).
+
           assert ({A1'' | tuts_nTy A1' M2 A1''})
             as [A1''] by (eauto using tuts_nTy_dec).
           
-          destruct H2.
           left; eexists.
           econstructor; eauto.
 

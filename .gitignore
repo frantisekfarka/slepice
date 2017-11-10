@@ -150,3 +150,6 @@ coq/*vo
 \#*\#
 .\#*
 *.v~
+
+# generated documentation
+doc/*

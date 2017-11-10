@@ -14,60 +14,63 @@ with cs_nte_dec:
   forall (M : nte) (i : Ixc),
     {  M' : nte | cs_nte M i M' }.
 Proof.
-  intros.
-  induction A.
-  exists (typestar_nl_tcon tcon5).
-  apply cs_nTy_tcon.
-  destruct IHA1.
-  destruct IHA2.
-  exists (typestar_nl_pi_intro x x0).
-  apply cs_nTy_pi_intro; auto.
-  destruct IHA.
-  assert ({M' | cs_nte nte5 i M'}) by (apply cs_nte_dec).
-  destruct H.
-  exists (typestar_nl_pi_elim x x0).
-  auto using cs_nTy_pi_elim.
-  (* cs_nte_dec *)
-  intros.
-  induction M.
-  exists (termstar_nl_con con5).
-  constructor.
-  (* case ixc *)
-  assert ({i <= ixc} + {ixc < i}) by (apply le_lt_dec).
-  destruct H.
-  exists (termstar_nl_ixc (S ixc)).
-  generalize dependent ixc.
-  induction i.
-  intros; constructor.
-  intros.
-  destruct ixc.
-  inversion l.
-  constructor.
-  apply IHi.
-  apply le_S_n; auto.
-  exists (termstar_nl_ixc ixc).
-  generalize dependent ixc.
-  induction i.
-  intros.
-  inversion l.
-  intros.
-  destruct ixc.
-  constructor.
-  constructor.
-  apply IHi.
-  apply lt_S_n; auto.
+  - induction A; intros i.
 
-  exists (termstar_nl_ixt ixt).
-  constructor.
-  destruct IHM.
-  assert ({A' | cs_nTy nTy5 i A'}) by (apply cs_nTy_dec).
-  destruct H.
-  exists (termstar_nl_pi_intro x0 x).
-  auto using cs_nte_pi_intro.
-  destruct IHM1.
-  destruct IHM2.
-  exists (termstar_nl_pi_elim x x0).
-  apply cs_nte_pi_elim; auto.
+    + eexists; constructor.
+    + destruct IHA1 with i.
+      destruct IHA2 with i.
+      eexists; constructor; eauto.
+    + destruct IHA with i.
+      assert ({M' | cs_nte nte5 i M'})
+        as [ ]
+          by (apply cs_nte_dec).
+      eexists; constructor; eauto.
+
+    + admit. (* from assumption on existence ?? *)
+      
+  - (* cs_nte_dec *)
+    induction M; intro i.
+
+    + eexists; constructor.
+
+    + (* case ixc *)
+      assert ({i <= ixc} + {ixc < i})
+        as [ ]
+          by (apply le_lt_dec).
+      * exists (termstar_nl_ixc (S ixc)).
+
+          generalize dependent ixc.
+          induction i.
+          { intros; constructor. }
+          {  intros.
+             destruct ixc.
+             - inversion l.
+             - constructor.
+               apply IHi.
+               apply le_S_n; auto. }
+      * exists (termstar_nl_ixc ixc).
+          generalize dependent ixc.
+          induction i.
+          intros.
+          { inversion l. }
+          { intros.
+            destruct ixc.
+            - constructor.
+            - constructor.
+              apply IHi.
+              apply lt_S_n; auto. }
+    + eexists; constructor.
+    + destruct IHM with i.
+      assert ({A' | cs_nTy nTy5 i A'})
+        as [ ]
+          by (apply cs_nTy_dec).
+
+      eexists; constructor; eauto.
+    + destruct IHM1 with i.
+      destruct IHM2 with i.
+      eexists; constructor; eauto.
+
+    + admit. (* mvar, assumptions *)
 Qed.
 
 Lemma cs_nK_dec:
@@ -866,7 +869,67 @@ Proof.
         eapply n; eauto.
 Qed.
 
-(** determinacy of context shifting **)
+Lemma cu_nctx_wf_dec:
+  forall (S : nsgn) (G : nctx) (i : Ixc),
+    wfctx_nl S G -> i < length G ->
+    { G'A' : nctx * nTy | cu_nctx G i (fst G'A') (snd G'A')  }.
+Proof.                                       
+  intros.
+  generalize dependent G.
+  induction i.
+  - intro G.
+    remember (length G).
+    generalize dependent G.
+    induction n; intros G Heq HwfG HlG. (* induction on length G! *)
+    + exfalso.
+      inversion HlG.
+    + destruct G as [ | B ].
+      * inversion Heq.
+      * assert ({B' | cu_nTy B 0 B'})
+        as [ B' ]
+          by (admit). (* from wf? *)
+
+        destruct G.
+        
+        { (* ctx = A :: nil *)
+          exists (nil, B).
+          cbn.
+          apply cu_nctx_empty. }
+          
+      * destruct IHG as [ [ ?G' ?A' ]  ].
+        { admit. (* induction on length G! *) }
+        { cbn; auto with arith. }
+
+        cbn in c0.
+        exists (A' :: G', a').
+        cbn.
+        apply cu_nctx_var_zeroc; auto.
+
+  - intros.
+    induction G. (* length G *)
+    + intros.
+      exfalso. 
+      inversion H0.
+    + intros.
+      assert ({G'A' : nctx * nTy | cu_nctx G i (fst G'A') (snd G'A')})
+        as [ [ ?G' ?A' ] w ].
+
+      apply IHi.
+      admit. (* induction on length G *)
+      auto with arith.
+      
+      *  cbn in w.
+
+         assert ({a' | cu_nTy a i a'})
+           as [ a' ]
+             by (admit).
+
+         exists (a' :: G', A').
+         constructor; auto.
+
+Qed.
+
+(** determinacy of context unshifting **)
 
 Fixpoint cu_nTy_determinacy (A B1 B2 : nTy) (i : Ixc)
          (H : cu_nTy A i B1) {struct H}:

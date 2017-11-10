@@ -60,5 +60,3 @@ subrules
 %freevars
 %    ete var :: fv
 
-%substitutions
-%    single ete var :: subst

@@ -41,105 +41,105 @@ Jgoal :: '' ::=
 %    nsgn |- nctx,nA 
 %
   defn
-  nsgn ; enctx ; enK |- TTGoal ; kindS :: :: goalkind_nl :: 'g_nK_' {{tex [[nsgn]] ; [[enctx]] ; [[enK]] \vdash ( [[TTGoal]] \mid [[kindS]] ) }} by
+  nsgn ; nctx ; nK |- TTGoal ; kindS :: :: goalkind_nl :: 'g_nK_' 
+    {{tex [[nsgn]] ; [[nctx]] ; [[nK]] \vdash ( [[TTGoal]] \mid [[kindS]] ) }} by
 
     ---------------------------------------  :: type
-    nsgn ; enctx ; typeK |- true ; kindS 
+    nS ; nG ; typeK |- true ; kindS 
 
-    nsgn ; enctx ; enA |- G1 ; typeK
-    nsgn ; enctx , enA ; enL |- G1 ; kindS
+    nS ; nG ; nA |- G1 ; typeK
+    nS ; nG , nA ; nL |- G1 ; kindS
     ----------------------------------------------- :: pi_intro
-    nsgn ; enctx ; Pi enA . enL |- G1 & G2  ; kindS
+    nS ; nG ; Pi nA . nL |- G1 & G2  ; kindS
 
-    nsgn ; enctx |- G
-    --------------------------------------------------- :: mvar
-    nsgn ; enctx ; mL |- G & kind( mL , enctx ) ; kindS
+    -------------------------------------------------- :: mvar
+    nS ; nG ; mL |- kind( mL , nG ) ; kindS
 
   defn
-  nsgn ; enctx ; enTy |- TTGoal ; enK  :: :: goaltype_nl ::'g_nTy_' {{tex [[nsgn]] ; [[enctx]] ; [[enTy]] \vdash ( [[TTGoal]] \mid [[enK]] ) }} by
+  nsgn ; nctx ; nTy |- TTGoal ; nK  :: :: goaltype_nl ::'g_nTy_' 
+    {{tex [[nsgn]] ; [[nctx]] ; [[nTy]] \vdash ( [[TTGoal]] \mid [[nK]] ) }} by
 
-    nsgn |- nctx
-    a : nL in nsgn
-    ---------------------  :: tcon
-    nsgn ; nctx ; a |- true ; nL
+    a : nL in nS
+    ------------------------  :: tcon
+    nS ; nG ; a |- true ; nL
 
+    nS ; nG ; nA |- G1 ; typeK
+    csctx (nG) zeroc nA (nG')
+    cstuTy nB zeroc nB'
+    nS ; nG' ; nB' |- G2 ; typeK
+    ---------------------------------------- :: pi_intro
+    nS ; nG ; Pi nA . nB |- G1 & G2 ; typeK 
 
-    nsgn ; enctx ; enA |- G1 ; typeK
-    nsgn ; csctx(enctx,enA) ; cstuTy enB |- G2 ; typeK
-    -------------------------------------------------- :: pi_intro
-    nsgn ; enctx ; Pi enA . nB |- G1 & G2 ; typeK 
+    nS ; nG ; nA |- G1 ; nL
+    nS ; nG ; nM |- G2 ; nB
+    tutsK (nL, nM) nL'
+    ----------------------------------------------------------------- :: pi_elim
+    nS ; nG ; nA nM |- (G1 & G2) & eq_K( Pi nB . nL , mL , nG ) ; nL'
 
-    nsgn ; enctx ; nA |- G1 ; nL
-    nsgn ; enctx ; nM |- G2 ; nB
-    ---------------------------------------------------------------------- :: pi_elim
-    nsgn ; enctx ; enA enM |- (G1 & G2) & eq_K( Pi nB . nL , mL , enctx ) ; tutsK( mL , enM) 
-
-    nsgn ; enctx |- G
-    --------------------------------------------------------- :: mvar
-    nsgn ; enctx ; mA |- G & type( mA , enctx) ; mL
+    -------------------------------------------------------- :: mvar
+    nS ; nG ; mA |- G & type( mA , nG) ; mL
     
-    %G & type( mtvar , enctx ) ; mL
-
-
   defn
-  nsgn ; enctx ; enM |- TTGoal ; enA  :: :: goalterm_nl ::'g_nte_' {{tex [[nsgn]] ; [[enctx]] ; [[enM]] \vdash ( [[TTGoal]] \mid [[enA]] ) }} by
+  nsgn ; nctx ; nte |- TTGoal ; nTy  :: :: goalterm_nl ::'g_nte_' 
+  {{tex [[nsgn]] ; [[nctx]] ; [[nte]] \vdash ( [[TTGoal]] \mid [[nTy]] ) }} by
 
-    nsgn ; enctx |- G
-    c : nA in nsgn
-    ----------------------  :: con
-    nsgn ; enctx ; c |- G ; nA
+    c : nA in nS
+    ---------------------  :: con
+    nS ; nG ; c |- true ; nA
 
-    nsgn ; enctx,enA |- G
     --------------------------------------  :: var_nil
-    nsgn ; enctx,enA ; zeroc |- G ; enA 
+    nS ; nG, nA ; zeroc |- true ; nA 
 
-    nsgn ; cuctx(enctx) ; ixc |- G ; nA
-    ------------------------------------------------  :: var_cons
-    nsgn ; enctx,enB ; succ ixc |- G ; cuTy nA 
+    cuctx (nG,nB) zeroc (nG') nB'
+    nS ; nG' ; ixc |- G ; nA'
+    ------------------------------------------------------  :: var_cons
+    nS ; nG,nB ; succ ixc |- G & cuTy(nA', zeroc, mA) ; mA
 
-    nsgn ; csctx(enctx,enA) ; cstute enM |- G ; enB 
-    ---------------------------------------------------------- :: pi_intro
-    nsgn ; enctx ; \enA.enM |- G ; Pi enA . cutsTy enB 
+    csctx (nG) zeroc nA (nG')
+    cstute nM zeroc nM'
+    nS ; nG' ; nM' |- G ; nB 
+    ------------------------------------------------------ :: pi_intro
+    nS ; nG ; \nA.nM |- G & cutsTy( nB, nB') ; Pi nA . nB'
 
-    nsgn ; enctx ; enM |- G1 ; Pi enA1 . enB 
-    nsgn ; enctx ; enN |- G2 ; enA2
-    ------------------------------ :: pi_elim
-    nsgn ; enctx ; enM enN |- (G1 & G2) & eq_Ty(enA1 , enA2 , enctx ) ; tutsTy(nB , nN)
-%
+    nS ; nG ; nM |- G1 ; nA1 
+    nS ; nG ; nN |- G2 ; nA2
+    ---------------------------------------------------------------------------------- :: pi_elim
+    nS ; nG ; nM nN |- ((G1 & G2) & eq_Ty(nA1 , Pi nA2 . nB , nG )) & tutsTy( nB, nN, nB') ; nB'
+        
 %    nsgn ; nctx |- nM => nA
 %    nsgn ; nctx |- nA' => typeK
 %    nsgn ; nctx |- nA is nA' 
 %    ------------------------------ :: conv
 %    nsgn ; nctx |- nM => nA' 
 
-    nsgn ; enctx |- G 
-    ------------------------------ :: mvar
-    nsgn ; enctx ; mx |- G & mx : type(mA , enctx)  ; mA
+    -------------------------------------------- :: mvar
+    nS ; nG ; mx |- mx : type(mA , nG)  ; mA
+
+%  defn 
+%  nsgn ; nctx |- TTGoal ::  :: goalctx_nl :: 'g_ctx_' {{tex [[nsgn]] ; [[nctx]] \vdash [[TTGoal]] }} by
+%
+%    --------------- :: empty
+%    nS ; nG |- true
+%
+%    nS ; nG |- G1
+%    nS ; nG ; nA |- G2 ; nL
+%    ---------------------------------------------------------- :: var
+%    nS ; nG,nA |- (G1 & G2) & eq_K(enL , typeK , enctx )
 
   defn 
-  nsgn ; enctx |- TTGoal ::  :: goalctx_nl :: 'g_ctx_' {{tex [[nsgn]] ; [[enctx]] \vdash [[TTGoal]] }} by
-
-    --------------------------- :: empty
-    nsgn ; empty |- true
-
-    nsgn ; enctx |- G1
-    nsgn ; enctx ; enA |- G2 ; enL
-    ---------------------------------------------------------- :: var
-    nsgn ; enctx,enA |- (G1 & G2) & eq_K(enL , typeK , enctx )
-
-  defn 
-  nsgn |- TTProg ::  :: prog_nl :: 'prog_nl_' {{ tex [[nsgn]] \vdash_{Prog} [[TTProg]]  }} by
+  nsgn |- TTProg ::  :: prog_nl :: 'prog_nl_' 
+    {{ tex [[nsgn]] \vdash_{Prog} [[TTProg]]  }} by
 
     --------------------------- :: empty
     empty |- empty
 
-    nsgn |- TTProg
+    nS |- TTProg
     ------------------------------------------------ :: con
-    nsgn , c:nA |- TTProg , c : type( nA , enctx) <-
+    nS , c:nA |- TTProg , c : type( nA , empty) <-
 
-    nsgn |- TTProg
+    nS |- TTProg
     ------------------------------------------------ :: tcon
-    nsgn , a:nL |- TTProg , a : kind( nL , enctx) <-
+    nS , a:nL |- TTProg , a : kind( nL , empty) <-
 %
 %    nsgn ; nctx |- nA_1 is nA_2 
 %    nsgn ; nctx |- nA_2 is nA_3 

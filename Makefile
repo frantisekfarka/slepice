@@ -9,8 +9,8 @@ TEX_DIR=tex/
 SRC_DIR=src/
 COQ_DIR=coq/
 DOC_DIR=doc/
-#MAIN=exquan-raw.tex
-MAIN=exquan-nl-only.tex
+MAIN=exquan-raw.tex
+#MAIN=exquan-nl-only.tex
 
 META=$(SRC_DIR)fodtt-metavar.ott\
      $(SRC_DIR)fodttstar-metavar.ott
@@ -24,7 +24,7 @@ FODTTSTAR=$(SRC_DIR)fodttstar-syntax.ott
 FOHC=${SRC_DIR}fohc-metavar.ott\
      ${SRC_DIR}fohc-syntax.ott
     
-TRANS=$(SRC_DIR)trans.ott
+TRANS=#$(SRC_DIR)trans.ott
 
 
 FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott\
@@ -34,7 +34,7 @@ FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott\
 FODTTLNL=$(SRC_DIR)fodtt_lnl-syntax.ott\
 	 $(SRC_DIR)fodtt_lnl-typing.ott
 
-TRANSLNL=$(SRC_DIR)trans-lnl.ott
+TRANSLNL=#$(SRC_DIR)trans-lnl.ott
 
 TERMINALS=$(SRC_DIR)terminals.ott
 
@@ -64,15 +64,28 @@ watch:	$(MAIN)
 pdf: $(MAIN)
 	latexmk -pdf $(MAIN)
 
-exquan-raw.tex: $(META) $(FODTTSTAR) $(FODTT) $(FOHC) $(TRANS) $(TERMINALS)
+exquan-raw.tex: $(META) \
+	    $(FODTTSTAR) \
+	    $(FODTT) \
+	    $(FODTTSTARLNL) \
+	    $(FOHC)\
+	    $(TRANS) \
+	    $(TRANSLNL) \
+	    $(GOALS) \
+	    $(TERMINALS)
 	$(OTT) \
 	    -o $@ \
 	    -o $(COQ_DIR)defns.v \
+	    -tex_wrap true\
+	    -tex_name_prefix fodtt \
 	    $(META) \
 	    $(FODTTSTAR) \
 	    $(FODTT) \
-	    $(FOHC) \
+	    $(FODTTSTARLNL) \
+	    $(FOHC)\
 	    $(TRANS) \
+	    $(TRANSLNL) \
+	    $(GOALS) \
 	    $(TERMINALS)
 
 exquan-nl-only.tex: $(META) $(FODTTSTARLNL) $(FODTTLNL) $(SRC_DIR)fodtt_lnl-flas.ott 

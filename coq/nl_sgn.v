@@ -14,105 +14,107 @@ Lemma boundnCon_dec:
     { A | boundnCon c A S } +
     { forall A, ~ (boundnCon c A S)}.
 Proof.
-  intros.
-  induction S.
-  right.
-  intros.
-  intro.
-  unfold boundnCon in H.
-  decompose record H.
-  apply app_cons_not_nil in H0.
-  contradiction.
-  destruct a.
-  destruct p.
-  assert ({c = c0} + {c <> c0}) by (apply eq_con).
-  destruct H.
-  rewrite e.
-  left.
-  exists n.
-  exists nil.
-  exists S.
-  split.
-  auto.
-  intros.
-  intro.
-  inversion H.
-  destruct IHS.
-  left.
-  destruct s.
-  exists x.
-  unfold boundnCon in b.
-  decompose record b.
-  exists (inl (c0, n) :: x0).
-  exists x1.
-  rewrite H.
-  split.
-  auto.
-  intros.
-  intro.
-  inversion H0.
-  inversion H2.
-  apply n0; auto.
-  apply H1 with nA'; auto.
-  right.
-  intros.
-  intro.  
-  unfold boundnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H0.
-  apply n0; auto.
-  assert (S = x ++ inl (c, A) :: x0).
-  inversion H0.
-  auto.
-  apply n1 with A.
-  rewrite H1.
-  exists x.
-  exists x0.
-  split.
-  auto.
-  intro.
-  intro.
-  apply H2 with nA'.
-  right.
-  assumption.
-  (* inr cases *)
-  destruct IHS.
-  left.
-  destruct s.
-  exists x.
-  unfold boundnCon in b.
-  decompose record b.
-  rewrite H.
-  exists (inr p :: x0).
-  exists x1.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H1 with nA'.
-  inversion H0.
-  inversion H2.
-  assumption.
-  (* not bound at all *)
-  right.
-  intros.
-  intro.
-  apply n with A.
-  unfold boundnCon in H.
-  decompose record H.
-  destruct x.
-  inversion H0.
-  inversion H0.
-  exists x.
-  exists x0.
-  split.
-  auto.
-  intros.
-  intro.
-  apply H2 with nA'.
-  right.
-  assumption.
+  induction S; intros.
+
+  - right.
+    intros. intro Hc.
+    unfold boundnCon in Hc.
+    decompose record Hc.
+    apply app_cons_not_nil in H.
+    contradiction.
+
+  - destruct a.
+
+    + destruct p.
+
+      assert ({c = c0} + {c <> c0}) by (apply eq_con).
+      destruct H.
+
+      * subst.
+        left.
+        exists n.
+        exists nil.
+        exists S.
+        split; auto.
+
+      * destruct IHS with c.
+        left.
+        destruct s.
+        exists x.
+        unfold boundnCon in b.
+        decompose record b.
+        exists (inl (c0, n) :: x0).
+        exists x1.
+        rewrite H.
+        split.
+        auto.
+        intros.
+        intro.
+        inversion H0.
+        inversion H2.
+        apply n0; auto.
+        apply H1 with nA'; auto.
+
+        right.
+        intros.
+        intro.  
+        unfold boundnCon in H.
+        decompose record H.
+        destruct x.
+        inversion H0.
+        apply n0; auto.
+        assert (S = x ++ inl (c, A) :: x0).
+        inversion H0.
+        auto.
+        apply n1 with A.
+        rewrite H1.
+        exists x.
+        exists x0.
+        split.
+        auto.
+        intro.
+        intro.
+        apply H2 with nA'.
+        right.
+        assumption.
+
+    +  (* inr cases *)
+      destruct IHS with c.
+      left.
+      destruct s.
+      exists x.
+      unfold boundnCon in b.
+      decompose record b.
+      rewrite H.
+      exists (inr p :: x0).
+      exists x1.
+      split.
+      auto.
+      intros.
+      intro.
+      apply H1 with nA'.
+      inversion H0.
+      inversion H2.
+      assumption.
+      (* not bound at all *)
+      right.
+      intros.
+      intro.
+      apply n with A.
+      unfold boundnCon in H.
+      decompose record H.
+      destruct x.
+      inversion H0.
+      inversion H0.
+      exists x.
+      exists x0.
+      split.
+      auto.
+      intros.
+      intro.
+      apply H2 with nA'.
+      right.
+      assumption.
 Qed.  
 
 (** determianacy of boundnCon **)
@@ -910,7 +912,7 @@ Proof.
     eapply n; eauto.
 Qed.
 
-  
+(*  
 (** erausre stability for TCon **)
 Lemma indomsnTCon_stable:
   forall (S : nsgn) (a : tcon),
@@ -1160,5 +1162,5 @@ Proof.
     eauto.
 Qed.
 
-
+*)
      

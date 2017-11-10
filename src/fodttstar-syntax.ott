@@ -62,3 +62,5 @@ Notation ectxempty := (@nil (var*eTy)).
 }}
 
 
+substitutions
+    single ete var :: subst

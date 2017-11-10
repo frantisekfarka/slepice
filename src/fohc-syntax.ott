@@ -61,20 +61,25 @@ Prog :: 'prog_' ::= {{ com logic program }}
 %    multiple hct mkvar :: substhct
 
 
-TTGoal {{ tex \text{Goal}^{*n} }} , G :: 'ttgoal_' ::= {{ com goal in TT }}
+TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | true                           ::   :: true
+  | eq_te( nte1 , nte2 , nctx ) ::   :: eq_te {{ tex [[nte1]] \equiv_{[[nctx]]} [[nte2]] }}
+  | eq_Ty( nTy1 , nTy2 , nctx ) ::   :: eq_Ty {{ tex [[nTy1]] \equiv_{[[nctx]]} [[nTy2]] }}
+  | eq_K( nK1 , nK2 , nctx )    ::   :: eq_K  {{ tex [[nK1]] \equiv_{[[nctx]]} [[nK2]] }}
+  | kind( nK , nctx )            ::   :: K
+  | type( nTy , nctx )           ::   :: Ty
+  | cuTy( nTy1 , Ixc ,  nTy2 )           ::   :: cuTy
+  | cutsTy( nTy1 , nTy2 )           ::   :: cutsTy
+  | tutsTy( nTy1 , nte , nTy2 )           ::   :: tutsTy
+
+TTGoal {{ tex \text{Goal} }} , G :: 'ttgoal_' ::= {{ com goal in TT }}
   | TTGoal1 & TTGoal2              ::   :: conj
-  | eq_te( ente1 , ente2 , enctx ) ::   :: eq_te {{ tex [[ente1]] \equiv_{[[enctx]]} [[ente2]] }}
-  | eq_Ty( enTy1 , enTy2 , enctx ) ::   :: eq_Ty {{ tex [[enTy1]] \equiv_{[[enctx]]} [[enTy2]] }}
-  | eq_K( enK1 , enK2 , enctx )    ::   :: eq_K  {{ tex [[enK1]] \equiv_{[[enctx]]} [[enK2]] }}
-  | ( TTGoal )                     :: M :: paren
+  | ( TTGoal )                     :: M :: paren {{tex [[TTGoal]] }}
     {{ coq ( [[TTGoal]] ) }}
-  | kind( enK , enctx )            ::   :: K
-  | type( enTy , enctx )           ::   :: Ty
-  | mvar : type( enTy , enctx )    ::   :: Ty_bound
+  | mvar : TTAtom                  ::   :: bound_at
+  | TTAtom                         ::   :: unbound_at
 
-
-TTProg {{ tex \text{Prog}^{*n} }} :: 'ttprog_' ::= {{ com program in TT }}
+TTProg {{ tex \text{Prog} }} :: 'ttprog_' ::= {{ com program in TT }}
   | empty                                 ::   :: empty
   | TTProg , con : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_con
   | TTProg , tcon : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_tcon

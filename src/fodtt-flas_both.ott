@@ -34,7 +34,7 @@ formula :: formula_ ::=
      {{ coq (boundnCon [[c]] [[C]] [[nsgn]]) }}
      {{ tex [[c]] : [[C]] \in [[nsgn]] }}
   | c : nA in nsgn                                    :: :: cinsig_lnl
-     {{ coq (boundCon [[c]] [[nA]] [[nsgn]]) }}
+     {{ coq (boundnCon [[c]] [[nA]] [[nsgn]]) }}
      {{ tex [[c]] : [[nA]] \in [[nsgn]] }}
   | alpha : nK in nsgn                              :: :: binsig_nl
      {{ coq (boundnTCon [[alpha]] [[nK]] [[nsgn]]) }}
@@ -54,3 +54,17 @@ formula :: formula_ ::=
   | x notin dom ( lnctx )                             :: :: xnotinctx_lnl
      {{ coq (not (indomVar [[x]] [[lnctx]])) }}
      {{ tex [[x]] \not\in \dom([[lnctx]]) }}
+
+
+  | c notin dom ( snsgn )                            :: :: cnotinssig_nl
+     {{ coq (not (indomsnCon [[c]] [[snsgn]])) }}
+     {{ tex [[c]] \not\in \dom([[snsgn]]) }}
+  | a notin dom ( snsgn )                        :: :: bnotinssig_nl
+     {{ coq (not (indomsnTCon [[a]] [[snsgn]])) }}
+     {{ tex [[a]] \not\in \dom([[snsgn]]) }}
+  | c : tau in snsgn                                    :: :: cinssig_lnl
+     {{ coq (boundsnCon [[c]] [[tau]] [[snsgn]]) }}
+     {{ tex [[c]] : [[tau]] \in [[snsgn]] }}
+  | a : kappa in snsgn                              :: :: binssig_nl
+     {{ coq (boundsnTCon [[a]] [[kappa]] [[snsgn]]) }}
+     {{ tex [[a]] : [[kappa]] \in [[snsgn]] }}

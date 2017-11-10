@@ -122,6 +122,11 @@ Jwellformed :: '' ::=
     ----------------------------------------- :: pi_elim
     sgn ; ctx |- A M : K [ M / x ] 
 
+    sgn ; ctx |- A : L
+    sgn ; ctx |- L is L' 
+    ------------------------------ :: conv
+    sgn ; ctx |- A : L' 
+
   defn
   sgn ; ctx |- M : A  :: ::wfterm::'te_' {{tex [[sgn]] ; [[ctx]] \vdash [[M]] : [[A]]}} by
 
@@ -145,14 +150,15 @@ Jwellformed :: '' ::=
     sgn ; ctx |- M N : B [ N / x ]
 
     sgn ; ctx |- M : A
-    sgn ; ctx |- A' : typeK
-    sgn ; ctx |- A is A' 
+    sgn ; ctx |- A is A' : typeK
     ------------------------------ :: conv
     sgn ; ctx |- M : A' 
 
   defn 
-  sgn ; ctx |- K is K' ::  :: substapkind :: 'eqK_' {{tex [[sgn]] ; [[ctx]] \vdash [[K]] \equiv [[K']] }} by
+  sgn ; ctx |- K is K' ::  :: substapkind :: 'eqK_' {{tex [[sgn]] ; [[ctx]]
+  \vdash [[K]] \equiv [[K']] : \text{kind} }} by
 
+    sgn ; ctx |- K : kindS
     --------------------------- :: refl
     sgn ; ctx |- K is K 
 
@@ -165,66 +171,79 @@ Jwellformed :: '' ::=
     ------------------------------- :: trans
     sgn ; ctx |- K_1 is K_3
 
-    sgn ; ctx |- A is A' 
-    sgn ; ctx |- K is K' 
-    ------------------------------------ :: 1
-    sgn ; ctx |- Pi x:A.K is Pi x:A'.K' 
+    sgn ; ctx |- A is A' : typeK
+    sgn ; ctx |- L is L' 
+    ------------------------------------ :: cong
+    sgn ; ctx |- Pi x:A.L is Pi x:A'.L' 
 
   defn 
-  sgn ; ctx |- A is A' ::  :: substaptype :: 'eqT_' {{ tex [[sgn]] ; [[ctx]] \vdash [[A]] \equiv [[A']] }} by
+  sgn ; ctx |- A is A' : L ::  :: substaptype :: 'eqT_' 
+  {{ tex [[sgn]] ; [[ctx]] \vdash [[A]] \equiv [[A']] : [[L]] }} by
 
-    %sgn ; ctx |- A 
+    sgn ; ctx |- A : L
     --------------------------- :: refl
-    sgn ; ctx |- A is A 
+    sgn ; ctx |- A is A : L
 
-    sgn ; ctx |- A' is A 
+    sgn ; ctx |- A' is A : L
     ---------------------------- :: sym
-    sgn ; ctx |- A is A' 
+    sgn ; ctx |- A is A' : L
 
-    sgn ; ctx |- A_1 is A_2 
-    sgn ; ctx |- A_2 is A_3 
+    sgn ; ctx |- A_1 is A_2 : L
+    sgn ; ctx |- A_2 is A_3 : L
     ------------------------------- :: trans
-    sgn ; ctx |- A_1 is A_3 
+    sgn ; ctx |- A_1 is A_3 : L
 
-    sgn ; ctx |- A is A' 
-    sgn ; ctx |- B is B' 
-    ------------------------------------ :: 1
-    sgn ; ctx |- Pi x:A.B is Pi x:A'.B' 
+    sgn ; ctx |- A is A' : typeK 
+    sgn ; ctx |- B is B' : typeK
+    --------------------------------------- :: pi_intro_cong
+    sgn ; ctx |- Pi x:A.B is Pi x:A'.B' : L
 
-    sgn ; ctx |- A is A' 
-    sgn ; ctx |- M is M' 
-    ------------------------------------ :: 2
-    sgn ; ctx |- A M is A' M' 
+    sgn ; ctx |- A is A' : Pi x:B.L
+    sgn ; ctx |- M is M' : B
+    ------------------------------------ :: pi_elim_cong
+    sgn ; ctx |- A M is A' M' : L[M/x]
 
   defn 
-  sgn ; ctx |- M is M' ::  :: substapterm :: 'eqt_' {{ tex [[sgn]] ; [[ctx]] \vdash [[M]] \equiv [[M']] }} by
+  sgn ; ctx |- M is M' : A ::  :: substapterm :: 'eqt_'
+  {{ tex [[sgn]] ; [[ctx]] \vdash [[M]] \equiv [[M']] : [[A]] }} by
 
+    sgn ; ctx |- M : A
     ----------------------- :: refl
-    sgn ; ctx |- M is M 
+    sgn ; ctx |- M is M : A
 
-    sgn ; ctx |- M' is M 
+    sgn ; ctx |- M' is M : A
     ------------------------ :: sym
-    sgn ; ctx |- M is M' 
+    sgn ; ctx |- M is M' : A
 
-    sgn ; ctx |- M_1 is M_2 
-    sgn ; ctx |- M_2 is M_3 
+    sgn ; ctx |- M_1 is M_2 : A 
+    sgn ; ctx |- M_2 is M_3 : A
     --------------------------- :: trans
-    sgn ; ctx |- M_1 is M_3 
+    sgn ; ctx |- M_1 is M_3 : A
 
-    sgn ; ctx |- M is M' 
-    sgn ; ctx |- N is N' 
-    --------------------------------------- :: 1
-    sgn ; ctx |- (\x:A.M)N is M' [ N' / x ] 
+    sgn ; ctx |- M is M' : Pi x : A . B
+    sgn ; ctx |- A is A' : typeK
+    ------------------------------------------------- :: pi_intro_cong
+    sgn ; ctx |- (\x:A.M) is (\x:A'.M') : Pi x : A . B
 
-    sgn ; ctx |- M is M' 
-    sgn ; ctx |- N is N' 
-    --------------------------------------- :: 2
-    sgn ; ctx |- M N is M' N' 
+    sgn ; ctx |- M is M' : Pi x : A . B
+    sgn ; ctx |- N is N' : A
+    --------------------------------------- :: pi_elim_cong
+    sgn ; ctx |- M N is M' N' : B [  N / x]
 
-    sgn ; ctx |- A is A' 
-    sgn ; ctx |- M is M' 
-    ------------------------------------------ :: 3
-    sgn ; ctx |- \x:A.M is \x:A'.M' 
+    sgn ; ctx |- A : typeK
+    sgn ; ctx, x : A |- M x is M' x : B
+    ------------------------------------------ :: ext
+    sgn ; ctx |- M is N : Pi x : A . B
 
+
+    sgn ; ctx , x : A |- M : B
+    sgn ; ctx |- N : A
+    -------------------------------------------------- :: red
+    sgn ; ctx |- (\x:A.M) N is M [ N / x] : B [ N / x] 
+
+    sgn ; ctx |- M is N : A
+    sgn ; ctx |- A is B : typeK
+    ------------------------------------------ :: conv
+    sgn ; ctx |- M is N : B
 
 
