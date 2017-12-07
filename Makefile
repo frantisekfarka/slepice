@@ -13,16 +13,16 @@ MAIN=exquan-raw.tex
 #MAIN=exquan-nl-only.tex
 
 META=$(SRC_DIR)fodtt-metavar.ott\
-     $(SRC_DIR)fodttstar-metavar.ott
+#     $(SRC_DIR)fodttstar-metavar.ott
 
-FODTT=$(SRC_DIR)fodtt-syntax.ott\
-      $(SRC_DIR)fodtt-flas_both.ott\
-      $(SRC_DIR)fodtt-typing.ott
+FODTT= $(SRC_DIR)fodtt-flas_both.ott\
+#$(SRC_DIR)fodtt-syntax.ott\
+#      $(SRC_DIR)fodtt-typing.ott
 
-FODTTSTAR=$(SRC_DIR)fodttstar-syntax.ott
+#FODTTSTAR=$(SRC_DIR)fodttstar-syntax.ott
 
-FOHC=${SRC_DIR}fohc-metavar.ott\
-     ${SRC_DIR}fohc-syntax.ott
+#FOHC=${SRC_DIR}fohc-metavar.ott\
+#     ${SRC_DIR}fohc-syntax.ott
     
 TRANS=#$(SRC_DIR)trans.ott
 
@@ -31,14 +31,14 @@ FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott\
 	     $(SRC_DIR)fodtt_struct-syntax.ott\
 	     $(SRC_DIR)fodtt_lnl-typing-algo.ott
 
-FODTTLNL=$(SRC_DIR)fodtt_lnl-syntax.ott\
-	 $(SRC_DIR)fodtt_lnl-typing.ott
+FODTTLNL=#$(SRC_DIR)fodtt_lnl-syntax.ott\
+	 #$(SRC_DIR)fodtt_lnl-typing.ott
 
-TRANSLNL=#$(SRC_DIR)trans-lnl.ott
+#TRANSLNL=#$(SRC_DIR)trans-lnl.ott
 
 TERMINALS=$(SRC_DIR)terminals.ott
 
-GOALS=$(SRC_DIR)fodtt_lnl-goal.ott
+#GOALS=$(SRC_DIR)fodtt_lnl-goal.ott
 
 
 

@@ -20,7 +20,7 @@ nK {{ tex K }} , nL {{ tex L }} :: 'kindstar_nl_' ::= {{ com Extended Locally Na
   | Pi nTy . nK          ::   :: pi_intro            {{ com kind of dependent functions }}
   | ( nK )               :: S :: paren                        
      {{ coq [[nK]] }}
-  | mkvar                 ::   :: mkvar               {{ com kind level metavariables }}
+%  | mkvar                 ::   :: mkvar               {{ com kind level metavariables }}
 
 nTy {{ tex T }}, nA {{ tex A }}, nB {{ tex B }} :: 'typestar_nl_' ::= {{ com Extended Locally Nameless Types }}
   | tcon                  ::   :: tcon                {{ com type constant }}
@@ -29,7 +29,7 @@ nTy {{ tex T }}, nA {{ tex A }}, nB {{ tex B }} :: 'typestar_nl_' ::= {{ com Ext
   | ( nTy )              :: S :: paren                        
      {{ coq [[nTy]] }}
      {{ ocaml ([[nTy]]) }}
-  | mtvar                 ::   :: mtvar               {{ com type level metavariables }}
+%  | mtvar                 ::   :: mtvar               {{ com type level metavariables }}
 
 nte {{ tex t }}, nM {{ tex M }}, nN {{ tex N }} :: 'termstar_nl_' ::= {{ com Extended Locally Nameless Terms }}
   | con                   ::   :: con                 {{ com term constant }} 
@@ -40,7 +40,7 @@ nte {{ tex t }}, nM {{ tex M }}, nN {{ tex N }} :: 'termstar_nl_' ::= {{ com Ext
   | ( nte )              :: S :: paren                        
      {{ coq [[nte]] }}
      {{ ocaml ([[nte]]) }}
-  | mvar                 ::   :: mvar               {{ com term level metavariables }}
+%  | mvar                 ::   :: mvar               {{ com term level metavariables }}
 
 nsgn {{tex Sig }}, nS {{ tex \mathcal{S} }} :: 'signaturestar_nl_' ::= {{ com Extended Locally Nameless Signature }}
     {{ coq list (con*nTy+tcon*nK) }}

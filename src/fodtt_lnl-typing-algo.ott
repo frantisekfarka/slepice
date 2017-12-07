@@ -62,7 +62,7 @@ defns
 FerasurenTy :: '' ::=
 
   defn
-  erasurenTy( nA ) tau :: :: erasuresnTy :: 'erasure_nTy_'
+  erasurenTy( nA ) tau :: :: erasure_nTy :: 'erasure_nTy_'
     {{ tex ( [[nA]] )^- \equiv [[tau]] }} by
 
   ----------------- :: tcon
@@ -81,7 +81,7 @@ defns
 FerasurenK :: '' ::=
 
   defn
-  erasurenK( nL ) kappa :: :: erasuresnK :: 'erasure_nK_'
+  erasurenK( nL ) kappa :: :: erasure_nK :: 'erasure_nK_'
     {{ tex ( [[nL]] )^- \equiv [[kappa]] }} by
 
   ------------------------ :: type
@@ -96,7 +96,7 @@ defns
 Ferasurensgn :: '' ::=
 
   defn
-  erasurensgn( nS ) ( snsgn ) :: :: erasuresnsgn :: 'erasure_nsgn_' 
+  erasurensgn( nS ) ( snsgn ) :: :: erasure_nsgn :: 'erasure_nsgn_' 
     {{ tex ( [[nS]] )^- \equiv [[snsgn]] }} by
 
   ------------------------------ :: empty
@@ -116,7 +116,7 @@ defns
 Ferasurenctx :: '' ::=
 
   defn
-  erasurenctx( nG ) ( nD ) :: :: erasuresnctx :: 'erasure_nctx_'
+  erasurenctx( nG ) ( nD ) :: :: erasure_nctx :: 'erasure_nctx_'
     {{ tex ( [[nG]] )^- \equiv [[nD]] }} by
 
   ------------------------------ :: empty
@@ -137,7 +137,7 @@ Fstruct ::=
   structnTy( a ) === Leaf
   structnTy( nA nM ) === structnTy( nA ) structnte( nM )
   structnTy( Pi nA . nB ) === Pi structnTy(nA) . structnTy(nB)
-  structnTy( mA ) === Leaf
+%  structnTy( mA ) === Leaf
 
   fun
   structnte( nte ) :: ste :: struct_nte
@@ -148,7 +148,7 @@ Fstruct ::=
   structnte( ixt ) === Leaf
   structnte( nM nN ) === structnte( nM ) structnte( nN )
   structnte( \ nA . nM ) === \ structnTy( nA ) . structnte( nM )
-  structnte( mx ) === Leaf
+%  structnte( mx ) === Leaf
 
 funs
 Fcsmstralgeq ::=
@@ -261,7 +261,7 @@ defns
 Unshift :: 'cu_' ::=
 
   defn
-  cuTy nTy ixc nTy' :: :: Ty :: 'nTy_' 
+  cuTy nTy ixc nTy' :: :: nTy :: 'nTy_' 
     {{ tex \overrightarrow{[[nTy]]} [ [[ixc]] ] \equiv [[nTy']] }} 
     {{ com \emph{unshifting} on types }} by
  
@@ -279,7 +279,7 @@ Unshift :: 'cu_' ::=
   cuTy( nA nM ) ixc (nA' nM')
 
   defn
-  cute nte ixc nte' :: :: Te :: 'nte_'
+  cute nte ixc nte' :: :: nte :: 'nte_'
     {{ tex \overrightarrow{[[nte]]} [ [[ixc]] ]  \equiv [[nte']] }} 
     {{ com \emph{unshifting} on terms }} by
 

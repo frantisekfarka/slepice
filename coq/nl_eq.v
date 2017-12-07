@@ -30,8 +30,6 @@ Proof.
   decide equality.
   apply eq_con.
   decide equality.
-  decide equality.
-  decide equality.
 Qed.
 
 Lemma eq_snTy_dec:
@@ -49,7 +47,6 @@ Lemma eq_nK:
 Proof.
   decide equality.
   apply eq_nTy_dec.
-  decide equality.
 Qed.
 
 Lemma eq_snK:

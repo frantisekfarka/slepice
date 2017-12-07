@@ -25,8 +25,6 @@ Proof.
         as [ ]
           by (apply cs_nte_dec).
       eexists; constructor; eauto.
-
-    + admit. (* from assumption on existence ?? *)
       
   - (* cs_nte_dec *)
     induction M; intro i.
@@ -70,9 +68,10 @@ Proof.
       destruct IHM2 with i.
       eexists; constructor; eauto.
 
-    + admit. (* mvar, assumptions *)
 Qed.
 
+(*
+is not in fact needed?
 Lemma cs_nK_dec:
   forall (L : nK) (i : Ixc),
     { L' : nK | cs_nK L i L' }.
@@ -87,6 +86,7 @@ Proof.
   eexists.
   econstructor; eauto.
 Qed.
+ *)
 
 Lemma cs_nctx_dec:
   forall (G : nctx) (i : Ixc) (A : nTy),
@@ -661,6 +661,9 @@ Defined.
 
 (** context shifting preserves context shifting in simple context **)
 
+(*
+not needed ?
+
 Lemma cs_snctx_cs:
   forall (sG sG' : snctx) (i : Ixc) (tau tau' : snTy),
     cs_snctx sG i tau' sG' ->
@@ -713,6 +716,7 @@ Proof.
   constructor.
   apply IHsG.
 Qed.
+ *)
 
 (**
    * Context unshifting
@@ -869,6 +873,7 @@ Proof.
         eapply n; eauto.
 Qed.
 
+(*
 Lemma cu_nctx_wf_dec:
   forall (S : nsgn) (G : nctx) (i : Ixc),
     wfctx_nl S G -> i < length G ->
@@ -895,7 +900,8 @@ Proof.
           exists (nil, B).
           cbn.
           apply cu_nctx_empty. }
-          
+ *)
+        (*
       * destruct IHG as [ [ ?G' ?A' ]  ].
         { admit. (* induction on length G! *) }
         { cbn; auto with arith. }
@@ -928,6 +934,7 @@ Proof.
          constructor; auto.
 
 Qed.
+         *)
 
 (** determinacy of context unshifting **)
 
@@ -1256,7 +1263,6 @@ Proof.
   inversion H1; inversion H2; econstructor; eauto.
 Defined.  
 *)
-
 (**
    * Context-unshifitng type-shifting
 **)
