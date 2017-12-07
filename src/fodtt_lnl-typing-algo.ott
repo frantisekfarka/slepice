@@ -248,7 +248,7 @@ ShiftCtx :: '' ::=
 
   csctx( nG ) zeroc nA (nG')
   csTy nB zeroc nB'
-  ----------------------------------------- :: var_zero
+  ----------------------------------------- :: var_zeroc
   csctx( nG, nA ) zeroc nB (nG', nB')
 
   csctx( nG ) ixc nB (nG')

@@ -69,6 +69,11 @@ TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | kind( nK , nctx )            ::   :: K
   | type( nTy , nctx )           ::   :: Ty
   | cuTy( nTy1 , Ixc ,  nTy2 )           ::   :: cuTy
+  | cute( nte1 , Ixc ,  nte2 )           ::   :: cute
+  | csTy( nTy1 , Ixc ,  nTy2 )           ::   :: csTy
+  | cste( nte1 , Ixc ,  nte2 )           ::   :: cste
+  | cstuTy( nTy1 , Ixc ,  nTy2 )         ::   :: cstuTy
+  | cstute( nte1 , Ixc ,  nte2 )         ::   :: cstute
   | cutsTy( nTy1 , nTy2 )           ::   :: cutsTy
   | tutsTy( nTy1 , nte , nTy2 )           ::   :: tutsTy
 
