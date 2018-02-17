@@ -59,10 +59,10 @@ type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
 }}
 
 defns
-FerasurenTy :: '' ::=
+JerasurenTy :: '' ::=
 
   defn
-  erasurenTy( nA ) tau :: :: erasure_nTy :: 'erasure_nTy_'
+  erasurenTy( nA ) tau :: :: erasure_nTy_pred :: 'erasure_nTy_'
     {{ tex ( [[nA]] )^- \equiv [[tau]] }} by
 
   ----------------- :: tcon
@@ -77,11 +77,23 @@ FerasurenTy :: '' ::=
   ----------------------------------------- :: pi_intro
   erasurenTy( Pi nA . nB ) ( tau1 -> tau2 )
 
+funs
+FerasurenTy ::=
+
+  fun
+  erasurenTy( nTy ) :: snTy :: erasure_nTy 
+    {{ tex ( [[nTy]] )^- }} by
+
+  erasurenTy( a ) === a
+  erasurenTy( nA nM ) === erasurenTy( nA )
+  erasurenTy( Pi nA . nB ) === erasurenTy( nA) -> erasurenTy( nB )
+
+
 defns
-FerasurenK :: '' ::=
+JerasurenK :: '' ::=
 
   defn
-  erasurenK( nL ) kappa :: :: erasure_nK :: 'erasure_nK_'
+  erasurenK( nL ) kappa :: :: erasure_nK_pred :: 'erasure_nK_'
     {{ tex ( [[nL]] )^- \equiv [[kappa]] }} by
 
   ------------------------ :: type
@@ -92,11 +104,21 @@ FerasurenK :: '' ::=
   ------------------------------------ :: pi_intro
   erasurenK( Pi nA . nL ) tau -> kappa 
 
+funs
+FerasurenK ::=
+
+  fun
+  erasurenK( nK ) :: snK :: erasure_nK
+    {{ tex ( [[nK]] )^- }} by
+
+  erasurenK( typeK ) === typeK
+  erasurenK( Pi nA . nL ) === erasurenTy( nA ) -> erasurenK( nL )
+
 defns
-Ferasurensgn :: '' ::=
+Jerasurensgn :: '' ::=
 
   defn
-  erasurensgn( nS ) ( snsgn ) :: :: erasure_nsgn :: 'erasure_nsgn_' 
+  erasurensgn( nS ) ( snsgn ) :: :: erasure_nsgn_pred :: 'erasure_nsgn_' 
     {{ tex ( [[nS]] )^- \equiv [[snsgn]] }} by
 
   ------------------------------ :: empty
@@ -112,11 +134,22 @@ Ferasurensgn :: '' ::=
   --------------------------------------------- :: con
   erasurensgn( nS , c : nA ) (snsgn, c : tau) 
 
+funs
+Ferasurensgn ::=
+
+  fun 
+  erasurensgn( nsgn ) :: snsgn :: erasure_nsgn
+    {{ tex ( [[nsgn]] )^- }} by
+
+  erasurensgn( empty ) === empty 
+  erasurensgn( nS , a : nL ) === erasurensgn( nS ), a : erasurenK( nL)
+  erasurensgn( nS , c : nA ) === erasurensgn( nS ), c : erasurenTy( nA )
+
 defns
-Ferasurenctx :: '' ::=
+Jerasurenctx :: '' ::=
 
   defn
-  erasurenctx( nG ) ( nD ) :: :: erasure_nctx :: 'erasure_nctx_'
+  erasurenctx( nG ) ( nD ) :: :: erasure_nctx_pred :: 'erasure_nctx_'
     {{ tex ( [[nG]] )^- \equiv [[nD]] }} by
 
   ------------------------------ :: empty
@@ -126,6 +159,17 @@ Ferasurenctx :: '' ::=
   erasurenTy(nA) tau
   ------------------------------------- :: var
   erasurenctx( nG , nA )  (snctx,tau)
+
+
+funs
+Ferasurenctx ::=
+
+  fun
+  erasurenctx( nctx ) :: snctx :: erasure_nctx
+    {{ tex ( [[nctx]] )^- \equiv }} by
+
+  erasurenctx( empty ) === empty
+  erasurenctx( nG , nA )  === erasurenctx( nG ) , erasurenTy( nA )
 
 funs
 Fstruct ::=
@@ -674,8 +718,7 @@ Jwalgeq :: '' ::=
     snsgn ; nD |- nA1 walgeq nB1 : typeK
     cstuTy nA2 zeroc nA2'
     cstuTy nB2 zeroc nB2'
-    erasurenTy(nA1) tau
-    snsgn ; nD, tau |- nA2' walgeq nB2' : typeK
+    snsgn ; nD, erasurenTy(nA1) |- nA2' walgeq nB2' : typeK
     --------------------------------------------------------- :: pi_intro
     snsgn ; nD |- (Pi nA1.nA2) walgeq (Pi nB1.nB2) : typeK
 
@@ -756,9 +799,7 @@ Jwellformednl_alg :: '' ::=
 
     nS ; nG |- nA => Pi nB' . nL
     nS ; nG |- nM => nB
-    erasurensgn(nS) (snsgn)
-    erasurenctx(nG) (snctx)
-    snsgn ; snctx |- nB walgeq nB' : typeK
+    erasurensgn(nS) ; erasurenctx(nG) |- nB walgeq nB' : typeK
     tutsK (nL , nM) nL'
     ------------------------------------------------------------ :: pi_elim
     nS ; nG |- nA nM => nL'
@@ -793,9 +834,7 @@ Jwellformednl_alg :: '' ::=
 
     nS ; nG |- nM1 => Pi nA2' . nA1
     nS ; nG |- nM2 => nA2
-    erasurensgn(nS) (snsgn)
-    erasurenctx(nG) (snctx)
-    snsgn ; snctx |- nA2 walgeq nA2' : typeK
+    erasurensgn(nS) ; erasurenctx(nG) |- nA2 walgeq nA2' : typeK
     tutsTy(nA2 , nM2) nB
     ------------------------------ :: pi_elim
     nS ; nG |- nM1 nM2 => nB

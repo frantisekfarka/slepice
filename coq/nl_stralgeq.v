@@ -33,7 +33,7 @@ Proof.
   assumption.
   apply algeq_nl_te_symmetry; assumption.
   (* lemma 2 *)
-  intros.
+  intros. 
   induction H.
   apply algeq_nl_te_whr_r with nM'; assumption.
   apply algeq_nl_te_whr_l with nN'; assumption.
@@ -42,40 +42,41 @@ Proof.
   apply algeq_nl_te_eta_exp with nN' nM'; assumption.
 Qed.  
 
+
 (** determinacy of streq **)
 
 Lemma streq_nl_te_determinacy_l:
   forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
     ( streq_nl_te sS sG M N tau ) -> ~ (exists M', whr_nl_te M M').
 Proof.
-  intros.
+  intros sS sG M N tau H.
   induction H.
-  intro.
-  decompose record H0.
-  inversion H1.
-  intro.
-  decompose record H1.
-  inversion H2.
-  intro.
-  decompose record H1.
-  inversion H2.
-  intro.
-  destruct nM1.
-  decompose record H1.
-  inversion H2.
-  inversion H6.
-  decompose record H1.
-  inversion H2.
-  inversion H6.
-  decompose record H1.
-  inversion H2.
-  inversion H6.
-  inversion H.
-  apply IHstreq_nl_te.
-  decompose record H1.
-  inversion H2.
-  exists nM'.
-  assumption.
+  - intro Hc.
+    decompose record Hc.
+    inversion H0.
+  - intro Hc.
+    decompose record Hc.
+    inversion H1.
+  - intro Hc.
+    decompose record Hc.
+    inversion H1.
+  - intro.
+    destruct nM1.
+    + decompose record H1.
+      inversion H2.
+      inversion H6.
+    + decompose record H1.
+      inversion H2.
+      inversion H6.
+    + decompose record H1.
+      inversion H2.
+      inversion H6.
+    + inversion H.
+    + apply IHstreq_nl_te.
+      decompose record H1.
+      inversion H2.
+      exists nM'.
+      assumption.
 Qed.
 
 Lemma streq_nl_te_determinacy_r:
@@ -142,7 +143,7 @@ Proof.
 Qed.
 
 (** streq is preserved along cs **)
-
+(*
 Fixpoint streq_nl_te_cs (sS : snsgn) (sG sG' : snctx) (M M' N N' : nte) (tau tau' : snTy) (i : Ixc)
   (H : streq_nl_te sS sG M N tau ) {struct H}:
     cs_nte M i M' -> cs_nte N i N' -> cs_snctx sG i tau' sG' ->    
@@ -257,6 +258,7 @@ Proof.
   exact H0.
   constructor.
 Qed.
+*)
 
 (** algeq lifts along whr **)
 
@@ -345,7 +347,7 @@ Qed.
 (**
 streq and algeq are preserved by context shiftin inverse 
 **)
-
+(*
 Fixpoint streq_nl_te_cs_inversion (sS : snsgn) (sG sG' : snctx) (M M' N N' : nte) (tau tau' : snTy)
   (H : streq_nl_te sS sG' M' N' tau ) (i : Ixc) {struct H}:
     cs_nte M i M' -> cs_nte N i N' -> cs_snctx sG i tau' sG' ->    
@@ -472,9 +474,10 @@ Proof.
   exact c0.
   constructor.
 Qed.
-
+*)
 
 (** transformation of streq to algeq  **)
+(*
 Lemma streq_nl_te_algeq:
   forall (sS : snsgn) (sG : snctx) (M N : nte) (tau : snTy),
     wfssig_nl sS ->
@@ -509,13 +512,14 @@ Proof.
   constructor.
   exact H.
 Qed.  
-
+*)
 
 (**
 * Weak algorithmic equality 
 **)
 
 (** walgeq is preserved by context shifting **)
+(*
 Lemma walgeq_nl_Ty_cs:
   forall (sS : snsgn) (sG sG' : snctx) (A A' B B' : nTy) (tau : snTy) (kappa : snK) (i : Ixc),
     walgeq_nl_Ty sS sG A B kappa ->
@@ -560,5 +564,77 @@ Proof.
     eapply IHwalgeq_nl_Ty; eauto.
     eapply algeq_nl_te_cs; eauto.
 Qed.
+*)
 
 
+(** decidability for nomalizing terms **)
+
+Lemma algeq_nl_te_decnorm:
+  forall (sS : snsgn) (sG : snctx) (M M' N N' : nte) (tau : snTy),
+    (algeq_nl_te sS sG M M' tau) ->
+    (algeq_nl_te sS sG N N' tau) ->
+    (algeq_nl_te sS sG M N tau) \/
+    (~ algeq_nl_te sS sG M N tau).
+Proof.
+  intros sS sG M M' N N' tau H.
+  generalize dependent N.
+  generalize dependent N'.
+  induction H.
+
+  - intros.
+    apply IHalgeq_nl_te in H1.
+
+    destruct H1.
+
+    + left.
+      econstructor; eauto.
+
+    + right.
+      intro.
+      apply H1; auto.
+      eapply algeq_nl_te_whr_inversion_l; eauto.
+
+  - intros.
+    apply IHalgeq_nl_te in H1.
+
+    destruct H1.
+
+    + left.
+      assumption.
+
+    + right.
+      intro.
+      apply H1; auto.
+
+  - intros.
+
+    generalize dependent nM.
+    generalize dependent nN.
+
+    induction H0.
+
+    + intros.
+      apply IHalgeq_nl_te in H1.
+      destruct H1.
+
+      * left.
+        eapply algeq_nl_te_whr_r; eauto.
+
+      * right.
+        intro.
+
+        apply H1.
+        eapply algeq_nl_te_whr_inversion_r; eauto.
+
+    + intros.
+      apply IHalgeq_nl_te in H1.
+      assumption.
+
+    + intros.
+
+      admit. (* ??? *)
+
+    + intros.
+      eapply IHalgeq_nl_te in H2.
+
+      
