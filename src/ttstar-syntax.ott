@@ -1,5 +1,4 @@
 grammar
-
 Ix {{tex I }}, ix {{tex \iota }} :: 'ix_' ::= {{com deBruijn indices }}
   {{ coq nat }}
   | zero                 ::   :: zero  
@@ -12,17 +11,7 @@ Ix {{tex I }}, ix {{tex \iota }} :: 'ix_' ::= {{com deBruijn indices }}
      {{ tex ([[Ix]]) }}
 
 grammar
-eK {{ tex {\color{blue}K} }} , eL {{ tex {\color{blue}L} }} :: 'kindstar_nl_' ::= {{ com Extended Kinds }}
-  | typeK                ::   :: type                {{ com kind of all types }} 
-  | Pi eTy . eK          ::   :: pi_intro            {{ com kind of dependent functions }}
-  | ( eK )               :: S :: paren                        
-     {{ coq [[eK]] }}
-  | mkvar                ::   :: mkvar               {{ com kind level metavariables }}
-  | substK( eK , ix , eN )    :: M :: subst
-     {{ coq [[eK]] [[eN]] [[ix]] }}
-     {{ tex  [[eK]] [ [[eN]] / [[ix]] ] }}
-
-eTy {{ tex {\color{blue}T} }}, eA {{ tex {\color{blue}A} }}, eB {{ tex {\color{blue}B} }} :: 'typestar_nl_' ::= {{ com Extended Types }}
+eTy {{ tex {\ttstar{T} } }}, eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} } }} :: 'typestar_nl_' ::= {{ com Extended Types }}
   | tcon                 ::   :: tcon                {{ com type constant }}
   | Pi eTy1 . eTy2       ::   :: pi_intro            {{ com type of dependente functions }}
   | eTy ete              ::   :: pi_elim             {{ com application of a type former }}
@@ -30,14 +19,14 @@ eTy {{ tex {\color{blue}T} }}, eA {{ tex {\color{blue}A} }}, eB {{ tex {\color{b
      {{ coq [[eTy]] }}
      {{ ocaml ([[eTy]]) }}
   | mtvar                ::   :: mtvar               {{ com type level metavariables }}
-  | shiftTy( eTy , ix )  :: M :: shift
-     {{ coq [[eTy]] }}
-     {{ tex [[eTy]] \uparrow^{[[ix]]} }}
-  | substTy( eTy , ix , eN )    :: M :: subst
-     {{ coq [[eTy]] [[eN]] [[ix]] }}
-     {{ tex [[eTy]] [ [[eN]] / [[ix]] ] }}
+%  | shiftTy( eTy , ix )  :: M :: shift
+%     {{ coq [[eTy]] }}
+%     {{ tex [[eTy]] \uparrow^{[[ix]]} }}
+%  | substTy( eTy , ix , eN )    :: M :: subst
+%     {{ coq [[eTy]] [[eN]] [[ix]] }}
+%     {{ tex [[eTy]] [ [[eN]] / [[ix]] ] }}
 
-ete {{ tex {\color{blue}t} }}, eM {{ tex {\color{blue}M} }}, eN {{ tex {\color{blue}N} }} :: 'termstar_nl_' ::= {{ com Extended Terms }}
+ete {{ tex {\ttstar{t} } }}, eM {{ tex {\ttstar{M} } }}, eN {{ tex {\ttstar{N} } }} :: 'termstar_nl_' ::= {{ com Extended Terms }}
   | con                  ::   :: con                 {{ com term constant }} 
   | ix                   ::   :: ix                  {{ com de Bruijn indices }} 
   | \ eTy . ete          ::   :: pi_intro            {{ com formation of $\Pi$ type }}
@@ -46,50 +35,27 @@ ete {{ tex {\color{blue}t} }}, eM {{ tex {\color{blue}M} }}, eN {{ tex {\color{b
      {{ coq [[ete]] }}
      {{ ocaml ([[ete]]) }}
   | mvar                 ::   :: mvar                {{ com term level metavariables }}
-  | shiftte( ete , ix )  :: M :: shift
-     {{ coq [[ete]] }}
-     {{ tex [[ete]] \uparrow^{[[ix]]} }}
-  | substte( ete , ix , eN )    :: M :: subst
-     {{ coq [[ete]] [[eN]] [[ix]] }}
-     {{ tex [[ete]] [ [[eN]] / [[ix]] ] }}
+%  | shiftte( ete , ix )  :: M :: shift
+%     {{ coq [[ete]] }}
+%     {{ tex [[ete]] \uparrow^{[[ix]]} }}
+%  | substte( ete , ix , eN )    :: M :: subst
+%     {{ coq [[ete]] [[eN]] [[ix]] }}
+%     {{ tex [[ete]] [ [[eN]] / [[ix]] ] }}
 
+grammar
+eK {{ tex {\ttstar{K} } }} , eL {{ tex {\ttstar{L} } }} :: 'kindstar_nl_' ::= {{ com Extended Kinds }}
+  | typeK                ::   :: type                {{ com kind of all types }} 
+  | Pi eTy . eK          ::   :: pi_intro            {{ com kind of dependent functions }}
+  | ( eK )               :: S :: paren                        
+     {{ coq [[eK]] }}
+  | mkvar                ::   :: mkvar               {{ com kind level metavariables }}
+%  | substK( eK , ix , eN )    :: M :: subst
+%     {{ coq [[eK]] [[eN]] [[ix]] }}
+%     {{ tex  [[eK]] [ [[eN]] / [[ix]] ] }}
 
 
 grammar
-K {{ tex K }} , L {{ tex L }} :: 'kind_nl_' ::= {{ com Kinds }}
-  | typeK                ::   :: type                {{ com kind of all types }} 
-  | Pi Ty . K            ::   :: pi_intro            {{ com kind of dependent functions }}
-  | ( K )                :: S :: paren                        
-     {{ coq [[K]] }}
-
-Ty {{ tex T }}, A {{ tex A }}, B {{ tex B }} :: 'type_nl_' ::= {{ com Types }}
-  | tcon                 ::   :: tcon                {{ com type constant }}
-  | Pi Ty1 . Ty2         ::   :: pi_intro            {{ com type of dependente functions }}
-  | Ty te                ::   :: pi_elim             {{ com application of a type former }}
-  | ( Ty )               :: S :: paren                        
-     {{ coq [[Ty]] }}
-     {{ ocaml ([[Ty]]) }}
-
-te {{ tex t }}, M {{ tex M }}, N {{ tex N }} :: 'term_nl_' ::= {{ com Terms }}
-  | con                  ::   :: con                 {{ com term constant }} 
-  | ix                   ::   :: ix                  {{ com de Bruijn indices }} 
-  | \ Ty . te            ::   :: pi_intro            {{ com formation of $\Pi$ type }}
-  | te1 te2              ::   :: pi_elim             {{ com application }}
-  | ( te )               :: S :: paren                        
-     {{ coq [[te]] }}
-     {{ ocaml ([[te]]) }}
-
-sgn {{tex Sig }}, S {{ tex \mathcal{S} }} :: 'signature_nl_' ::= {{ com Signature }}
-    {{ coq list (con*Ty+tcon*K) }}
-%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
-  | empty                ::   :: empty               {{ com empty signature }}
-     {{ coq nil }}
-  | sgn , con : Ty       ::   :: con
-     {{ coq (cons (inl([[con]],[[Ty]])) [[sgn]]) }}
-  | sgn , tcon : K       ::   :: tcon
-     {{ coq (cons (inr([[tcon]],[[K]])) [[sgn]]) }}
-
-ectx {{tex {\color{blue}Ctx} }}, eG {{ tex {\color{blue}\Gamma} }} :: 'contextstar_nl_' ::= {{ com Extended Context }}
+ectx {{tex {\ttstar{Ctx} } }}, eG {{ tex {\ttstar{\Gamma} } }} :: 'contextstar_nl_' ::= {{ com Extended Context }}
     {{ coq list (nTy) }}
   | empty                ::   :: empty              {{ com empty context }}
      {{ coq nil }}
@@ -102,46 +68,5 @@ ectx {{tex {\color{blue}Ctx} }}, eG {{ tex {\color{blue}\Gamma} }} :: 'contextst
 %     {{ tex \overrightarrow{ [[enctx]] }  }} 
 %     {{ coq ??TODO }}
 
-ctx {{tex Ctx }}, G {{ tex \Gamma }} :: 'context_nl_' ::= {{ com Extended Context }}
-    {{ coq list (nTy) }}
-  | empty                ::   :: empty              {{ com empty context }}
-     {{ coq nil }}
-  | ctx , Ty             ::   :: ctxvar
-     {{ coq (cons [[Ty]] [[ctx]]) }}
-
-grammar
-sTy {{ tex {T^{-} } }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Types }}
-  | tcon                 ::   :: tcon                {{ com type constant }}
-  | sTy1 -> sTy2         ::   :: pi_intro            {{ com type of functions }}
-  | ( sTy )              :: S :: paren                        
-     {{ coq [[sTy]] }}
-
-grammar
-sK {{ tex K^{-}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple Kinds }}
-  | typeK                ::   :: type                {{ com kind of all types }} 
-  | sTy -> sK            ::   :: pi_intro            {{ com kind of functions }}
-  | ( sK )               :: S :: paren                        
-     {{ coq [[sK]] }}
 
 
-ssgn {{ tex \mathcal{S}^{-}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signature }}
-    {{ coq list (con*sTy+tcon*sK) }}
-%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
-  | empty                ::   :: empty               {{ com empty signature }}
-     {{ coq nil }}
-  | ssgn , con : sTy     ::   :: con
-     {{ coq (cons (inl([[con]],[[sTy]])) [[ssgn]]) }}
-  | ssgn , tcon : sK     ::   :: tcon
-     {{ coq (cons (inr([[tcon]],[[sK]])) [[ssgn]]) }}
-
-sctx {{ tex Ctx^{-} }} , D {{ tex \Delta^{}{} }} :: 'scontext_nl_' ::= {{ com Simple Context }}
-    {{ coq list (snTy) }}
-  | empty                 ::   :: empty              {{ com empty context }}
-     {{ coq nil }}
-  | sctx , sTy          ::   :: ctxvar
-     {{ coq (cons [[sTy]] [[sctx]]) }}
-
-subrules
-    K  <:: eK
-    Ty <:: eTy
-    te <:: ete

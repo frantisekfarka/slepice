@@ -156,7 +156,7 @@ Jref :: 'r_' ::=
 
 
     --------------------------------------------------- :: mvar
-    S ; eG ; mx |- ( mx : term( mx, mA, eG) | mA )
+    S ; eG ; mM |- ( mM : term( mM, mA, eG) | mA )
 
 %defns
 %Jrefsgn :: 'r_sgn_' ::=

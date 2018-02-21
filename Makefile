@@ -19,15 +19,16 @@ META=\
 FORMULAE=\
      $(SRC_DIR)formulae.ott
 
-FODTTSTARL=$(SRC_DIR)ttstar-syntax.ott\
+FODTTSTAR=$(SRC_DIR)ttstar-syntax.ott\
 
-FODTT=$(SRC_DIR)tt-typing_algo.ott\
-     #$(SRC_DIR)tt-typing.ott\
+FODTT=$(SRC_DIR)tt-syntax.ott\
+#    $(SRC_DIR)tt-typing_algo.ott\
+#     #$(SRC_DIR)tt-typing.ott\
 
 FOHC=${SRC_DIR}fohc-meta.ott\
      ${SRC_DIR}fohc-syntax.ott
     
-TRANS=$(SRC_DIR)trans.ott
+#TRANS=$(SRC_DIR)trans.ott
 
 REFIN=$(SRC_DIR)refin.ott
 
@@ -59,13 +60,13 @@ pdf: $(MAIN) $(WRAPPER)
 	latexmk -pdf $(WRAPPER) --jobname=$(MAIN:.tex=)
 
 exquan.tex: $(META) \
-    	    $(FORMULAE) \
 	    $(FODTTSTAR) \
 	    $(FODTT) \
 	    $(FOHC)\
 	    $(TRANS) \
 	    $(REFIN) \
-	    $(TERMINALS)
+	    $(TERMINALS) \
+    	    $(FORMULAE) 
 	$(OTT) \
 	    -o $@ \
 	    -o $(COQ_DIR)defns.v \
@@ -85,8 +86,8 @@ clean:
 	$(RM) *.aux *.xml *.bcf *.bbl *.blg *-blx.bib \
 		*.log *.nav *.out *.vrb *.snm *.toc \
 		X.tex *.bak *.pag *.fdb_latexmk *.fls \
-		exquan-raw.tex exquan-nl.tex
+		$(MAIN)
 
 veryclean: clean
-	$(RM) *.pdf *.dvi
+	$(RM) *.pdf *.dvi 
 

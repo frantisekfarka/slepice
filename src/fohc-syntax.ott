@@ -70,9 +70,9 @@ TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | kind( K , ctx )            ::   :: K
   | type( eTy , eK , ectx )           ::   :: Ty
   | term( ete , eTy , ectx )           ::   :: te
-  | shiftK( eL1 , eL2 )           ::   :: shiftK {{ tex [[eL1]] \uparrow \equiv [[eL2]] }}
+  | shiftK( eL1 , ix , eL2 )           ::   :: shiftK {{ tex [[eL1]] \uparrow^[[ix]] \equiv \; [[eL2]] }}
   | substK( eL1 , eM , eL2 )           ::   :: substK {{ tex [[eL1]] [ [[eM]] ] \equiv [[eL2]] }}
-  | shiftTy( eA1 , eA2 )           ::   :: shiftTy {{ tex [[eA1]] \uparrow \equiv [[eA2]] }}
+  | shiftTy( eA1 , ix , eA2 )           ::   :: shiftTy {{ tex [[eA1]] \uparrow^[[ix]] \equiv \; [[eA2]] }}
   | substTy( eA1 , eM , eA2 )           ::   :: substTy {{ tex [[eA1]] [ [[eM]] ]\equiv [[eA2]] }}
 
 TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in TT }}

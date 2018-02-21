@@ -6,218 +6,218 @@
 
 defns
 JgoalCu :: 'g_' ::=
+%
+%  defn
+%  cuTy nTy ixc ( TTGoal ; nTy' ) :: :: cugoal_nl_nTy :: 'cuTy_' 
+%    {{tex \overleftarrow{ [[nTy]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nTy']] }} by
+%
+%      ------------------- :: tcon
+%      cuTy a ixc ( true ; a )
+%
+%      cuTy nA ixc ( G1 ; nA' )
+%      cuTy nB ixc ( G2 ; nB' )
+%      ---------------------------------------------- :: pi_intro
+%      cuTy Pi nA . nB ixc ( G1 & G2 ; Pi nA' . nB' )
+%
+%      cuTy nA ixc (G1 ; nA')
+%      cute nM ixc (G2 ; nM')
+%      ----------------------------------- :: pi_elim
+%      cuTy nA nM ixc ( G1 & G2 ; nA' nM')
 
-  defn
-  cuTy nTy ixc ( TTGoal ; nTy' ) :: :: cugoal_nl_nTy :: 'cuTy_' 
-    {{tex \overleftarrow{ [[nTy]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nTy']] }} by
-
-      ------------------- :: tcon
-      cuTy a ixc ( true ; a )
-
-      cuTy nA ixc ( G1 ; nA' )
-      cuTy nB ixc ( G2 ; nB' )
-      ---------------------------------------------- :: pi_intro
-      cuTy Pi nA . nB ixc ( G1 & G2 ; Pi nA' . nB' )
-
-      cuTy nA ixc (G1 ; nA')
-      cute nM ixc (G2 ; nM')
-      ----------------------------------- :: pi_elim
-      cuTy nA nM ixc ( G1 & G2 ; nA' nM')
-
-      ------------------------------------------- :: mtvar
-      cuTy mA ixc ( cuTy( mA , ixc, mA' ) ; mA' )
-
-    
-  defn
-  cute nte ixc ( TTGoal ; nte' ) :: :: cugoal_nl_nte :: 'cute_' 
-    {{tex \overleftarrow{ [[nte]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nte']] }} by
-
-      ----------------------- :: tcon
-      cute c ixc ( true ; c )
-
-      ----------------------------------- :: ixc_lt
-      cute (succ ixc) zeroc ( true ; ixc)
- 
-      ---------------------------------- :: ixc_zeroc
-      cute zeroc succ ixc (true ; zeroc)
- 
-
-      cute (ixc) ixc' (G ; ixc'')
-      ------------------------------------------ :: ixc_succ
-      cute (succ ixc) succ ixc' (G ; succ ixc'')
-
-      ------------------------- :: ixt
-      cute ixt ixc (true ; ixt)
-
-      cuTy nA ixc (G1 ; nA')
-      cute nM ixc (G2 ; nM')
-      ------------------------------------------------ :: pi_intro
-      cute ( \ nA . nM ) ixc ( G1 & G2 ; \ nA' . nM' )
-
-      cute nM ixc (G1 ; nM')
-      cute nN ixc (G2 ; nN')
-      -------------------------------------- :: pi_elim
-      cute ( nM nN ) ixc (G1 & G2 ; nM' nN')
-
-      ------------------------------------------- :: mvar
-      cute mx ixc ( cute( mx , ixc, mx' ) ; mx' )
-
-defns
-JgoalCuCtx :: 'g_' ::=
-
-  defn
-  cuctx ( nctx ) ixc ( TTGoal ; nctx' ; nTy ) :: :: cugoal_nl_ctx :: 'cunctx_' 
-    {{tex \overleftarrow{ [[nctx]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] }
-    [[nctx']] , [[nTy]]}} by
-
-      -------------------------------------------- :: empty
-      cuctx ( empty,nB ) zeroc ( true ; empty ; nB)
-
-      cuTy nB zeroc (G1 ; nB')
-      cuctx (nG) zeroc (G2 ; nG' ; nA)
-      ----------------------------------------------- ::  var_zeroc
-      cuctx ( nG,nB ) zeroc ( G1 & G2 ; nG',nA ; nB')
-
-      cuctx ( nG ) ixc ( G1 ; nG' ; nB)
-      cuTy nA ixc (G2 ; nA')
-      ------------------------------------------------- :: var_succ
-      cuctx ( nG,nA ) succ ixc (G1 & G2 ; nG',nA' ; nB)
-
-
- 
-defns
-JgoalCs :: 'g_' ::=
-
-  defn
-  csTy nTy ixc ( TTGoal ; nTy' ) :: :: csgoal_nl_nTy :: 'csTy_' 
-    {{tex \overrightarrow{ [[nTy]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nTy']] }} by
-
-      ------------------- :: tcon
-      csTy a ixc ( true ; a )
-
-      csTy nA ixc ( G1 ; nA' )
-      csTy nB ixc ( G2 ; nB' )
-      ---------------------------------------------- :: pi_intro
-      csTy Pi nA . nB ixc ( G1 & G2 ; Pi nA' . nB' )
-
-      csTy nA ixc (G1 ; nA')
-      cste nM ixc (G2 ; nM')
-      ----------------------------------- :: pi_elim
-      csTy nA nM ixc ( G1 & G2 ; nA' nM')
-
-      ------------------------------------------- :: mtvar
-      csTy mA ixc ( csTy( mA , ixc, mA' ) ; mA' )
+%      ------------------------------------------- :: mtvar
+%      cuTy mA ixc ( cuTy( mA , ixc, mA' ) ; mA' )
 
     
-  defn
-  cste nte ixc ( TTGoal ; nte' ) :: :: csgoal_nl_nte :: 'cste_' 
-    {{tex \overrightarrow{ [[nte]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nte']] }} by
+%  defn
+%  cute nte ixc ( TTGoal ; nte' ) :: :: cugoal_nl_nte :: 'cute_' 
+%    {{tex \overleftarrow{ [[nte]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nte']] }} by
+%
+%      ----------------------- :: tcon
+%      cute c ixc ( true ; c )
+%
+%      ----------------------------------- :: ixc_lt
+%      cute (succ ixc) zeroc ( true ; ixc)
+% 
+%      ---------------------------------- :: ixc_zeroc
+%      cute zeroc succ ixc (true ; zeroc)
+% 
+%
+%      cute (ixc) ixc' (G ; ixc'')
+%      ------------------------------------------ :: ixc_succ
+%      cute (succ ixc) succ ixc' (G ; succ ixc'')
+%
+%      ------------------------- :: ixt
+%      cute ixt ixc (true ; ixt)
+%
+%      cuTy nA ixc (G1 ; nA')
+%      cute nM ixc (G2 ; nM')
+%      ------------------------------------------------ :: pi_intro
+%      cute ( \ nA . nM ) ixc ( G1 & G2 ; \ nA' . nM' )
+%
+%      cute nM ixc (G1 ; nM')
+%      cute nN ixc (G2 ; nN')
+%      -------------------------------------- :: pi_elim
+%      cute ( nM nN ) ixc (G1 & G2 ; nM' nN')
+%
+%      ------------------------------------------- :: mvar
+%      cute mx ixc ( cute( mx , ixc, mx' ) ; mx' )
 
-      ----------------------- :: tcon
-      cste c ixc ( true ; c )
-
-      ----------------------------------- :: ixc_gt
-      cste (ixc) zeroc ( true ; succ ixc)
- 
-      ---------------------------------- :: ixc_zeroc
-      cste zeroc succ ixc (true ; zeroc)
- 
-
-      cste (ixc) ixc' (G ; ixc'')
-      ------------------------------------------ :: ixc_succ
-      cste (succ ixc) succ ixc' (G ; succ ixc'')
-
-      ------------------------- :: ixt
-      cste ixt ixc (true ; ixt)
-
-      csTy nA ixc (G1 ; nA')
-      cste nM ixc (G2 ; nM')
-      ------------------------------------------------ :: pi_intro
-      cste ( \ nA . nM ) ixc ( G1 & G2 ; \ nA' . nM' )
-
-      cste nM ixc (G1 ; nM')
-      cste nN ixc (G2 ; nN')
-      -------------------------------------- :: pi_elim
-      cste ( nM nN ) ixc (G1 & G2 ; nM' nN')
-
-      ------------------------------------------- :: mvar
-      cste mx ixc ( cste( mx , ixc, mx' ) ; mx' )
-
-defns
-JgoalCsCtx :: 'g_' ::=
-
-  defn
-  csctx ( nctx ) ixc nTy ( TTGoal ; nctx' ) :: :: csgoal_nl_ctx :: 'csnctx_' 
-    {{tex \overrightarrow{ [[nctx]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] }
-    [[nctx']] , [[nTy]]}} by
-
-      --------------------------------------------- :: empty
-      csctx ( empty ) zeroc nB ( true ; empty , nB)
-
-      csctx (nG) zeroc nA (G2 ; nG' )
-      csTy nB zeroc (G1 ; nB')
-      ----------------------------------------------- ::  var_zeroc
-      csctx ( nG,nA ) zeroc nB ( G1 & G2 ; nG' , nB')
-
-      csctx ( nG ) ixc nB ( G1 ; nG' )
-      csTy nA ixc (G2 ; nA')
-      ------------------------------------------------ :: var_succ
-      csctx ( nG,nA ) succ ixc nB (G1 & G2 ; nG',nA' )
-
-defns
-JgoalCstu :: 'g_' ::=
-
-  defn
-  cstuTy nTy ixc ( TTGoal ; nTy' ) :: :: cstugoal_nl_nTy :: 'cstuTy_' 
-    {{tex \overrightarrow{ [[nTy]] } [ [[ixc]] / 0_T ] \equiv_{ [[TTGoal]] } [[nTy']] }} by
-
-      ------------------- :: tcon
-      cstuTy a ixc ( true ; a )
-
-      cstuTy nA ixc ( G1 ; nA' )
-      cstuTy nB ixc ( G2 ; nB' )
-      ------------------------------------------------ :: pi_intro
-      cstuTy Pi nA . nB ixc ( G1 & G2 ; Pi nA' . nB' )
-
-      cstuTy nA ixc (G1 ; nA')
-      cstute nM ixc (G2 ; nM')
-      ----------------------------------- :: pi_elim
-      cstuTy nA nM ixc ( G1 & G2 ; nA' nM')
-
-      ----------------------------------------------- :: mtvar
-      cstuTy mA ixc ( cstuTy( mA , ixc, mA' ) ; mA' )
-
-    
-  defn
-  cstute nte ixc ( TTGoal ; nte' ) :: :: cstugoal_nl_nte :: 'cstute_' 
-    {{tex \overrightarrow{ [[nte]] } [ [[ixc]] / 0_T ] \equiv_{ [[TTGoal]] } [[nte']] }} by
-
-      ------------------------- :: tcon
-      cstute c ixc ( true ; c )
-
-      ---------------------------------- :: ixc
-      cstute ixc ixc' ( true ; succ ixc)
- 
-      ---------------------------------- :: zerot
-      cstute zerot ixc (true ; ixc)
- 
-      ------------------------------------ :: suct
-      cstute (suct ixt) ixc ( true ; ixt )
-
-      cstuTy nA ixc (G1 ; nA')
-      cstute nM ixc (G2 ; nM')
-      ------------------------------------------------ :: pi_intro
-      cstute ( \ nA . nM ) ixc ( G1 & G2 ; \ nA' . nM' )
-
-      cstute nM ixc (G1 ; nM')
-      cstute nN ixc (G2 ; nN')
-      -------------------------------------- :: pi_elim
-      cstute ( nM nN ) ixc (G1 & G2 ; nM' nN')
-
-      ------------------------------------------- :: mvar
-      cstute mx ixc ( cstute( mx , ixc, mx' ) ; mx' )
-
-
+%defns
+%JgoalCuCtx :: 'g_' ::=
+%
+%  defn
+%  cuctx ( nctx ) ixc ( TTGoal ; nctx' ; nTy ) :: :: cugoal_nl_ctx :: 'cunctx_' 
+%    {{tex \overleftarrow{ [[nctx]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] }
+%    [[nctx']] , [[nTy]]}} by
+%
+%      -------------------------------------------- :: empty
+%      cuctx ( empty,nB ) zeroc ( true ; empty ; nB)
+%
+%      cuTy nB zeroc (G1 ; nB')
+%      cuctx (nG) zeroc (G2 ; nG' ; nA)
+%      ----------------------------------------------- ::  var_zeroc
+%      cuctx ( nG,nB ) zeroc ( G1 & G2 ; nG',nA ; nB')
+%
+%      cuctx ( nG ) ixc ( G1 ; nG' ; nB)
+%      cuTy nA ixc (G2 ; nA')
+%      ------------------------------------------------- :: var_succ
+%      cuctx ( nG,nA ) succ ixc (G1 & G2 ; nG',nA' ; nB)
+%
+%
+% 
+%defns
+%JgoalCs :: 'g_' ::=
+%
+%  defn
+%  csTy nTy ixc ( TTGoal ; nTy' ) :: :: csgoal_nl_nTy :: 'csTy_' 
+%    {{tex \overrightarrow{ [[nTy]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nTy']] }} by
+%
+%      ------------------- :: tcon
+%      csTy a ixc ( true ; a )
+%
+%      csTy nA ixc ( G1 ; nA' )
+%      csTy nB ixc ( G2 ; nB' )
+%      ---------------------------------------------- :: pi_intro
+%      csTy Pi nA . nB ixc ( G1 & G2 ; Pi nA' . nB' )
+%
+%      csTy nA ixc (G1 ; nA')
+%      cste nM ixc (G2 ; nM')
+%      ----------------------------------- :: pi_elim
+%      csTy nA nM ixc ( G1 & G2 ; nA' nM')
+%
+%      ------------------------------------------- :: mtvar
+%      csTy mA ixc ( csTy( mA , ixc, mA' ) ; mA' )
+%
+%    
+%  defn
+%  cste nte ixc ( TTGoal ; nte' ) :: :: csgoal_nl_nte :: 'cste_' 
+%    {{tex \overrightarrow{ [[nte]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] } [[nte']] }} by
+%
+%      ----------------------- :: tcon
+%      cste c ixc ( true ; c )
+%
+%      ----------------------------------- :: ixc_gt
+%      cste (ixc) zeroc ( true ; succ ixc)
+% 
+%      ---------------------------------- :: ixc_zeroc
+%      cste zeroc succ ixc (true ; zeroc)
+% 
+%
+%      cste (ixc) ixc' (G ; ixc'')
+%      ------------------------------------------ :: ixc_succ
+%      cste (succ ixc) succ ixc' (G ; succ ixc'')
+%
+%      ------------------------- :: ixt
+%      cste ixt ixc (true ; ixt)
+%
+%      csTy nA ixc (G1 ; nA')
+%      cste nM ixc (G2 ; nM')
+%      ------------------------------------------------ :: pi_intro
+%      cste ( \ nA . nM ) ixc ( G1 & G2 ; \ nA' . nM' )
+%
+%      cste nM ixc (G1 ; nM')
+%      cste nN ixc (G2 ; nN')
+%      -------------------------------------- :: pi_elim
+%      cste ( nM nN ) ixc (G1 & G2 ; nM' nN')
+%
+%      ------------------------------------------- :: mvar
+%      cste mx ixc ( cste( mx , ixc, mx' ) ; mx' )
+%
+%defns
+%JgoalCsCtx :: 'g_' ::=
+%
+%  defn
+%  csctx ( nctx ) ixc nTy ( TTGoal ; nctx' ) :: :: csgoal_nl_ctx :: 'csnctx_' 
+%    {{tex \overrightarrow{ [[nctx]] } [ [[ixc]] ] \equiv_{ [[TTGoal]] }
+%    [[nctx']] , [[nTy]]}} by
+%
+%      --------------------------------------------- :: empty
+%      csctx ( empty ) zeroc nB ( true ; empty , nB)
+%
+%      csctx (nG) zeroc nA (G2 ; nG' )
+%      csTy nB zeroc (G1 ; nB')
+%      ----------------------------------------------- ::  var_zeroc
+%      csctx ( nG,nA ) zeroc nB ( G1 & G2 ; nG' , nB')
+%
+%      csctx ( nG ) ixc nB ( G1 ; nG' )
+%      csTy nA ixc (G2 ; nA')
+%      ------------------------------------------------ :: var_succ
+%      csctx ( nG,nA ) succ ixc nB (G1 & G2 ; nG',nA' )
+%
+%defns
+%JgoalCstu :: 'g_' ::=
+%
+%  defn
+%  cstuTy nTy ixc ( TTGoal ; nTy' ) :: :: cstugoal_nl_nTy :: 'cstuTy_' 
+%    {{tex \overrightarrow{ [[nTy]] } [ [[ixc]] / 0_T ] \equiv_{ [[TTGoal]] } [[nTy']] }} by
+%
+%      ------------------- :: tcon
+%      cstuTy a ixc ( true ; a )
+%
+%      cstuTy nA ixc ( G1 ; nA' )
+%      cstuTy nB ixc ( G2 ; nB' )
+%      ------------------------------------------------ :: pi_intro
+%      cstuTy Pi nA . nB ixc ( G1 & G2 ; Pi nA' . nB' )
+%
+%      cstuTy nA ixc (G1 ; nA')
+%      cstute nM ixc (G2 ; nM')
+%      ----------------------------------- :: pi_elim
+%      cstuTy nA nM ixc ( G1 & G2 ; nA' nM')
+%
+%      ----------------------------------------------- :: mtvar
+%      cstuTy mA ixc ( cstuTy( mA , ixc, mA' ) ; mA' )
+%
+%    
+%  defn
+%  cstute nte ixc ( TTGoal ; nte' ) :: :: cstugoal_nl_nte :: 'cstute_' 
+%    {{tex \overrightarrow{ [[nte]] } [ [[ixc]] / 0_T ] \equiv_{ [[TTGoal]] } [[nte']] }} by
+%
+%      ------------------------- :: tcon
+%      cstute c ixc ( true ; c )
+%
+%      ---------------------------------- :: ixc
+%      cstute ixc ixc' ( true ; succ ixc)
+% 
+%      ---------------------------------- :: zerot
+%      cstute zerot ixc (true ; ixc)
+% 
+%      ------------------------------------ :: suct
+%      cstute (suct ixt) ixc ( true ; ixt )
+%
+%      cstuTy nA ixc (G1 ; nA')
+%      cstute nM ixc (G2 ; nM')
+%      ------------------------------------------------ :: pi_intro
+%      cstute ( \ nA . nM ) ixc ( G1 & G2 ; \ nA' . nM' )
+%
+%      cstute nM ixc (G1 ; nM')
+%      cstute nN ixc (G2 ; nN')
+%      -------------------------------------- :: pi_elim
+%      cstute ( nM nN ) ixc (G1 & G2 ; nM' nN')
+%
+%      ------------------------------------------- :: mvar
+%      cstute mx ixc ( cstute( mx , ixc, mx' ) ; mx' )
+%
+%
 defns
 Jgoal :: '' ::=
 
@@ -253,79 +253,75 @@ Jgoal :: '' ::=
 %    nsgn |- nctx,nA 
 %
   defn
-  nsgn ; nctx ; nK |- TTGoal ; kindS :: :: goalkind_nl :: 'g_nK_' 
-    {{tex [[nsgn]] ; [[nctx]] ; [[nK]] \vdash ( [[TTGoal]] \mid [[kindS]] ) }} by
+  sgn ; ectx ; eK |- TTGoal ; kindS :: :: goalkind_nl :: 'g_K_' 
+    {{tex [[sgn]] ; [[ectx]] ; [[eK]] \vdash ( [[TTGoal]] \mid [[kindS]] ) }} by
 
     ---------------------------------------  :: type
-    nS ; nG ; typeK |- true ; kindS 
+    S ; eG ; typeK |- true ; kindS 
 
-    nS ; nG ; nA |- G1 ; typeK
-    nS ; nG , nA ; nL |- G1 ; kindS
+    S ; eG ; eA |- Go1 ; typeK
+    S ; eG , eA ; eL |- Go2 ; kindS
     ----------------------------------------------- :: pi_intro
-    nS ; nG ; Pi nA . nL |- G1 & G2  ; kindS
+    S ; eG ; Pi eA . eL |- Go1 & Go2 ; kindS
 
-    -------------------------------------------------- :: mvar
-    nS ; nG ; mL |- kind( mL , nG ) ; kindS
+    %-------------------------------------------------- :: mvar
+    %S ; eG ; mL |- kind( mL , eG ) ; kindS
 
   defn
-  nsgn ; nctx ; nTy |- TTGoal ; nK  :: :: goaltype_nl ::'g_nTy_' 
-    {{tex [[nsgn]] ; [[nctx]] ; [[nTy]] \vdash ( [[TTGoal]] \mid [[nK]] ) }} by
+  sgn ; ectx ; eTy |- TTGoal ; eK  :: :: goaltype_nl ::'g_Ty_' 
+    {{tex [[sgn]] ; [[ectx]] ; [[eTy]] \vdash ( [[TTGoal]] \mid [[eK]] ) }} by
 
-    a : nL in nS
+    a : L in S
     ------------------------  :: tcon
-    nS ; nG ; a |- true ; nL
+    S ; eG ; a |- true ; L
 
-    nS ; nG ; nA |- G1 ; typeK
-    csctx (nG) zeroc nA (G2 ; nG' )
-    cstuTy nB zeroc (G3 ; nB')
-    nS ; nG' ; nB' |- G4 ; typeK
+    S ; eG ; eA |- Go1 ; eL1
+    S ; eG ; eB |- Go2 ; eL2
     ----------------------------------------------------- :: pi_intro
-    nS ; nG ; Pi nA . nB |- ((G1 & G2) & G3) & G4 ; typeK 
+    S ; eG ; Pi eA . eB |- ((Go1 & Go2) & eq_K( eL1, typeK, eG)) & eq_K(eL2, typeK, eG) ; typeK 
 
-    nS ; nG ; nA |- G1 ; nL
-    nS ; nG ; nM |- G2 ; nB
-    tutsK (nL, nM) nL'
+    % fresh mL mL'
+    S ; eG ; eA |- Go1 ; eL
+    S ; eG ; eM |- Go2 ; eB
     ----------------------------------------------------------------- :: pi_elim
-    nS ; nG ; nA nM |- (G1 & G2) & eq_K( Pi nB . nL , mL , nG ) ; nL'
+    S ; eG ; eA eM |- ((Go1 & Go2) & eq_K( Pi eB . eL , mL' , eG )) & substK( mL', eM, mL) ; mL
 
+   
+    % fresh mL
     -------------------------------------------------------- :: mvar
-    nS ; nG ; mA |- G & type( mA , nG) ; mL
+    S ; eG ; mA |- Go & type( mA , mL, eG) ; mL
     
   defn
-  nsgn ; nctx ; nte |- TTGoal ; nTy  :: :: goalterm_nl ::'g_nte_' 
-  {{tex [[nsgn]] ; [[nctx]] ; [[nte]] \vdash ( [[TTGoal]] \mid [[nTy]] ) }} by
+  sgn ; ectx ; ete |- TTGoal ; eTy  :: :: goalterm_nl ::'g_te_' 
+  {{tex [[sgn]] ; [[ectx]] ; [[ete]] \vdash ( [[TTGoal]] \mid [[eTy]] ) }} by
 
-    c : nA in nS
-    ---------------------  :: con
-    nS ; nG ; c |- true ; nA
+    c : A in S
+    -----------------------  :: con
+    S ; eG ; c |- true ; eA
 
-    --------------------------------------  :: var_nil
-    nS ; nG, nA ; zeroc |- true ; nA 
+    % mA fresh
+    ---------------------------------------------------  :: var_nil
+    S ; eG, eA ; zero |- shiftTy( eA , zero , mA ) ; mA
 
-    cuctx (nG,nB) zeroc (G1 ; nG' ; nB')
-    nS ; nG' ; ixc |- G ; nA'
+    S ; eG ; ix |- Go ; eA
+    % mA fresh
     ------------------------------------------------------  :: var_cons
-    nS ; nG,nB ; succ ixc |- G & cuTy(nA', zeroc, mA) ; mA
+    S ; eG,eB ; succ ix |- Go & shiftTy(eA, zero, mA) ; mA
 
-    csctx (nG) zeroc nA (nG')
-    cstute nM zeroc nM'
-    nS ; nG' ; nM' |- G ; nB 
-    ------------------------------------------------------ :: pi_intro
-    nS ; nG ; \nA.nM |- G & cutsTy( nB, nB') ; Pi nA . nB'
+    S ; eG ; eA |- Go1 ; eL 
+    S ; eG ; eM |- Go2 ; eB 
+    ----------------------------------------------------------------- :: pi_intro
+    S ; eG ; \eA.eM |- (Go1 & Go2) & eq_K(eL, typeK, eG); Pi eA . eB
 
-    nS ; nG ; nM |- G1 ; nA1 
-    nS ; nG ; nN |- G2 ; nA2
+    S ; eG ; eM |- Go1 ; eA 
+    S ; eG ; eN |- Go2 ; eA1
+    % fresh mB
     ---------------------------------------------------------------------------------- :: pi_elim
-    nS ; nG ; nM nN |- ((G1 & G2) & eq_Ty(nA1 , Pi nA2 . nB , nG )) & tutsTy( nB, nN, nB') ; nB'
-        
-%    nsgn ; nctx |- nM => nA
-%    nsgn ; nctx |- nA' => typeK
-%    nsgn ; nctx |- nA is nA' 
-%    ------------------------------ :: conv
-%    nsgn ; nctx |- nM => nA' 
-
+    S ; eG ; eM eN |- ((Go1 & Go2) & eq_Ty(eA , Pi eA1 . eB' , eG )) & substTy(eB' , eN , mB) ; mB
+    
+    % fresh mA
     -------------------------------------------- :: mvar
-    nS ; nG ; mx |- mx : type(mA , nG)  ; mA
+    S ; eG ; mN |- mN : term(mN, mA , eG)  ; mA
 
 %  defn 
 %  nsgn ; nctx |- TTGoal ::  :: goalctx_nl :: 'g_ctx_' {{tex [[nsgn]] ; [[nctx]] \vdash [[TTGoal]] }} by
@@ -338,20 +334,20 @@ Jgoal :: '' ::=
 %    ---------------------------------------------------------- :: var
 %    nS ; nG,nA |- (G1 & G2) & eq_K(enL , typeK , enctx )
 
-  defn 
-  nsgn |- TTProg ::  :: prog_nl :: 'prog_nl_' 
-    {{ tex [[nsgn]] \vdash_{Prog} [[TTProg]]  }} by
-
-    --------------------------- :: empty
-    empty |- empty
-
-    nS |- TTProg
-    ------------------------------------------------ :: con
-    nS , c:nA |- TTProg , c : type( nA , empty) <-
-
-    nS |- TTProg
-    ------------------------------------------------ :: tcon
-    nS , a:nL |- TTProg , a : kind( nL , empty) <-
+%  defn 
+%  nsgn |- TTProg ::  :: prog_nl :: 'prog_nl_' 
+%    {{ tex [[nsgn]] \vdash_{Prog} [[TTProg]]  }} by
+%
+%    --------------------------- :: empty
+%    empty |- empty
+%
+%    nS |- TTProg
+%    ------------------------------------------------ :: con
+%    nS , c:nA |- TTProg , c : type( nA , empty) <-
+%
+%    nS |- TTProg
+%    ------------------------------------------------ :: tcon
+%    nS , a:nL |- TTProg , a : kind( nL , empty) <-
 %
 %    nsgn ; nctx |- nA_1 is nA_2 
 %    nsgn ; nctx |- nA_2 is nA_3 
