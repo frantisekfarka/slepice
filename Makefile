@@ -28,7 +28,7 @@ FODTT=$(SRC_DIR)tt-syntax.ott\
 FOHC=${SRC_DIR}fohc-meta.ott\
      ${SRC_DIR}fohc-syntax.ott
     
-#TRANS=$(SRC_DIR)trans.ott
+TRANS=#$(SRC_DIR)trans.ott
 
 REFIN=$(SRC_DIR)refin.ott
 
