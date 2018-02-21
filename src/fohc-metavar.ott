@@ -1,1 +1,1 @@
-indexvar hcindex, k, j, n, m ::= {{ coq nat }} 
+%indexvar hcindex, k, j, n, m ::= {{ coq nat }} 

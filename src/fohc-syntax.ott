@@ -1,92 +1,90 @@
+%grammar
+%hct, u, v, w :: 'hcterm_' ::= {{ com terms of fohc }}
+%    | mtvar                         ::   :: mtvar {{ com type-level metavariable }}
+%    | mkvar                         ::   :: mkvar {{ com kind-level metavariable }}
+%    | tcon                          ::   :: tcon {{ com type constants of fodtt }}
+%    | con                           ::   :: con {{ com constants of fodtt }}
+%    | zero                          ::   :: zero
+%    | succ( u )                     ::   :: succ
+%    | typeK      ::   :: type
+%%    | Pi_Type
+%    | Pi_Kind( u , v ) ::   :: pi_k
+%    | Pi_Type( u , v ) ::   :: pi_t
+%    | nil                           ::   :: nil
+%    | cons( hct1 , hct2 )           ::   :: cons
+%    | ap( hct1 , hct2 )             ::   :: ap
+%
+%At :: 'atom_' ::= {{ com atoms of fohc }}
+%   | true                ::   :: true
+%   | kind( u , v ) ::   :: kind
+%   | type( u , v , w ) ::   :: type
+%   | term( u , v , w ) ::   :: term
+%   | eq_te( u , v , w , w' )   ::   :: eqte
+%   | eq_Ty( u , v , w , w' )   ::   :: eqTy
+%
+%
+%
+%Goal, Go   :: 'goal_' ::= {{ com goal }}
+%  | At        ::   :: uatom {{ com atomic goal }}
+%  | mvar : At ::   :: batom {{ com atomic goal with binding of a proof term }}
+%  | Go1 & Go2   ::   :: conj {{ com conjunction of goals }}
+%  | ( Go )     :: S :: paren 
+%    {{ coq ([[Go]]) }}
+%
+%
+%Kappa {{ tex \kappa }} :: 'kappa_' ::= {{ com proof-term symbols embeding }}
+%  | kappa_con con    ::   :: con {{ tex \kappa_{[[con]]} }}
+%  | kappa_tcon tcon  ::   :: tcon {{ tex \kappa_{[[tcon]]} }}
+%  | kappa_succ       ::   :: succ
+%  | kappa_zeroc      ::   :: zeroc
+%%  | kappa_sucp       ::   :: sucp
+%%  | kappa_zerop      ::   :: zerop
+%  | kappa_true       ::   :: true {{ tex \kappa_\top }}
+%
+%Pt, s, t :: 'pt_' ::= {{ com proof-term }}
+%  | Kappa        ::   :: head
+%  | t s          ::   :: pt
+%  | ( t )        :: S :: paren
+%  {{ coq ( [[t]] ) }}
+%
+%HC :: 'hc_' ::= {{ com Horn Clause }}
+%  | At           ::   :: empty
+%  | At -> HC     ::   :: body
+%
+%Prog :: 'prog_' ::= {{ com logic program }}
+%%  | empty             ::   :: empty {{ com empty program }}
+%%  | Prog , Kappa : HC ::   :: cons  
+%   | Kappa1 : HC1 , .. , Kappan : HCn :: :: prog
+%
+%%substitutions:
+%%    multiple hct mkvar :: substhct
+%
+%
+
 grammar
-hct, u, v, w :: 'hcterm_' ::= {{ com terms of fohc }}
-    | mtvar                         ::   :: mtvar {{ com type-level metavariable }}
-    | mkvar                         ::   :: mkvar {{ com kind-level metavariable }}
-    | tcon                          ::   :: tcon {{ com type constants of fodtt }}
-    | con                           ::   :: con {{ com constants of fodtt }}
-    | zeroc                         ::   :: zeroc
-    | succ( hct1 )                  ::   :: succ
-    | zerop                         ::   :: zerop
-    | sucp( hct1 )                  ::   :: sucp
-    | typeK      ::   :: type
-%    | Pi_Type
-    | Pi_Kind( hct1 , hct2 , hct3 ) ::   :: pi_k
-    | Pi_Type( hct1 , hct2 , hct3 ) ::   :: pi_t
-    | nil                           ::   :: nil
-    | cons( hct1 , hct2 )           ::   :: cons
-    | ap( hct1 , hct2 )             ::   :: ap
-
-At :: 'atom_' ::= {{ com atoms of fohc }}
-   | true                ::   :: true
-   | kind( hct1 , hct2 ) ::   :: kind
-   | type( hct1 , hct2 ) ::   :: type
-   | term( hct1 , hct2 ) ::   :: term
-   | eq( hct1 , hct2 )   ::   :: eq
-
-
-
-Goal  :: 'goal_' ::= {{ com goal }}
-  | At        ::   :: uatom {{ com atomic goal }}
-  | mvar : At ::   :: batom {{ com atomic goal with binding of a proof term }}
-  | G1 & G2   ::   :: conj {{ com conjunction of goals }}
-  | ( G )     :: S :: paren 
-    {{ coq ([[G]]) }}
-
-
-Kappa {{ tex \kappa }} :: 'kappa_' ::= {{ com proof-term symbols embeding }}
-  | kappa_con con    ::   :: con {{ tex \kappa_{[[con]]} }}
-  | kappa_tcon tcon  ::   :: tcon {{ tex \kappa_{[[tcon]]} }}
-  | kappa_succ       ::   :: succ
-  | kappa_zeroc      ::   :: zeroc
-%  | kappa_sucp       ::   :: sucp
-%  | kappa_zerop      ::   :: zerop
-  | kappa_true       ::   :: true {{ tex \kappa_\top }}
-
-Pt, s, t :: 'pt_' ::= {{ com proof-term }}
-  | Kappa        ::   :: head
-  | t s          ::   :: pt
-  | ( t )        :: S :: paren
-  {{ coq ( [[t]] ) }}
-
-HC :: 'hc_' ::= {{ com Horn Clause }}
-  | At           ::   :: empty
-  | At -> HC     ::   :: body
-
-Prog :: 'prog_' ::= {{ com logic program }}
-%  | empty             ::   :: empty {{ com empty program }}
-%  | Prog , Kappa : HC ::   :: cons  
-   | Kappa1 : HC1 , .. , Kappan : HCn :: :: prog
-
-%substitutions:
-%    multiple hct mkvar :: substhct
-
-
 TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | true                           ::   :: true
-  | eq_te( nte1 , nte2 , nctx ) ::   :: eq_te {{ tex [[nte1]] \equiv_{[[nctx]]} [[nte2]] }}
-  | eq_Ty( nTy1 , nTy2 , nctx ) ::   :: eq_Ty {{ tex [[nTy1]] \equiv_{[[nctx]]} [[nTy2]] }}
-  | eq_K( nK1 , nK2 , nctx )    ::   :: eq_K  {{ tex [[nK1]] \equiv_{[[nctx]]} [[nK2]] }}
-  | kind( nK , nctx )            ::   :: K
-  | type( nTy , nctx )           ::   :: Ty
-  | cuTy( nTy1 , Ixc ,  nTy2 )           ::   :: cuTy
-  | cute( nte1 , Ixc ,  nte2 )           ::   :: cute
-  | csTy( nTy1 , Ixc ,  nTy2 )           ::   :: csTy
-  | cste( nte1 , Ixc ,  nte2 )           ::   :: cste
-  | cstuTy( nTy1 , Ixc ,  nTy2 )         ::   :: cstuTy
-  | cstute( nte1 , Ixc ,  nte2 )         ::   :: cstute
-  | cutsTy( nTy1 , nTy2 )           ::   :: cutsTy
-  | tutsTy( nTy1 , nte , nTy2 )           ::   :: tutsTy
+  | eq_te( ete1 , ete2 , ectx ) ::   :: eq_te {{ tex [[ete1]] \equiv_{[[ectx]]} [[ete2]] }}
+  | eq_Ty( eTy1 , eTy2 , ectx ) ::   :: eq_Ty {{ tex [[eTy1]] \equiv_{[[ectx]]} [[eTy2]] }}
+  | eq_K( eL1 , eL2 , ectx )    ::   :: eq_K  {{ tex [[eL1]] \equiv_{[[ectx]]} [[eL2]] }}
+  | kind( K , ctx )            ::   :: K
+  | type( eTy , eK , ectx )           ::   :: Ty
+  | term( ete , eTy , ectx )           ::   :: te
+  | shiftK( eL1 , eL2 )           ::   :: shiftK {{ tex [[eL1]] \uparrow \equiv [[eL2]] }}
+  | substK( eL1 , eM , eL2 )           ::   :: substK {{ tex [[eL1]] [ [[eM]] ] \equiv [[eL2]] }}
+  | shiftTy( eA1 , eA2 )           ::   :: shiftTy {{ tex [[eA1]] \uparrow \equiv [[eA2]] }}
+  | substTy( eA1 , eM , eA2 )           ::   :: substTy {{ tex [[eA1]] [ [[eM]] ]\equiv [[eA2]] }}
 
-TTGoal {{ tex \text{Goal} }} , G :: 'ttgoal_' ::= {{ com goal in TT }}
+TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in TT }}
   | TTGoal1 & TTGoal2              ::   :: conj
   | ( TTGoal )                     :: M :: paren {{tex [[TTGoal]] }}
     {{ coq ( [[TTGoal]] ) }}
   | mvar : TTAtom                  ::   :: bound_at
   | TTAtom                         ::   :: unbound_at
 
-TTProg {{ tex \text{Prog} }} :: 'ttprog_' ::= {{ com program in TT }}
-  | empty                                 ::   :: empty
-  | TTProg , con : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_con
-  | TTProg , tcon : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_tcon
+%TTProg {{ tex \text{Prog} }} :: 'ttprog_' ::= {{ com program in TT }}
+%  | empty                                 ::   :: empty
+%  | TTProg , con : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_con
+%  | TTProg , tcon : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_tcon
 
 

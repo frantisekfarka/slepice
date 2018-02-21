@@ -3,10 +3,11 @@ embed {{ tex-preamble
 \newcommand{\transl}[1]{\ulcorner #1 \urcorner}
 }}
 
-metavar var {{ tex \mathcal{V} }}, x, y ::= {{ com  term variable }} 
-    {{ coq nat}} {{ coq-equality }}
-    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
-    {{ tex \mathit{[[var]]} }} 
+
+%metavar var {{ tex \mathcal{V} }}, x, y ::= {{ com  term variable }} 
+%    {{ coq nat}} {{ coq-equality }}
+%    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+%    {{ tex \mathit{[[var]]} }} 
 
 metavar con {{tex \mathcal{C} }}, c ::=   {{ com  term level constant }} 
     {{ coq nat}} {{ coq-equality }}

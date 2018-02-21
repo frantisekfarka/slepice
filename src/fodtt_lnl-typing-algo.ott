@@ -9,39 +9,39 @@ embed
 {{ coq
 
 (*
-Definition fstSig (e : (con*nTy)+(tcon*nK) ) := match e with
-    | inl (c, nA) => inl c
-    | inr (a, nL) => inr a
+Definition fstSig (e : (con*Ty)+(tcon*nK) ) := match e with
+    | inl (c, A) => inl c
+    | inr (a, L) => inr a
   end.
 *)
 
-Definition boundnCon (c : con) (nA : nTy) (S : nsgn) :=
+Definition boundnCon (c : con) (A : Ty) (S : sgn) :=
   exists S1, exists S2,
-    (S = List.app S1 (List.cons (inl(c,nA)) S2)) /\
-    (forall nA' , ~In (inl(c, nA')) S1). 
+    (S = List.app S1 (List.cons (inl(c,A)) S2)) /\
+    (forall A' , ~In (inl(c, A')) S1). 
 
-Definition boundnTCon (a : tcon) (nL : nK) (S : nsgn) :=
+Definition boundnTCon (a : tcon) (L : nK) (S : sgn) :=
   exists S1, exists S2,
-    (S = List.app S1 (List.cons (inr(a,nL)) S2)) /\
-    (forall nL', ~In (inr(a, nL')) S1).
+    (S = List.app S1 (List.cons (inr(a,L)) S2)) /\
+    (forall L', ~In (inr(a, L')) S1).
 
 Definition indomnCon c S :=
-  exists nA,
-    boundnCon c nA S.
+  exists A,
+    boundnCon c A S.
 
 Definition indomnTCon a S :=
-  exists nL,
-    boundnTCon a nL S.
+  exists L,
+    boundnTCon a L S.
 
-Definition boundsnCon (c : con) (tau : snTy) (S : snsgn) :=
+Definition boundsnCon (c : con) (tau : sTy) (S : ssgn) :=
   exists S1, exists S2,
     (S = List.app S1 (List.cons (inl(c,tau)) S2)) /\
-    forall (tau' : snTy), ~In (inl(c, tau')) S1.
+    forall (tau' : sTy), ~In (inl(c, tau')) S1.
 
-Definition boundsnTCon (a : tcon) (kappa : snK) (S : snsgn) :=
+Definition boundsnTCon (a : tcon) (kappa : sK) (S : ssgn) :=
   exists S1, exists S2,
     (S = List.app S1 (List.cons (inr(a,kappa)) S2)) /\
-    forall (kappa' : snK), ~In (inr(a,kappa')) S1.
+    forall (kappa' : sK), ~In (inr(a,kappa')) S1.
 
 Definition indomsnCon c S :=
   exists tau,
@@ -59,517 +59,347 @@ type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
 }}
 
 defns
-JerasurenTy :: '' ::=
+JerasureTy :: '' ::=
 
   defn
-  erasurenTy( nA ) tau :: :: erasure_nTy_pred :: 'erasure_nTy_'
-    {{ tex ( [[nA]] )^- \equiv [[tau]] }} by
+  erasureTy( Ty ) sTy :: :: erasure_Ty_pred :: 'erasure_Ty_'
+    {{ tex ( [[Ty]] )^- \equiv [[sTy]] }} by
 
   ----------------- :: tcon
-  erasurenTy( a ) a
+  erasureTy( a ) a
 
-  erasurenTy( nA ) tau
+  erasureTy( A ) tau
   ----------------------- :: pi_elim
-  erasurenTy( nA nM ) tau
+  erasureTy( A M ) tau
 
-  erasurenTy(nA) tau1
-  erasurenTy(nB) tau2
+  erasureTy( A ) tau1
+  erasureTy( B ) tau2
   ----------------------------------------- :: pi_intro
-  erasurenTy( Pi nA . nB ) ( tau1 -> tau2 )
+  erasureTy( Pi A . B ) ( tau1 -> tau2 )
 
 funs
-FerasurenTy ::=
+FerasureTy ::=
 
   fun
-  erasurenTy( nTy ) :: snTy :: erasure_nTy 
-    {{ tex ( [[nTy]] )^- }} by
+  erasureTy( Ty ) :: sTy :: erasure_Ty 
+    {{ tex ( [[Ty]] )^- }} by
 
-  erasurenTy( a ) === a
-  erasurenTy( nA nM ) === erasurenTy( nA )
-  erasurenTy( Pi nA . nB ) === erasurenTy( nA) -> erasurenTy( nB )
+  erasureTy( a ) === a
+  erasureTy( A M ) === erasureTy( A )
+  erasureTy( Pi A . B ) === erasureTy( A) -> erasureTy( B )
 
 
 defns
-JerasurenK :: '' ::=
+JerasureK :: '' ::=
 
   defn
-  erasurenK( nL ) kappa :: :: erasure_nK_pred :: 'erasure_nK_'
-    {{ tex ( [[nL]] )^- \equiv [[kappa]] }} by
+  erasureK( K ) sK :: :: erasure_K_pred :: 'erasure_K_'
+    {{ tex ( [[K]] )^- \equiv [[sK]] }} by
 
   ------------------------ :: type
-  erasurenK( typeK ) typeK
+  erasureK( typeK ) typeK
 
-  erasurenTy(nA) tau
-  erasurenK(nL) kappa
+  erasureTy(A) tau
+  erasureK(L) kappa
   ------------------------------------ :: pi_intro
-  erasurenK( Pi nA . nL ) tau -> kappa 
+  erasureK( Pi A . L ) tau -> kappa 
 
 funs
-FerasurenK ::=
+FerasureK ::=
 
   fun
-  erasurenK( nK ) :: snK :: erasure_nK
-    {{ tex ( [[nK]] )^- }} by
+  erasureK( K ) :: sK :: erasure_K
+    {{ tex ( [[K]] )^- }} by
 
-  erasurenK( typeK ) === typeK
-  erasurenK( Pi nA . nL ) === erasurenTy( nA ) -> erasurenK( nL )
+  erasureK( typeK ) === typeK
+  erasureK( Pi A . L ) === erasureTy( A ) -> erasureK( L )
 
 defns
-Jerasurensgn :: '' ::=
+Jerasuresgn :: '' ::=
 
   defn
-  erasurensgn( nS ) ( snsgn ) :: :: erasure_nsgn_pred :: 'erasure_nsgn_' 
-    {{ tex ( [[nS]] )^- \equiv [[snsgn]] }} by
+  erasuresgn( sgn ) ( ssgn ) :: :: erasure_sgn_pred :: 'erasure_sgn_' 
+    {{ tex ( [[sgn]] )^- \equiv [[ssgn]] }} by
 
   ------------------------------ :: empty
-  erasurensgn( empty ) ( empty )
+  erasuresgn( empty ) ( empty )
 
-  erasurensgn(nS) (snsgn)
-  erasurenK(nL) kappa
+  erasuresgn(S) (ssgn)
+  erasureK(L) kappa
   ----------------------------------------------- :: tcon
-  erasurensgn( nS , a : nL ) (snsgn, a : kappa)
+  erasuresgn( S , a : L ) (ssgn, a : kappa)
 
-  erasurensgn(nS) (snsgn)
-  erasurenTy(nA) tau
+  erasuresgn(S) (ssgn)
+  erasureTy(A) tau
   --------------------------------------------- :: con
-  erasurensgn( nS , c : nA ) (snsgn, c : tau) 
+  erasuresgn( S , c : A ) (ssgn, c : tau) 
 
 funs
-Ferasurensgn ::=
+Ferasuresgn ::=
 
   fun 
-  erasurensgn( nsgn ) :: snsgn :: erasure_nsgn
-    {{ tex ( [[nsgn]] )^- }} by
+  erasuresgn( sgn ) :: ssgn :: erasure_sgn
+    {{ tex ( [[sgn]] )^- }} by
 
-  erasurensgn( empty ) === empty 
-  erasurensgn( nS , a : nL ) === erasurensgn( nS ), a : erasurenK( nL)
-  erasurensgn( nS , c : nA ) === erasurensgn( nS ), c : erasurenTy( nA )
+  erasuresgn( empty ) === empty 
+  erasuresgn( S , a : L ) === erasuresgn( S ), a : erasureK( L)
+  erasuresgn( S , c : A ) === erasuresgn( S ), c : erasureTy( A )
 
 defns
-Jerasurenctx :: '' ::=
+Jerasurectx :: '' ::=
 
   defn
-  erasurenctx( nG ) ( nD ) :: :: erasure_nctx_pred :: 'erasure_nctx_'
-    {{ tex ( [[nG]] )^- \equiv [[nD]] }} by
+  erasurectx( ctx ) ( sctx ) :: :: erasure_nctx_pred :: 'erasure_nctx_'
+    {{ tex ( [[ctx]] )^- \equiv [[sctx]] }} by
 
   ------------------------------ :: empty
-  erasurenctx( empty ) ( empty )
+  erasurectx( empty ) ( empty )
 
-  erasurenctx(nG) (snctx)
-  erasurenTy(nA) tau
+  erasurectx(G) (D)
+  erasureTy(A) tau
   ------------------------------------- :: var
-  erasurenctx( nG , nA )  (snctx,tau)
+  erasurectx( G , A )  (D,tau)
 
 
 funs
-Ferasurenctx ::=
+Ferasurectx ::=
 
   fun
-  erasurenctx( nctx ) :: snctx :: erasure_nctx
-    {{ tex ( [[nctx]] )^- \equiv }} by
+  erasurectx( ctx ) :: sctx :: erasure_nctx
+    {{ tex ( [[ctx]] )^- }} by
 
-  erasurenctx( empty ) === empty
-  erasurenctx( nG , nA )  === erasurenctx( nG ) , erasurenTy( nA )
-
-funs
-Fstruct ::=
-
-  fun
-  structnTy( nTy ) :: sTy :: struct_nTy 
-    {{ tex | [[nTy]] | }} by
-
-  structnTy( a ) === Leaf
-  structnTy( nA nM ) === structnTy( nA ) structnte( nM )
-  structnTy( Pi nA . nB ) === Pi structnTy(nA) . structnTy(nB)
-%  structnTy( mA ) === Leaf
-
-  fun
-  structnte( nte ) :: ste :: struct_nte
-    {{ tex | [[nte]] | }} by
-
-  structnte( con ) === Leaf
-  structnte( ixc ) === Leaf
-  structnte( ixt ) === Leaf
-  structnte( nM nN ) === structnte( nM ) structnte( nN )
-  structnte( \ nA . nM ) === \ structnTy( nA ) . structnte( nM )
-%  structnte( mx ) === Leaf
-
-funs
-Fcsmstralgeq ::=
-
-  fun
-  csmstralgeq( d ) :: mstralgeq :: mstralgeq_cs
-    {{ tex \overset{\leftarrow} {  [[d]]  } }} by
-
-  csmstralgeq( whr_l mstralgeq )               === whr_l csmstralgeq( mstralgeq )
-  csmstralgeq( whr_r mstralgeq )               === whr_r csmstralgeq( mstralgeq )
-  csmstralgeq( str mstralgeq )                 === str csmstralgeq( mstralgeq )
-  csmstralgeq( eta_exp mstralgeq )             === eta_exp csmstralgeq( mstralgeq )
-  csmstralgeq( zeroc )                         === succ zeroc
-  csmstralgeq( succ mstralgeq )                === succ csmstralgeq( mstralgeq )
-  csmstralgeq( con )                           === con
-  csmstralgeq( pi_elim mstralgeq1 mstralgeq2 ) === pi_elim csmstralgeq( mstralgeq1 ) csmstralgeq( mstralgeq2 )
+  erasurectx( empty ) === empty
+  erasurectx( G , A )  === erasurectx( G ) , erasureTy( A )
 
 defns
-Shift :: 'cs_' ::=
+JShift :: 's_' ::= 
 
   defn 
-  csTy nTy ixc nTy' :: :: nTy :: 'nTy_'
-  {{ tex \overleftarrow{[[nTy]]} [ [[ixc]] ]  \equiv [[nTy']] }}
-  {{ com \emph{shift} on types }} by
+  shiftTy eTy ix eTy' :: :: eTy :: 'Ty_'
+  {{ tex {[[eTy]]}\uparrow^{[[ix]]} \; \equiv [[eTy']] }}
+  {{ com one-\emph{shift} on types over a cut-off ix }} by
  
-  ------------ :: tcon
-  csTy a ixc a
+  -------------- :: tcon
+  shiftTy a ix a
 
-  csTy nA ixc nA'
-  csTy nB ixc nB'
-  ------------------------------------ :: pi_intro
-  csTy (Pi nA . nB) ixc (Pi nA' . nB')
+  shiftTy eA ix eA'
+  shiftTy eB succ ix eB'
+  -------------------------------------- :: pi_intro
+  shiftTy (Pi eA . eB) ix (Pi eA' . eB')
 
-  csTy nA ixc nA'
-  cste nM ixc nM'
-  ---------------------------- :: pi_elim
-  csTy ( nA nM ) ixc (nA' nM')
+  shiftTy eA ix eA'
+  shiftte eM ix eM'
+  ------------------------------ :: pi_elim
+  shiftTy ( eA eM ) ix (eA' eM')
 
   defn
-  cste nte ixc nte' :: :: nte :: 'nte_'
-    {{ tex \overleftarrow{[[nte]]} [ [[ixc]] ] \equiv [[nte']] }}
-    {{ com \emph{shift} on terms }} by
+  shiftte ete ix ete' :: :: ete :: 'te_'
+    {{ tex {[[ete]]}\uparrow^{[[ix]]} \; \equiv [[ete']] }}
+    {{ com one-\emph{shift} on terms over a cut-off ix }} by
  
-  ------------ :: con
-  cste c ixc c
+  -------------- :: con
+  shiftte c ix c
   
-  ------------------------- :: ixc_gt
-  cste ixc zeroc (succ ixc)
+  ------------------------ :: ix_zero
+  shiftte ix zero ix
 
-  ---------------------------- :: ixc_zeroc
-  cste zeroc succ ixc' (zeroc)
+  ----------------------------- :: ix_pred
+  shiftte zero succ ix' zero
 
-  cste ixc ixc' ixc''
-  ------------------------------------ :: ixc_succ
-  cste succ ixc succ ixc' (succ ixc'')
+  shiftte ix ix' (ix'') 
+  ------------------------------------ :: ix_succ
+  shiftte succ ix succ ix' (succ ix'')
 
-  ---------------- :: ixt
-  cste ixt ixc ixt
+  shiftTy eA ix eA'
+  shiftte eM succ ix eM'
+  ----------------------------- :: pi_intro
+  shiftte (\ eA . eM) ix (\ eA' . eM') 
 
-  csTy nA ixc nA'
-  cste nM ixc nM'
-  ---------------------------------- :: pi_intro
-  cste (\ nA . nM) ixc (\ nA' . nM') 
-
-  cste nM ixc nM'
-  cste nN ixc nN'
-  ---------------------------- :: pi_elim
-  cste ( nM nN ) ixc (nM' nN')
+  shiftte eM ix eM'
+  shiftte eN ix eN'
+  ----------------------- :: pi_elim
+  shiftte ( eM eN ) ix (eM' eN')
 
 %defns
-%shift_K :: '' ::=
+%Jshift_K :: '' ::=
 %
 %  defn
-%  csK ( nK ) ixc ( nK' ) :: :: cs_nK :: 'cs_nK_' 
-%    {{ tex \overleftarrow{[[nK]]} [ [[ixc]] ] \equiv [[nK']] }}
+%  shiftK eK  eK' :: :: shift_eK :: 'shift_eK_' 
+%    {{ tex {[[eK]]} \uparrow \equiv [[eK']] }}
 %    {{ com \emph{shift} on kinds }} by
 %
 %  ----------------------- :: type
-%  csK (typeK) ixc (typeK)
+%  shiftK typeK typeK
 %
-%  csTy nA ixc nA'
-%  csK (nL) ixc (nL')
+%  shiftTy eA eA'
+%  shiftK eL eL'
 %  ----------------------------------- :: pi_intro
-%  csK (Pi nA . nL) ixc (Pi nA' . nL')
+%  shiftK (Pi eA . eL) (Pi eA' . eL')
+
+%defns
+%ShiftCtx :: '' ::=
+%
+%  defn
+%  csctx ( G ) ixc Ty ( G' ) :: :: cs_nctx :: 'cs_nctx_' 
+%    {{ tex \overleftarrow{[[G]]} [ [[ixc]] / [[Ty]] ] \equiv [[G']] }}
+%    {{ com \emph{shift} on cotexts }} by
+%
+%
+%  ------------------------------------------ :: empty
+%  csctx( empty ) zeroc B ( empty, B ) 
+%
+%  csctx( G ) zeroc A (G')
+%  csTy B zeroc B'
+%  ----------------------------------------- :: var_zeroc
+%  csctx( G, A ) zeroc B (G', B')
+%
+%  csctx( G ) ixc B (G')
+%  csTy A ixc A'
+%  ------------------------------------------ :: var_succ
+%  csctx( G, A ) succ ixc B (G', A')
+
+funs
+FShift ::=
+
+  fun 
+  shiftix( ix , ix' ) :: Ix :: shift_ix
+    {{ tex [[ix]] \uparrow^{[[ix']]} }} by
+
+    shiftix( ix , zero ) === succ ix
+    shiftix( zero , succ ix ) === zero
+    shiftix( succ ix , succ ix' ) === succ <shiftix(ix, ix')>
+
+  fun 
+  shiftte( te , ix ) :: M :: shift_te
+    {{ tex [[te]] \uparrow^{[[ix]]} }} by
+
+    shiftte( c , ix ) === c
+    shiftte( ix , ix' ) === shiftix( ix , ix' )
+    shiftte( \ A . M , ix) === \ shiftTy( A , ix ) . shiftte( M , succ ix)
+    shiftte( M N , ix ) === shiftte( M , ix ) shiftte( N , ix )
+
+  fun 
+  shiftTy( Ty , ix ) :: A :: shift_Ty
+    {{ tex [[Ty]] \uparrow^{[[ix]]} }} by
+
+    shiftTy( a , ix ) === a
+    shiftTy( Pi A . B , ix ) === Pi shiftTy( A , ix ) . shiftTy( B , succ ix)
+    shiftTy( A M , ix ) === shiftTy( A , ix ) shiftte( M , ix )
+
 
 defns
-ShiftCtx :: '' ::=
+JSubst :: 'subst_' ::=
 
   defn
-  csctx ( nG ) ixc nTy ( nG' ) :: :: cs_nctx :: 'cs_nctx_' 
-    {{ tex \overleftarrow{[[nG]]} [ [[ixc]] / [[nTy]] ] \equiv [[nG']] }}
-    {{ com \emph{shift} on contexts }} by
-
-
-  ------------------------------------------ :: empty
-  csctx( empty ) zeroc nB ( empty, nB ) 
-
-  csctx( nG ) zeroc nA (nG')
-  csTy nB zeroc nB'
-  ----------------------------------------- :: var_zeroc
-  csctx( nG, nA ) zeroc nB (nG', nB')
-
-  csctx( nG ) ixc nB (nG')
-  csTy nA ixc nA'
-  ------------------------------------------ :: var_succ
-  csctx( nG, nA ) succ ixc nB (nG', nA')
-
-
-defns
-Unshift :: 'cu_' ::=
-
-  defn
-  cuTy nTy ixc nTy' :: :: nTy :: 'nTy_' 
-    {{ tex \overrightarrow{[[nTy]]} [ [[ixc]] ] \equiv [[nTy']] }} 
-    {{ com \emph{unshifting} on types }} by
- 
-  ------------ :: tcon
-  cuTy a ixc a
-
-  cuTy nA ixc nA'
-  cuTy nB ixc nB'
-  ------------------------------------- :: pi_intro
-  cuTy( Pi nA . nB ) ixc (Pi nA' . nB')
-
-  cuTy nA ixc nA'
-  cute nM ixc nM'
-  --------------------------- :: pi_elim
-  cuTy( nA nM ) ixc (nA' nM')
-
-  defn
-  cute nte ixc nte' :: :: nte :: 'nte_'
-    {{ tex \overrightarrow{[[nte]]} [ [[ixc]] ]  \equiv [[nte']] }} 
-    {{ com \emph{unshifting} on terms }} by
-
-  ------------ :: con
-  cute c ixc c
-
-  ------------------------ :: ixc_lt
-  cute (succ ixc) zeroc ixc
- 
-  ------------------------- :: ixc_zeroc
-  cute zeroc succ ixc zeroc
- 
-
-  cute (ixc) ixc' ixc''
-  ------------------------------------ :: ixc_succ
-  cute (succ ixc) succ ixc' succ ixc''
-
-  ---------------- :: ixt
-  cute ixt ixc ixt
-
-  cuTy nA ixc nA'
-  cute nM ixc nM'
-  -------------------------------------- :: pi_intro
-  cute ( \ nA . nM ) ixc ( \ nA' . nM' )
-
-  cute nM ixc nM'
-  cute nN ixc nN'
-  ---------------------------- :: pi_elim
-  cute ( nM nN ) ixc (nM' nN')
-
-defns
-UnshiftCtx :: '' ::=
-
-  defn
-  cuctx ( nG ) ixc ( nG' ) nTy ::  :: cu_nctx :: 'cu_nctx_'
-    {{ tex \overrightarrow{[[nG]]} [ [[ixc]] ] \equiv [[nG']],[[nTy]] }} 
-    {{ com \emph{unshifting} on contexts }} by
-
-  ----------------------------------- :: empty
-  cuctx ( empty,nB ) zeroc (empty) nB
-
-  cuTy nB zeroc nB'
-  cuctx (nG) zeroc (nG') nA
-  --------------------------------------- ::  var_zeroc
-  cuctx ( nG,nB ) zeroc ( nG',nA ) nB'
-
-  cuctx ( nG ) ixc ( nG' ) nB
-  cuTy nA ixc nA'
-  ----------------------------------------- :: var_succ
-  cuctx ( nG,nA ) succ ixc (nG',nA') nB
-
-defns
-ShiftOpen :: 'cstu_' ::=
-
-  defn
-  cstuTy nTy ixc nTy' :: :: nTy :: 'nTy_'
-    {{ tex \overleftarrow{[[nTy]] [ [[ixc]] / 0_T ]  } \equiv [[nTy']] }} 
-    {{ com \emph{shift}-\emph{open} on types }} by
- 
-  --------------- :: tcon
-  cstuTy a ixc  a
-
-  cstuTy nA ixc nA'
-  cstuTy nB ixc nB'
-  -------------------------------------- :: pi_intro
-  cstuTy (Pi nA . nB) ixc (Pi nA' . nB')
-
-  cstuTy nA ixc nA'
-  cstute nM ixc nM'
-  ------------------------------ :: pi_elim
-  cstuTy ( nA nM ) ixc (nA' nM')
-
-  defn
-  cstute nte ixc nte'  :: :: nte :: 'nte_'
-    {{ tex \overleftarrow{[[nte]] [ [[ixc]] / 0_T ]  } \equiv [[nte']] }} 
-    {{ com \emph{shift}-\emph{close} on terms }} by
- 
-  -------------- :: con
-  cstute c ixc c
-
-  ------------------------- :: ixc
-  cstute ixc' ixc (succ ixc')
-
-  -------------------- :: zerot
-  cstute zerot ixc ixc
-
-  -------------------------- :: suct
-  cstute (suct ixt) ixc  ixt
-
-  cstuTy nA ixc nA'
-  cstute nM ixc nM'
-  ------------------------------------- :: pi_intro
-  cstute (\ nA . nM) ixc (\ nA' . nM' )
-
-  cstute nM ixc nM'
-  cstute nN ixc nN'
-  ----------------------------- :: pi_elim
-  cstute ( nM nN ) ixc (nM' nN')
-
-defns
-ShiftOpenK :: '' ::=
-
-  defn
-  cstuK nK ixc nK' :: :: cstu_nK :: 'cstu_K_'
-    {{ tex \overleftarrow{[[nK]]} [ [[ixc]] / 0_T ]  \equiv [[nK']] }} 
-    {{ com \emph{shift}-\emph{open} on kinds }} by
-
-  --------------------- :: type
-  cstuK typeK ixc typeK
-
-  cstuTy nA ixc nA'
-  cstuK nL ixc nL'
-  ------------------------------------ :: pi_intro
-  cstuK (Pi nA . nL) ixc (Pi nA' . nL')
-
-defns
-UnshiftClose :: 'cuts_' ::=
-
-  defn
-  cutsTy nTy nTy' :: :: nTy :: 'nTy_'
-    {{ tex \overleftarrow{[[nTy]]} [ 0_T / 0_\Gamma ]  \equiv [[nTy']] }} 
-    {{ com \emph{unshift}-\emph{close} on types }} by
- 
-  ---------- :: tcon
-  cutsTy a a
-
-  cutsTy nA nA'
-  cutsTy nB nB'
-  ----------------------------------- :: pi_intro
-  cutsTy (Pi nA . nB ) (Pi nA' . nB')
-
-  cutsTy nA nA'
-  cutste nM nM'
-  ------------------------- :: pi_elim
-  cutsTy (nA nM ) (nA' nM')
-
-  defn
-  cutste nte nte' :: :: nte :: 'nte_'
-    {{ tex \overrightarrow{[[nte]]} [ 0_T / 0_\Gamma ] \equiv [[nte']] }} 
-    {{ com \emph{unshift}-\emph{close} on terms }} by
- 
-  ---------- :: con
-  cutste c c
-  
-  ----------------------- :: succ
-  cutste ( succ ixc ) ixc
-
-  ------------------ :: zeroc
-  cutste zeroc zerot
-
-  --------------------- :: ixt
-  cutste ixt (suct ixt)
-
-  cutsTy nA nA'
-  cutste nM nM'
-  ------------------------------------ :: pi_intro
-  cutste ( \ nA . nM ) ( \ nA' . nM' )
-
-  cutste nM nM'
-  cutste nN nN'
-  -------------------------- :: pi_elim
-  cutste ( nM nN ) (nM' nN')
-
-defns
-OpenSubst :: 'tuts_' ::=
-
-  defn
-  tutsTy ( nTy , nte ) nTy' :: :: nTy :: 'nTy_'
-    {{ tex [[nTy]] [  [[nte]] / 0_T ]  \equiv [[nTy']] }} 
-    {{ com \emph{open}-\emph{substitute} on types }} by
+  substTy ( Ty , te ) Ty' :: :: Ty :: 'Ty_'
+    {{ tex [[Ty]] [ [[te]] ]  \equiv [[Ty']] }} 
+    {{ com \emph{substitute} on types }} by
  
   ------------------ :: tcon
-  tutsTy( a , nN ) a
+  substTy( a , N ) a
 
-  tutsTy (nA , nN) nA'
-  tutsTy (nB , nN) nB'
+  substTy (A , N) A'
+  substTy (B , N) B'
   ---------------------------------------- :: pi_intro
-  tutsTy( Pi nA . nB , nN ) (Pi nA' . nB')
+  substTy( Pi A . B , N ) (Pi A' . B')
 
-  tutsTy (nA , nN) nA'
-  tutste (nM , nN) nM'
+  substTy (A , N) A'
+  substte (M , N) M'
   ------------------------------ :: pi_elim
-  tutsTy( nA nM , nN ) (nA' nM')
+  substTy( A M , N ) (A' M')
 
   defn
-  tutste ( nte1 , nte2 ) nte'  :: :: nte :: 'nte_'
-    {{ tex [[nte1]] [ [[nte2]] / 0_T ]  \equiv [[nte']] }} 
-    {{ com \emph{open}-\emph{substitute} on terms }} by
+  substte ( te1 , te2 ) te'  :: :: te :: 'te_'
+    {{ tex [[te1]] [ [[te2]] ]  \equiv [[te']] }} 
+    {{ com \emph{substitute} on terms }} by
 
   ------------------- :: con
-  tutste ( c , nN ) c
+  substte ( c , N ) c
   
-  ----------------------- :: ixc
-  tutste ( ixc , nN ) ixc
+  ------------------------ :: ix_zero
+  substte ( zero , N ) N
 
-  ------------------------ :: ixt_zero
-  tutste ( zerot , nN ) nN
+  --------------------------- :: ix_succ
+  substte ( succ ix , N ) ix
 
-  ---------------------------- :: ixt_succ
-  tutste ( suct ixt , nN ) ixt
-
-  tutsTy (nA , nN) nA'
-  tutste (nM , nN) nM'
+  substTy (A , N) A'
+  %shiftte N N'
+  substte (M , shiftte( N , zero ) ) M'
   --------------------------------------- :: pi_intro
-  tutste ( \ nA . nM , nN ) (\ nA' . nM')
+  substte ( (\ A . M) , N ) (\ A' . M')
    
-  tutste (nM , nN1) nM'
-  tutste (nN , nN1) nN'
+  substte (M , N1) M'
+  substte (N , N1) N'
   -------------------------------- :: pi_elim
-  tutste ( nM nN , nN1 ) (nM' nN')
+  substte ( (M N) , N1 ) (M' N')
 
 defns
-OpenSubstK :: '' ::=
+JSubstK :: '' ::=
 
   defn
-  tutsK ( nK , nte ) nK' :: :: tuts_nK :: 'tuts_nK_'
-    {{ tex [[nK]] [ [[nte]] / 0_T ]  \equiv [[nK']] }} 
-    {{ com \emph{unshift}-\emph{substitute} on kinds }} by
+  substK ( K , te ) K' :: :: subst_K :: 'subst_K_'
+    {{ tex [[K]] [ [[te]] ]  \equiv [[K']] }} 
+    {{ com \emph{substitute} on kinds }} by
 
   ------------------------ :: type
-  tutsK (typeK , nN) typeK
+  substK (typeK , N) typeK
 
-  tutsTy (nA , nN) nA'
-  tutsK (nL , nN) nL'
+  substTy (A , N) A'
+  substK (L , N) L'
   -------------------------------------- :: pi_intro
-  tutsK (Pi nA . nL, nN)  (Pi nA' . nL')
+  substK ((Pi A . L), N)  (Pi A' . L')
+
+
+funs
+FSubst ::=
+
+  fun 
+  substTy( Ty , ix , te ) :: A :: subst_Ty
+    {{ tex [[Ty]] [ [[te]] ] }} by
+
+    substTy( a , ix , N ) === a
+    substTy( Pi A . B , ix , N ) === Pi substTy(A , ix , N) . substTy(B , succ ix , shiftte(N, zero)) 
+    substTy( A M , ix , N ) === substTy(A , ix , N)  substte(M , ix , N) 
+
+  fun
+  substte( te , ix , te' ) :: M :: subst_te
+    {{ tex [[te]] [ [[te']] ]  }} by
+
+  substte( c , ix , N ) === c
+  substte( ix , ix , N ) === N
+  substte( succ ix , ix' , N ) === ix
+  substte( (\ A . M) , ix , N ) === \ substTy(A , ix , N) . substte(M , succ ix , shiftte( N , zero) ) 
+  substte( (M N) , ix , N1 ) === substte(M , ix , N1) substte(N , ix , N1) 
+
+funs
+FSubstK ::=
+
+  fun 
+  substK( K , ix , te ) :: L :: subst_K
+    {{ tex [[K]] [ [[te]] ] }} by
+
+    substK( typeK , ix , N ) === typeK
+    substK( Pi A . L , ix , N ) === Pi substTy(A , ix , N) . substK(L , ix , N) 
 
 
 defns
 Jwelformednl_simple :: '' ::=
 
   defn
-  |- snsgn :: :: wfssig_nl ::'snsig_nl_' {{ tex _{n}\vdash [[snsgn]] \text{ ssig} }} by
+  |- ssgn :: :: wfssig_nl ::'snsig_nl_' {{ tex \vdash [[ssgn]] \text{ ssig} }} by
 
     ---------------  :: empty
     |- empty 
 
-    |- snsgn 
-    a notin dom(snsgn)
+    |- ssgn 
+    a notin dom(ssgn)
     ----------------------- :: tcon
-    |- snsgn,a:kappa 
+    |- ssgn,a:kappa 
 
-    |- snsgn 
-    c notin dom(snsgn) 
+    |- ssgn 
+    c notin dom(ssgn) 
     --------------------- :: con
-    |- snsgn,c:tau 
+    |- ssgn,c:tau 
 
 
 
@@ -577,155 +407,155 @@ defns
 Jwhr :: '' ::=
 
   defn 
-  nM -whr-> nM' ::  :: whr_nl_te :: 'whr_nl_te_' 
-    {{ tex [[nM]] \overset{\text{whr} }{\longrightarrow} [[nM']] }} by
+  M -whr-> M' ::  :: whr_nl_te :: 'whr_nl_te_' 
+    {{ tex [[M]] \overset{\text{whr} }{\longrightarrow} [[M']] }} by
     
-    tutste (nM , nN) nM'
+    substte (M , N) M'
     ---------------------- :: subst
-    (\nA.nM) nN -whr-> nM'
+    (\A.M) N -whr-> M'
 
-    nM -whr-> nM'
+    M -whr-> M'
     ------------------- :: head
-    nM nN -whr-> nM' nN 
+    M N -whr-> M' N 
 
-defns
-JalgstreqB :: '' ::=
-
-  defn 
-  snsgn ; snctx ; mstralgeq |- nM algeq nN : tau ::  :: algeqB_nl_te :: 'algeqB_nl_te_' 
-    {{ tex [[snsgn]] ; [[snctx]] ; [[mstralgeq]] \vdash [[nM]] \overset{\text{d.b.} }{\Leftrightarrow} [[nN]] : [[tau]] }} by
-
-    nM -whr-> nM'
-    snsgn ; snctx ; d |- nM' algeq nN : a
-    ------------------------------------------ :: whr_l
-    snsgn ; snctx ; whr_l d |- nM algeq nN : a
-
-    nN -whr-> nN'
-    snsgn ; snctx ; d |- nM algeq nN' : a
-    -------------------------------------- :: whr_r
-    snsgn ; snctx ; whr_r d |- nM algeq nN : a
-
-    snsgn ; snctx ; d |- nM streq nN : a
-    -------------------------------------- :: streq
-    snsgn ; snctx ; str d |- nM algeq nN : a
-
-    cste nM zeroc nM'
-    cste nN zeroc nN'
-    snsgn ; snctx, tau1 ; d |- (nM' zeroc) algeq (nN' zeroc) : tau2
-    --------------------------------------------------------------- :: eta_exp
-    snsgn ; snctx ; eta_exp d |- nM algeq nN : tau1 -> tau2
-
-  defn 
-  snsgn ; snctx ; mstralgeq |- nM streq nN : tau ::  :: streqB_nl_te :: 'streqB_nl_te_' 
-    {{ tex [[snsgn]] ; [[snctx]] ; [[mstralgeq]] \vdash [[nM]] \overset{\text{d.b.} }{\leftrightarrow} [[nN]] : [[tau]] }} by
-
-    |- snsgn
-    ---------------------------------------------------- :: var_zero
-    snsgn ; snctx,tau ; zeroc |- zeroc streq zeroc : tau
-
-    |- snsgn
-    snsgn ; snctx ; d |- ixc streq ixc : tau
-    ------------------------------------------------------------ :: var_succ
-    snsgn ; snctx,tau' ; succ d |- succ ixc streq succ ixc : tau
-
-    |- snsgn
-    c : tau in snsgn
-    --------------------------------------------- :: con
-    snsgn ; snctx ; con |- c streq c : tau
-
-    snsgn ; snctx ; d1 |- nM1 streq nN1 : tau2 -> tau1
-    snsgn ; snctx ; d2 |- nM2 algeq nN2 : tau2
-    ------------------------------------------------------------- :: pi_elim
-    snsgn ; snctx ; pi_elim d1 d2 |- nM1 nM2 streq nN1 nN2 : tau1
-
+%defns
+%JalgstreqB :: '' ::=
+%
+%  defn 
+%  ssgn ; sctx ; mstralgeq |- M algeq N : tau ::  :: algeqB_nl_te :: 'algeqB_nl_te_' 
+%    {{ tex [[ssgn]] ; [[sctx]] ; [[mstralgeq]] \vdash [[M]] \overset{\text{d.b.} }{\Leftrightarrow} [[N]] : [[tau]] }} by
+%
+%    M -whr-> M'
+%    ssgn ; sctx ; d |- M' algeq N : a
+%    ------------------------------------------ :: whr_l
+%    ssgn ; sctx ; whr_l d |- M algeq N : a
+%
+%    N -whr-> N'
+%    ssgn ; sctx ; d |- M algeq N' : a
+%    -------------------------------------- :: whr_r
+%    ssgn ; sctx ; whr_r d |- M algeq N : a
+%
+%    ssgn ; sctx ; d |- M streq N : a
+%    -------------------------------------- :: streq
+%    ssgn ; sctx ; str d |- M algeq N : a
+%
+%    cste M zeroc M'
+%    cste N zeroc N'
+%    ssgn ; sctx, tau1 ; d |- (M' zeroc) algeq (N' zeroc) : tau2
+%    --------------------------------------------------------------- :: eta_exp
+%    ssgn ; sctx ; eta_exp d |- M algeq N : tau1 -> tau2
+%
+%  defn 
+%  ssgn ; sctx ; mstralgeq |- M streq N : tau ::  :: streqB_nl_te :: 'streqB_nl_te_' 
+%    {{ tex [[ssgn]] ; [[sctx]] ; [[mstralgeq]] \vdash [[M]] \overset{\text{d.b.} }{\leftrightarrow} [[N]] : [[tau]] }} by
+%
+%    |- ssgn
+%    ---------------------------------------------------- :: var_zero
+%    ssgn ; sctx,tau ; zeroc |- zeroc streq zeroc : tau
+%
+%    |- ssgn
+%    ssgn ; sctx ; d |- ixc streq ixc : tau
+%    ------------------------------------------------------------ :: var_succ
+%    ssgn ; sctx,tau' ; succ d |- succ ixc streq succ ixc : tau
+%
+%    |- ssgn
+%    c : tau in ssgn
+%    --------------------------------------------- :: con
+%    ssgn ; sctx ; con |- c streq c : tau
+%
+%    ssgn ; sctx ; d1 |- M1 streq N1 : tau2 -> tau1
+%    ssgn ; sctx ; d2 |- M2 algeq N2 : tau2
+%    ------------------------------------------------------------- :: pi_elim
+%    ssgn ; sctx ; pi_elim d1 d2 |- M1 M2 streq N1 N2 : tau1
+%
 defns
 Jalgstreq :: '' ::=
 
 %  defn 
-%  snsgn ; snctx |- nL algeq nL' : kindS ::  :: algeq_nl_K :: 'algeq_nl_K_' 
-%    {{tex [[snsgn]] ; [[snctx]] \vdash [[nL]] \Leftrightarrow [[nL']] : \text{kind}^-}} by
+%  ssgn ; sctx |- L algeq L' : kindS ::  :: algeq_nl_K :: 'algeq_nl_K_' 
+%    {{tex [[ssgn]] ; [[sctx]] \vdash [[L]] \Leftrightarrow [[L']] : \text{kind}^-}} by
 %
-%    |- snsgn 
+%    |- ssgn 
 %    ------------------------------------------ :: type
-%    snsgn ; snctx |- typeK algeq typeK : kindS
+%    ssgn ; sctx |- typeK algeq typeK : kindS
 %
-%    snsgn ; snctx |- nA walgeq nB : typeK
+%    ssgn ; sctx |- A walgeq B : typeK
 %    cstuK nK nK'
-%    cstuK nL nL'
-%    snsgn ; snctx , erasurenTy(nA) |- nK' algeq nL' : kindS
+%    cstuK L L'
+%    ssgn ; sctx , erasureTy(A) |- nK' algeq L' : kindS
 %    --------------------------------------------- :: pi_intro
-%    snsgn ; snctx |- Pi nA.nK algeq Pi nB.nL : kindS 
+%    ssgn ; sctx |- Pi A.nK algeq Pi B.L : kindS 
 
   defn 
-  snsgn ; nD |- nM algeq nN : tau ::  :: algeq_nl_te :: 'algeq_nl_te_' 
-    {{ tex [[snsgn]] ; [[nD]] \vdash [[nM]] \Leftrightarrow [[nN]] : [[tau]] }} by
+  ssgn ; D |- M algeq N : tau ::  :: algeq_nl_te :: 'algeq_nl_te_' 
+    {{ tex [[ssgn]] ; [[D]] \vdash [[M]] \Leftrightarrow [[N]] : [[tau]] }} by
 
-    nM -whr-> nM'
-    snsgn ; nD |- nM' algeq nN : a
+    M -whr-> M'
+    ssgn ; D |- M' algeq N : a
     --------------------------------- :: whr_l
-    snsgn ; nD |- nM algeq nN : a
+    ssgn ; D |- M algeq N : a
 
-    nN -whr-> nN'
-    snsgn ; nD |- nM algeq nN' : a
+    N -whr-> N'
+    ssgn ; D |- M algeq N' : a
     --------------------------------- :: whr_r
-    snsgn ; nD |- nM algeq nN : a
+    ssgn ; D |- M algeq N : a
 
-    snsgn ; nD |- nM streq nN : a
+    ssgn ; D |- M streq N : a
     --------------------------------- :: streq
-    snsgn ; nD |- nM algeq nN : a
+    ssgn ; D |- M algeq N : a
 
-    cste nM zeroc nM'
-    cste nN zeroc nN'
-    snsgn ; nD, tau1 |- (nM' zeroc) algeq (nN' zeroc) : tau2
+    %shiftte M M'
+    %shiftte N N'
+    ssgn ; D, tau1 |- (shiftte(M', zero)) zero algeq (shiftte(N' , zero)) zero : tau2
     ----------------------------------------------------------- :: eta_exp
-    snsgn ; nD |- nM algeq nN : tau1 -> tau2
+    ssgn ; D |- M algeq N : tau1 -> tau2
 
   defn 
-  snsgn ; nD |- nM streq nN : tau ::  :: streq_nl_te :: 'streq_nl_te_' 
-    {{ tex [[snsgn]] ; [[nD]] \vdash [[nM]] \leftrightarrow [[nN]] : [[tau]] }} by
+  ssgn ; D |- M streq N : tau ::  :: streq_nl_te :: 'streq_nl_te_' 
+    {{ tex [[ssgn]] ; [[D]] \vdash [[M]] \leftrightarrow [[N]] : [[tau]] }} by
 
-    |- snsgn
+    |- ssgn
     -------------------------------------------- :: var_zero
-    snsgn ; nD,tau |- zeroc streq zeroc : tau
+    ssgn ; D,tau |- zero streq zero : tau
 
-    |- snsgn
-    snsgn ; nD |- ixc streq ixc' : tau
+    |- ssgn
+    ssgn ; D |- ix streq ix' : tau
     --------------------------------------------------- :: var_succ
-    snsgn ; nD,tau' |- succ ixc streq succ ixc' : tau
+    ssgn ; D,tau' |- succ ix streq succ ix' : tau
 
-    |- snsgn
-    c : tau in snsgn
+    |- ssgn
+    c : tau in ssgn
     -------------------------------- :: con
-    snsgn ; nD |- c streq c : tau
+    ssgn ; D |- c streq c : tau
 
-    snsgn ; nD |- nM1 streq nN1 : tau2 -> tau1
-    snsgn ; nD |- nM2 algeq nN2 : tau2
+    ssgn ; D |- M1 streq N1 : tau2 -> tau1
+    ssgn ; D |- M2 algeq N2 : tau2
     ------------------------------------------ :: pi_elim
-    snsgn ; nD |- nM1 nM2 streq nN1 nN2 : tau1
+    ssgn ; D |- M1 M2 streq N1 N2 : tau1
 
 defns
 Jwalgeq :: '' ::=
 
   defn 
-  snsgn ; nD |- nA walgeq nA' : kappa ::  :: walgeq_nl_Ty :: 'walgeq_nl_Ty_'
-      {{ tex [[snsgn]] ; [[nD]] \vdash [[nA]] \rightleftharpoons [[nA']] : [[kappa]] }} by
+  ssgn ; D |- A walgeq A' : kappa ::  :: walgeq_nl_Ty :: 'walgeq_nl_Ty_'
+      {{ tex [[ssgn]] ; [[D]] \vdash [[A]] \rightleftharpoons [[A']] : [[kappa]] }} by
 
-    |- snsgn 
-    a : kappa in snsgn
+    |- ssgn 
+    a : kappa in ssgn
     ----------------------------------- :: refl
-    snsgn ; nD |- a walgeq a : kappa
+    ssgn ; D |- a walgeq a : kappa
 
-    snsgn ; nD |- nA1 walgeq nB1 : typeK
-    cstuTy nA2 zeroc nA2'
-    cstuTy nB2 zeroc nB2'
-    snsgn ; nD, erasurenTy(nA1) |- nA2' walgeq nB2' : typeK
+    ssgn ; D |- A1 walgeq B1 : typeK
+    %shiftTy A2 A2'
+    %shiftTy B2 B2'
+    ssgn ; D, erasureTy(A1) |- shiftTy(A2, zero) walgeq shiftTy(B2, zero) : typeK
     --------------------------------------------------------- :: pi_intro
-    snsgn ; nD |- (Pi nA1.nA2) walgeq (Pi nB1.nB2) : typeK
+    ssgn ; D |- (Pi A1.A2) walgeq (Pi B1.B2) : typeK
 
-    snsgn ; nD |- nA walgeq nB : tau -> kappa
-    snsgn ; nD |- nM algeq nN : tau
+    ssgn ; D |- A walgeq B : tau -> kappa
+    ssgn ; D |- M algeq N : tau
     ------------------------------------------- :: pi_elim
-    snsgn ; nD |- nA nM walgeq nB nN : kappa
+    ssgn ; D |- A M walgeq B N : kappa
 
 
 
@@ -734,110 +564,102 @@ Jwellformednl_alg :: '' ::=
 
 
   defn
-  |- nS => sig :: :: wfsig_nl ::'sig_nl_'
-  {{ tex \vdash [[nS]] \Rightarrow \text{sig} }} by
+  |- sgn =>sgn :: :: wfsig_nl ::'sig_nl_'
+  {{ tex \vdash [[sgn]] \Rightarrow \text{sig} }} by
 
     ---------------  :: empty
-    |- empty => sig
+    |- empty =>sgn
 
-    |- nS => sig
-    nS ; empty |- nL => kindS
-    a notin dom(nS)
+    |- S =>sgn
+    S ; empty |- L => kindS
+    a notin dom(S)
     -------------------------- :: tcon
-    |- nS,a:nL => sig
+    |- S,a:L =>sgn
 
-    |- nS => sig
-    nS ; empty |- nA => typeK
-    c notin dom(nS) 
+    |- S =>sgn
+    S ; empty |- A => typeK
+    c notin dom(S) 
     -------------------------- :: con
-    |- nS,c:nA => sig
+    |- S,c:A =>sgn
 
   defn
-  nS |- nG => ctx :: :: wfctx_nl ::'ctx_nl_'
-  {{tex [[nS]] \vdash [[nG]] \Rightarrow \text{ctx} }} by
+  sgn |- ctx =>ctx :: :: wfctx_nl ::'ctx_nl_'
+  {{tex [[sgn]] \vdash [[ctx]] \Rightarrow \text{ctx} }} by
    
-    |- nS => sig
+    |- S =>sgn
     --------------------  :: empty
-    nS |- empty => ctx
+    S |- empty =>ctx
 
-    cuctx (nG, nA) zeroc (nG') nA'
-    nS |- nG' => ctx
-    nS ; nG' |- nA'  => typeK
+    S |- G =>ctx
+    S ; G |- A  => typeK
     ----------------------------- :: var
-    nS |- nG,nA => ctx
+    S |- G,A =>ctx
 
   defn
-  nS ; nG |- nK => kindS :: :: wfkind_nl :: 'k_nl_'
-  {{tex [[nS]] ; [[nG]] \vdash [[nK]] \Rightarrow [[kindS]]}} by
+  sgn ; ctx |- K => kindS :: :: wfkind_nl :: 'k_nl_'
+  {{tex [[sgn]] ; [[ctx]] \vdash [[K]] \Rightarrow [[kindS]]}} by
 
-    nS |- nG => ctx
+    S |- G =>ctx
     -----------------------------  :: type
-    nS ; nG |- typeK => kindS
+    S ; G |- typeK => kindS
 
-    nS ; nG |- nA => typeK
-    csctx (nG) zeroc nA (nG')
-    cstuK nL zeroc nL'
-    nS ; nG' |- nL' => kindS
+    S ; G |- A => typeK
+    S ; G,A |- L => kindS
     ---------------------------------------- :: pi_intro
-    nS ; nG |- Pi nA . nL => kindS
+    S ; G |- Pi A . L => kindS
 
   defn
-  nS ; nG |- nA => nK  :: :: wftype_nl ::'ty_nl_'
-  {{tex [[nS]] ; [[nG]] \vdash [[nA]] \Rightarrow [[nK]]}} by
+  sgn ; ctx |- Ty => K  :: :: wftype_nl ::'ty_nl_'
+  {{tex [[sgn]] ; [[ctx]] \vdash [[Ty]] \Rightarrow [[K]]}} by
 
-    nS |- nG => ctx
-    a : nL in nS
+    S |- G =>ctx
+    a : L in S
     ---------------------  :: tcon
-    nS ; nG |- a => nL
+    S ; G |- a => L
 
-    nS ; nG |- nA => typeK
-    csctx (nG) zeroc nA (nG')
-    cstuTy nB zeroc nB'
-    nS ; nG' |- nB' => typeK
+    S ; G |- A => typeK
+    S ; G, A |- B => typeK
     ---------------------------------- :: pi_intro
-    nS ; nG |- Pi nA . nB => typeK 
+    S ; G |- Pi A . B => typeK 
 
-    nS ; nG |- nA => Pi nB' . nL
-    nS ; nG |- nM => nB
-    erasurensgn(nS) ; erasurenctx(nG) |- nB walgeq nB' : typeK
-    tutsK (nL , nM) nL'
+    S ; G |- A => Pi B' . L
+    S ; G |- M => B
+    erasuresgn(S) ; erasurectx(G) |- B walgeq B' : typeK
+    %substK (L , M) L'
     ------------------------------------------------------------ :: pi_elim
-    nS ; nG |- nA nM => nL'
+    S ; G |- A M => substK(L, zero , M)
 
   defn
-  nS ; nG |- nM => nA  :: :: wfterm_nl ::'te_nl_' {{tex [[nS]] ; [[nG]] \vdash [[nM]] \Rightarrow [[nA]]}} by
+  sgn ; ctx |- te => Ty  :: :: wfterm_nl ::'te_nl_'
+    {{tex [[sgn]] ; [[ctx]] \vdash [[te]] \Rightarrow [[Ty]]}} by
 
-    nS |- nG => ctx
-    c : nA in nS
+    S |- G =>ctx
+    c : A in S
     ----------------------  :: con
-    nS ; nG |- c => nA
+    S ; G |- c => A
 
-    nS |- nG,nA => ctx
+    S |- G,A =>ctx
     ----------------------------  :: var_zero
-    nS ; nG,nA |- zeroc => nA
+    S ; G,A |- zero => A
 
-    cuctx (nG,nB) zeroc (nG') nB'
-    nS ; nG' |- ixc => nA
-    csTy nA zeroc nA'
+    S ; G |- ix => A
+    S |- G,B =>ctx
     ------------------------------------------------  :: var_succ
-    nS ; nG,nB |- succ ixc => nA'
+    S ; G,B |- succ ix => A'
 
 
 
-    nS ; nG |- nA1 => typeK
-    csctx (nG) zeroc nA1 (nG')
-    cstute nM2 zeroc nM2'
-    nS ; nG' |- nM2' => nA2 
-    cutsTy nA2 nA2'
+    S ; G |- A => typeK
+    S ; G, A |- M => B 
     ---------------------------------------------------------- :: pi_intro
-    nS ; nG |- \nA1.nM2 => Pi nA1 . nA2'
+    S ; G |- \A.M => Pi A . B
 
-    nS ; nG |- nM1 => Pi nA2' . nA1
-    nS ; nG |- nM2 => nA2
-    erasurensgn(nS) ; erasurenctx(nG) |- nA2 walgeq nA2' : typeK
-    tutsTy(nA2 , nM2) nB
+    S ; G |- M => Pi A . B
+    S ; G |- N => A
+    erasuresgn(S) ; erasurectx(G) |- A2 walgeq A2' : typeK
+    %substTy(B , N) B'
     ------------------------------ :: pi_elim
-    nS ; nG |- nM1 nM2 => nB
+    S ; G |- M N => substTy(B, zero , N)
 
 
 

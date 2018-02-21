@@ -1,14 +1,12 @@
 grammar 
 terminals :: 'terminals_' ::=
-  | typeK        ::   :: type      {{ tex \text{type} }}
-  | kindS        ::   :: kind      {{ tex \text{kind} }}
+  | typeK        ::   :: type      {{ tex \mathtt{type} }}
+  | kindS        ::   :: kind      {{ tex \mathtt{kind} }}
   | \            ::   :: lambda    {{ tex \lambda }}
   | Pi           ::   :: pi        {{ tex \Pi }}
   | empty        ::   :: empty     {{ tex \cdot}}
-  | zeroc        ::   :: zeroc     {{ tex 0_\Gamma }}
+  | zero         ::   :: zero      {{ tex 0}}
   | succ         ::   :: succ      {{ tex \sigma }}
-  | zerot        ::   :: zerot     {{ tex 0_T }}
-  | suct         ::   :: suct      {{ tex \sigma }}
   | true         ::   :: true      {{ tex \top }}
   | kappa_succ   ::   :: ksucc     {{ tex \kappa_{succ} }}
   | kappa_zeroc  ::   :: kzeroc    {{ tex \kappa_{0 \Gamma} }}

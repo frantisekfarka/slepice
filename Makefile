@@ -10,10 +10,11 @@ SRC_DIR=src/
 COQ_DIR=coq/
 DOC_DIR=doc/
 MAIN=exquan-raw.tex
+WRAPPER=exquan-wrapper.tex
 #MAIN=exquan-nl-only.tex
 
 META=$(SRC_DIR)fodtt-metavar.ott\
-#     $(SRC_DIR)fodttstar-metavar.ott
+     $(SRC_DIR)fodttstar-metavar.ott
 
 FODTT= $(SRC_DIR)fodtt-flas_both.ott\
 #$(SRC_DIR)fodtt-syntax.ott\
@@ -21,15 +22,15 @@ FODTT= $(SRC_DIR)fodtt-flas_both.ott\
 
 #FODTTSTAR=$(SRC_DIR)fodttstar-syntax.ott
 
-#FOHC=${SRC_DIR}fohc-metavar.ott\
-#     ${SRC_DIR}fohc-syntax.ott
+FOHC=${SRC_DIR}fohc-metavar.ott\
+     ${SRC_DIR}fohc-syntax.ott
     
-TRANS=#$(SRC_DIR)trans.ott
+TRANS=$(SRC_DIR)trans.ott
 
 
 FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott\
-	     $(SRC_DIR)fodtt_struct-syntax.ott\
 	     $(SRC_DIR)fodtt_lnl-typing-algo.ott
+#	     $(SRC_DIR)fodtt_struct-syntax.ott\
 
 FODTTLNL=#$(SRC_DIR)fodtt_lnl-syntax.ott\
 	 #$(SRC_DIR)fodtt_lnl-typing.ott
@@ -58,11 +59,11 @@ COQ=$(COQ_DIR)defns.v\
 
 default: $(MAIN)
 
-watch:	$(MAIN)
-	latexmk -pdf -pvc $(MAIN)
+watch:	$(MAIN) $(WRAPPER)
+	latexmk -pdf -pvc $(WRAPPER)
 
-pdf: $(MAIN)
-	latexmk -pdf $(MAIN)
+pdf: $(MAIN) $(WRAPPER)
+	latexmk -pdf $(WRAPPER)
 
 exquan-raw.tex: $(META) \
 	    $(FODTTSTAR) \
@@ -76,7 +77,7 @@ exquan-raw.tex: $(META) \
 	$(OTT) \
 	    -o $@ \
 	    -o $(COQ_DIR)defns.v \
-	    -tex_wrap true\
+	    -tex_wrap false\
 	    -tex_name_prefix fodtt \
 	    $(META) \
 	    $(FODTTSTAR) \
