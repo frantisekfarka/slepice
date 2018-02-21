@@ -9,37 +9,30 @@ TEX_DIR=tex/
 SRC_DIR=src/
 COQ_DIR=coq/
 DOC_DIR=doc/
-MAIN=exquan-raw.tex
-WRAPPER=exquan-wrapper.tex
-#MAIN=exquan-nl-only.tex
+MAIN=exquan.tex
+WRAPPER=wrapper.tex
 
-META=$(SRC_DIR)fodtt-metavar.ott\
-     $(SRC_DIR)fodttstar-metavar.ott
+META=\
+     $(SRC_DIR)ttstar-meta.ott\
+     $(SRC_DIR)tt-meta.ott\
 
-FODTT= $(SRC_DIR)fodtt-flas_both.ott\
-#$(SRC_DIR)fodtt-syntax.ott\
-#      $(SRC_DIR)fodtt-typing.ott
+FORMULAE=\
+     $(SRC_DIR)formulae.ott
 
-#FODTTSTAR=$(SRC_DIR)fodttstar-syntax.ott
+FODTTSTARL=$(SRC_DIR)ttstar-syntax.ott\
 
-FOHC=${SRC_DIR}fohc-metavar.ott\
+FODTT=$(SRC_DIR)tt-typing_algo.ott\
+     #$(SRC_DIR)tt-typing.ott\
+
+FOHC=${SRC_DIR}fohc-meta.ott\
      ${SRC_DIR}fohc-syntax.ott
     
 TRANS=$(SRC_DIR)trans.ott
 
-
-FODTTSTARLNL=$(SRC_DIR)fodttstar_lnl-syntax.ott\
-	     $(SRC_DIR)fodtt_lnl-typing-algo.ott
-#	     $(SRC_DIR)fodtt_struct-syntax.ott\
-
-FODTTLNL=#$(SRC_DIR)fodtt_lnl-syntax.ott\
-	 #$(SRC_DIR)fodtt_lnl-typing.ott
-
-#TRANSLNL=#$(SRC_DIR)trans-lnl.ott
+REFIN=$(SRC_DIR)refin.ott
 
 TERMINALS=$(SRC_DIR)terminals.ott
 
-#GOALS=$(SRC_DIR)fodtt_lnl-goal.ott
 
 
 
@@ -60,62 +53,25 @@ COQ=$(COQ_DIR)defns.v\
 default: $(MAIN)
 
 watch:	$(MAIN) $(WRAPPER)
-	latexmk -pdf -pvc $(WRAPPER)
+	latexmk -pdf -pvc $(WRAPPER) --jobname=$(MAIN:.tex=)
 
 pdf: $(MAIN) $(WRAPPER)
-	latexmk -pdf $(WRAPPER)
+	latexmk -pdf $(WRAPPER) --jobname=$(MAIN:.tex=)
 
-exquan-raw.tex: $(META) \
+exquan.tex: $(META) \
+    	    $(FORMULAE) \
 	    $(FODTTSTAR) \
 	    $(FODTT) \
-	    $(FODTTSTARLNL) \
 	    $(FOHC)\
 	    $(TRANS) \
-	    $(TRANSLNL) \
-	    $(GOALS) \
+	    $(REFIN) \
 	    $(TERMINALS)
 	$(OTT) \
 	    -o $@ \
 	    -o $(COQ_DIR)defns.v \
 	    -tex_wrap false\
 	    -tex_name_prefix fodtt \
-	    $(META) \
-	    $(FODTTSTAR) \
-	    $(FODTT) \
-	    $(FODTTSTARLNL) \
-	    $(FOHC)\
-	    $(TRANS) \
-	    $(TRANSLNL) \
-	    $(GOALS) \
-	    $(TERMINALS)
-
-exquan-nl-only.tex: $(META) $(FODTTSTARLNL) $(FODTTLNL) $(SRC_DIR)fodtt_lnl-flas.ott 
-	$(OTT) \
-	    -tex_wrap true\
-	    -tex_name_prefix fodtt \
-	    -o $@ \
-	    -o $(COQ_DIR)defns.v \
-	    $(META) \
-	    $(SRC_DIR)fodtt_lnl-flas.ott \
-	    $(FODTTSTARLNL) \
-	    $(TERMINALS) 
-
-exquan-nl.tex: $(META) $(FODTT) $(FODTTSTAR) $(FODTTLNL) $(FODTTSTARLNL) $(TRANSLNL) $(TERMINALS) $(FOHC) $(GOALS)
-	$(OTT) \
-	    -tex_wrap true\
-	    -tex_name_prefix fodtt \
-	    -o $@ \
-	    -o $(COQ_DIR)defns.v \
-	    $(META) \
-	    $(FODTTSTAR) \
-	    $(FODTT) \
-	    $(FODTTSTARLNL) \
-	    $(FODTTLNL) \
-	    $(TRANSLNL) \
-	    $(FOHC) \
-	    $(GOALS) \
-	    $(TERMINALS) 
-
+	    $^
 
 doc: $(COQ)
 	$(COQDOC) --no-glob $(COQ) -d $(DOC_DIR)

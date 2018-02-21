@@ -1,0 +1,18 @@
+%metavar var {{ tex \mathcal{V} }}, x, y ::= {{ com  term variable }} 
+%    {{ coq nat}} {{ coq-equality }}
+%    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+%    {{ tex \mathit{[[var]]} }} 
+
+metavar con {{tex \mathcal{C} }}, c
+    ::=   {{ com  term level constant }} 
+        {{ coq nat}} {{ coq-equality }}
+        {{ ocaml string }} {{ lex alphanum}} {{ ocamllex ConAlphanum }}
+        {{ tex \mathit{[[con]]} }}
+
+metavar tcon {{ tex \mathcal{B} }}, alpha {{ tex \alpha}}, beta {{ tex \beta }} , a 
+    ::=   {{ com  type level constant}} 
+        {{ coq nat}} {{ coq-equality }}
+        {{ ocaml string }} {{ lex alphanum}} {{ ocamllex TConAlphanum }}
+        {{ tex \mathit{[[tcon]]} }}
+
+
