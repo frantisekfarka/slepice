@@ -46,7 +46,6 @@ type ('a, 'b) sgn_el_type = Inl of 'a | Inr of 'b
 }}
 
 
-subrules
 
 freevars
 % due to recursive definition of Ty and K the fv_Ty and fk_K are also generated

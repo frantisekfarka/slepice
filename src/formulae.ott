@@ -4,35 +4,35 @@ formula :: formula_ ::=
   | judgement                                       :: :: judgement
 
 %formula :: formula_ ::=          
-  | c notin dom ( sgn )                            :: :: cnotinsig_nl
-     {{ coq (not (indomnCon [[c]] [[sgn]])) }}
-     {{ tex [[c]] \not\in \dom([[sgn]]) }}
-  | alpha notin dom ( sgn )                        :: :: bnotinsig_nl
-     {{ coq (not (indomnTCon [[alpha]] [[sgn]])) }}
-     {{ tex [[alpha]] \not\in \dom([[sgn]]) }}
+%  | c notin dom ( sgn )                            :: :: cnotinsig_nl
+%     {{ coq (not (indomnCon [[c]] [[sgn]])) }}
+%     {{ tex [[c]] \not\in \dom([[sgn]]) }}
+%  | alpha notin dom ( sgn )                        :: :: bnotinsig_nl
+%     {{ coq (not (indomnTCon [[alpha]] [[sgn]])) }}
+%     {{ tex [[alpha]] \not\in \dom([[sgn]]) }}
   | c : A in sgn                                    :: :: cinsig_lnl
-     {{ coq (boundnCon [[c]] [[A]] [[sgn]]) }}
+     {{ coq (boundCon [[c]] [[A]] [[sgn]]) }}
      {{ tex [[c]] : [[A]] \in [[sgn]] }}
-  | alpha : K in sgn                              :: :: binsig_nl
-     {{ coq (boundnTCon [[alpha]] [[K]] [[sgn]]) }}
-     {{ tex [[alpha]] : [[K]] \in [[sgn]] }}
+  | alpha : eK in sgn                              :: :: binsig_nl
+     {{ coq (boundTCon [[alpha]] [[eK]] [[sgn]]) }}
+     {{ tex [[alpha]] : [[eK]] \in [[sgn]] }}
 
-  | mtvar # te                                          :: :: apart   
+%  | mtvar # te                                          :: :: apart   
 %     {{ tex [[mtvar]] #  [[te]] }}
 
-  | Kappa : HC in Prog                                   :: :: inprog
-     {{ coq member ([[Kappa]] , [[HC]]) [[Prog]]) }}
-     {{ tex [[Kappa]] : [[HC]] \in [[Prog]] }}
+%  | Kappa : HC in Prog                                   :: :: inprog
+%     {{ coq member ([[Kappa]] , [[HC]]) [[Prog]]) }}
+%     {{ tex [[Kappa]] : [[HC]] \in [[Prog]] }}
 
-  | c notin dom ( ssgn )                            :: :: cnotinssig_nl
-     {{ coq (not (indomsnCon [[c]] [[ssgn]])) }}
-     {{ tex [[c]] \not\in \dom([[ssgn]]) }}
-  | a notin dom ( ssgn )                        :: :: bnotinssig_nl
-     {{ coq (not (indomsnTCon [[a]] [[ssgn]])) }}
-     {{ tex [[a]] \not\in \dom([[ssgn]]) }}
-  | c : tau in ssgn                                    :: :: cinssig_lnl
-     {{ coq (boundsnCon [[c]] [[tau]] [[ssgn]]) }}
-     {{ tex [[c]] : [[tau]] \in [[ssgn]] }}
-  | a : kappa in ssgn                              :: :: binssig_nl
-     {{ coq (boundsnTCon [[a]] [[kappa]] [[ssgn]]) }}
-     {{ tex [[a]] : [[kappa]] \in [[ssgn]] }}
+%  | c notin dom ( ssgn )                            :: :: cnotinssig_nl
+%     {{ coq (not (indomsnCon [[c]] [[ssgn]])) }}
+%     {{ tex [[c]] \not\in \dom([[ssgn]]) }}
+%  | a notin dom ( ssgn )                        :: :: bnotinssig_nl
+%     {{ coq (not (indomsnTCon [[a]] [[ssgn]])) }}
+%     {{ tex [[a]] \not\in \dom([[ssgn]]) }}
+%  | c : tau in ssgn                                    :: :: cinssig_lnl
+%     {{ coq (boundsnCon [[c]] [[tau]] [[ssgn]]) }}
+%     {{ tex [[c]] : [[tau]] \in [[ssgn]] }}
+%  | a : kappa in ssgn                              :: :: binssig_nl
+%     {{ coq (boundsnTCon [[a]] [[kappa]] [[ssgn]]) }}
+%     {{ tex [[a]] : [[kappa]] \in [[ssgn]] }}

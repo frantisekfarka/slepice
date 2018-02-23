@@ -18,7 +18,8 @@ eTy {{ tex {\ttstar{T} } }}, eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} }
   | ( eTy )              :: S :: paren                        
      {{ coq [[eTy]] }}
      {{ ocaml ([[eTy]]) }}
-  | mtvar                ::   :: mtvar               {{ com type level metavariables }}
+  | lnvar                ::   :: mtvar               {{ com type level metavariables }}
+  %| mtvar                ::   :: mtvar               {{ com type level metavariables }}
 %  | shiftTy( eTy , ix )  :: M :: shift
 %     {{ coq [[eTy]] }}
 %     {{ tex [[eTy]] \uparrow^{[[ix]]} }}
@@ -34,7 +35,8 @@ ete {{ tex {\ttstar{t} } }}, eM {{ tex {\ttstar{M} } }}, eN {{ tex {\ttstar{N} }
   | ( ete )              :: S :: paren                        
      {{ coq [[ete]] }}
      {{ ocaml ([[ete]]) }}
-  | mvar                 ::   :: mvar                {{ com term level metavariables }}
+  | lnvar                ::   :: mvar                {{ com term level metavariables }}
+  %| mvar                 ::   :: mvar                {{ com term level metavariables }}
 %  | shiftte( ete , ix )  :: M :: shift
 %     {{ coq [[ete]] }}
 %     {{ tex [[ete]] \uparrow^{[[ix]]} }}
@@ -48,7 +50,8 @@ eK {{ tex {\ttstar{K} } }} , eL {{ tex {\ttstar{L} } }} :: 'kindstar_nl_' ::= {{
   | Pi eTy . eK          ::   :: pi_intro            {{ com kind of dependent functions }}
   | ( eK )               :: S :: paren                        
      {{ coq [[eK]] }}
-  | mkvar                ::   :: mkvar               {{ com kind level metavariables }}
+  | lnvar                ::   :: mkvar               {{ com kind level metavariables }}
+  %| mkvar                ::   :: mkvar               {{ com kind level metavariables }}
 %  | substK( eK , ix , eN )    :: M :: subst
 %     {{ coq [[eK]] [[eN]] [[ix]] }}
 %     {{ tex  [[eK]] [ [[eN]] / [[ix]] ] }}
@@ -56,7 +59,7 @@ eK {{ tex {\ttstar{K} } }} , eL {{ tex {\ttstar{L} } }} :: 'kindstar_nl_' ::= {{
 
 grammar
 ectx {{tex {\ttstar{Ctx} } }}, eG {{ tex {\ttstar{\Gamma} } }} :: 'contextstar_nl_' ::= {{ com Extended Context }}
-    {{ coq list (nTy) }}
+    {{ coq list (eTy) }}
   | empty                ::   :: empty              {{ com empty context }}
      {{ coq nil }}
   | ectx , eTy             ::   :: ctxvar

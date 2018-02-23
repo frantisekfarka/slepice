@@ -67,7 +67,7 @@ TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | eq_te( ete1 , ete2 , ectx ) ::   :: eq_te {{ tex [[ete1]] \equiv_{[[ectx]]} [[ete2]] }}
   | eq_Ty( eTy1 , eTy2 , ectx ) ::   :: eq_Ty {{ tex [[eTy1]] \equiv_{[[ectx]]} [[eTy2]] }}
   | eq_K( eL1 , eL2 , ectx )    ::   :: eq_K  {{ tex [[eL1]] \equiv_{[[ectx]]} [[eL2]] }}
-  | kind( K , ctx )            ::   :: K
+%  | kind( K , ctx )            ::   :: K
   | type( eTy , eK , ectx )           ::   :: Ty
   | term( ete , eTy , ectx )           ::   :: te
   | shiftK( eL1 , ix , eL2 )           ::   :: shiftK {{ tex [[eL1]] \uparrow^[[ix]] \equiv \; [[eL2]] }}
@@ -75,11 +75,12 @@ TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | shiftTy( eA1 , ix , eA2 )           ::   :: shiftTy {{ tex [[eA1]] \uparrow^[[ix]] \equiv \; [[eA2]] }}
   | substTy( eA1 , eM , eA2 )           ::   :: substTy {{ tex [[eA1]] [ [[eM]] ]\equiv [[eA2]] }}
 
+grammar
 TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in TT }}
   | TTGoal1 & TTGoal2              ::   :: conj
   | ( TTGoal )                     :: M :: paren {{tex [[TTGoal]] }}
     {{ coq ( [[TTGoal]] ) }}
-  | mvar : TTAtom                  ::   :: bound_at
+  | lnvar : TTAtom                  ::   :: bound_at
   | TTAtom                         ::   :: unbound_at
 
 %TTProg {{ tex \text{Prog} }} :: 'ttprog_' ::= {{ com program in TT }}

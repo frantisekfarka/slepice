@@ -1,19 +1,24 @@
-% term-level metavariables
-metavar mvar {{ tex ?_\mathcal{V} }}, mM {{ tex ?_M }}, mN {{ tex ?_M }} ::= 
-    {{ com  term-level meta-variable }} 
-    {{ coq nat}} {{ coq-equality }}
-    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+%% term-level metavariables
+%metavar mvar {{ tex ?_\mathcal{V} }}, mM {{ tex ?_M }}, mN {{ tex ?_M }} ::= 
+%    {{ com  term-level meta-variable }} 
+%    {{ coq nat}} {{ coq-equality }}
+%    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+%
+%% type-level metavariables
+%metavar mtvar {{ tex ?_\mathcal{B} }}, mA {{ tex ?_A }}, mB {{ tex ?_B }} ::=
+%    {{ com  type-level meta-variable }} 
+%    {{ coq nat}} {{ coq-equality }}
+%    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
+%
+%% kind-level metavariables, for technical reasons
+%metavar mkvar {{ tex ?_K }}, mL {{ tex ?_L }} ::=
+%    {{ com  kind-level meta-variable }} 
+%    {{ coq nat}} {{ coq-equality }}
+%    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
 
-% type-level metavariables
-metavar mtvar {{ tex ?_\mathcal{B} }}, mA {{ tex ?_A }}, mB {{ tex ?_B }} ::=
-    {{ com  type-level meta-variable }} 
-    {{ coq nat}} {{ coq-equality }}
-    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
 
-% kind-level metavariables, for technical reasons
-metavar mkvar {{ tex ?_K }}, mL {{ tex ?_L }} ::=
-    {{ com  kind-level meta-variable }} 
-    {{ coq nat}} {{ coq-equality }}
-    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
-
+% locally nameless metavariable
+metavar lnvar {{ tex ?_{ln} }}, mM {{ tex ?_M }}, mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }} ::=
+    {{ coq nat }} {{ coq-equality }}
+    {{ com  nameless meta-variable }} 
 
