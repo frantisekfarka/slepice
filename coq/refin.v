@@ -1,46 +1,42 @@
 Require Import List.
 
-
 Require Import defns.
-Require Import nl_sgn.
+Require Import sgn.
 
 Definition ttgoal_true := ttgoal_unbound_at ttat_true.
-Definition ttgoal_cuTy A i A' := ttgoal_unbound_at (ttat_cuTy A i A').
 
 
-Lemma goalterm_nl_dec:
-  forall {sM : ste}  (Sig : nsgn) (G : nctx) (M : nte),
-    sM = struct_nte M ->
-    { GA | goalterm_nl Sig G M (fst GA) (snd GA) }
-    + {forall GA, ~ goalterm_nl Sig G M (fst GA) (snd GA)}.
+
+Lemma goalterm_dec:
+  forall (Sig : sgn) (G : ectx) (M : ete),
+    { GA | r_goalterm Sig G M (fst GA) (snd GA) }
+    + {forall GA, ~ r_goalterm Sig G M (fst GA) (snd GA)}.
 Proof.
-  intros sM Sig.
-  induction sM.
+  intros Sig G M.
+  induction M as [ c | | | | ].
 
-  - (* leaf *)
+  - (* con c in Sig *)
 
     intros.
-    destruct M as [ c | | | | | mx ]; inversion H.
-    
-    + (* con *)
-      assert ({A | boundnCon c A Sig} + {forall A, ~ boundnCon c A Sig})
+    assert ({A | boundCon c A Sig} + {forall A, ~ boundCon c A Sig})
         as [ [A] | ]
-          by (apply boundnCon_dec).
-      * left; exists (ttgoal_true, A); cbn.
-        constructor; auto.
-      * right.
-        intros; intro Hc.
-        inversion Hc.
-        eapply n; eauto.
-    +  generalize dependent G.
-       induction ixc; intros.
-       * destruct G as [ | A ].
-
-         { right; intros; intro Hc.
-           inversion Hc. }
-         { left.
-           exists (ttgoal_true, A).
-           constructor. }
+           by (apply boundCon_dec).
+    * left; exists (ttgoal_true, A); simpl.
+        econstructor; eauto.
+    * right.
+      intros; intro Hc.
+      inversion Hc.
+      eapply n; eauto.
+  - (* ix *)
+    generalize dependent G.
+    induction ix; intros.
+    * destruct G as [ | A ].
+      
+      { right; intros; intro Hc.
+        inversion Hc. }
+      { left.
+        exists ((ttgoal_unbound_at (ttat_shiftTy eA 0 (typestar_nl_mtvar mA))), A); simpl.
+           econstructor. }
        * destruct G as [ | B ].
 
          { right; intros; intro Hc.

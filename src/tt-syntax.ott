@@ -90,8 +90,8 @@ embed
 Definition sgn : Set := list (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK})).
 Definition ctx : Set := list ({eTy | is_Ty_of_eTy eTy}).
 
-Notation emptyS := (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK})).
-Notation emptyC := ({eTy | is_Ty_of_eTy eTy}).
+Notation emptyS := (@nil (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK}))).
+Notation emptyC := (@nil ({eTy | is_Ty_of_eTy eTy})).
 
 Definition castSig (e : con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK}))
     := match e with
