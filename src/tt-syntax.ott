@@ -1,0 +1,118 @@
+grammar
+Ty {{ tex \ttbase{T} }}, A {{ tex \ttbase{A} }}, B {{ tex \ttbase{B} }} :: 'type_nl_' ::= {{ com Types }}
+  | tcon                 ::   :: tcon                {{ com type constant }}
+  | Pi Ty1 . Ty2         ::   :: pi_intro            {{ com type of dependente functions }}
+  | Ty te                ::   :: pi_elim             {{ com application of a type former }}
+  | ( Ty )               :: S :: paren                        
+     {{ coq [[Ty]] }}
+     {{ ocaml ([[Ty]]) }}
+
+te {{ tex \ttbase{t} }}, M {{ tex \ttbase{M} }}, N {{ tex \ttbase{N} }} :: 'term_nl_' ::= {{ com Terms }}
+  | con                  ::   :: con                 {{ com term constant }} 
+  | ix                   ::   :: ix                  {{ com de Bruijn indices }} 
+  | \ Ty . te            ::   :: pi_intro            {{ com formation of $\Pi$ type }}
+  | te1 te2              ::   :: pi_elim             {{ com application }}
+  | ( te )               :: S :: paren                        
+     {{ coq [[te]] }}
+     {{ ocaml ([[te]]) }}
+
+grammar
+K {{ tex \ttbase{K} }} , L {{ tex \ttbase{L} }} :: 'kind_nl_' ::= {{ com Kinds }}
+  | typeK                ::   :: type                {{ com kind of all types }} 
+  | Pi Ty . K            ::   :: pi_intro            {{ com kind of dependent functions }}
+  | ( K )                :: S :: paren                        
+     {{ coq [[K]] }}
+
+grammar
+sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'signature_nl_' ::= {{ com Signature }}
+     {{ phantom }}
+%    {{ coq list (con*Ty+tcon*K) }}
+%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+  | empty                ::   :: empty               {{ com empty signature }}
+     {{ coq nil }}
+  | sgn , con : Ty       ::   :: con
+     {{ coq (cons (inl([[con]],[[Ty]])) [[sgn]]) }}
+  | sgn , tcon : K       ::   :: tcon
+     {{ coq (cons (inr([[tcon]],[[K]])) [[sgn]]) }}
+
+
+grammar
+ctx {{tex \ttbase{Ctx} }}, G {{ tex \ttbase{\Gamma} }} :: 'context_nl_' ::= {{ com Extended Context }}
+%    {{ coq list (Ty) }}
+%   defined after subrules
+    {{ phantom }}
+  | empty                ::   :: empty              {{ com empty context }}
+     {{ coq nil }}
+  | ctx , Ty             ::   :: ctxvar
+     {{ coq (cons [[Ty]] [[ctx]]) }}
+
+grammar
+sTy {{ tex {T^{-} } }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Types }}
+  | tcon                 ::   :: tcon                {{ com type constant }}
+  | sTy1 -> sTy2         ::   :: pi_intro            {{ com type of functions }}
+  | ( sTy )              :: S :: paren                        
+     {{ coq [[sTy]] }}
+
+grammar
+sK {{ tex K^{-}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple Kinds }}
+  | typeK                ::   :: type                {{ com kind of all types }} 
+  | sTy -> sK            ::   :: pi_intro            {{ com kind of functions }}
+  | ( sK )               :: S :: paren                        
+     {{ coq [[sK]] }}
+
+grammar
+ssgn {{ tex \mathcal{S}^{-}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signature }}
+    {{ coq list (con*sTy+tcon*sK) }}
+%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+  | empty                ::   :: empty               {{ com empty signature }}
+     {{ coq nil }}
+  | ssgn , con : sTy     ::   :: con
+     {{ coq (cons (inl([[con]],[[sTy]])) [[ssgn]]) }}
+  | ssgn , tcon : sK     ::   :: tcon
+     {{ coq (cons (inr([[tcon]],[[sK]])) [[ssgn]]) }}
+
+grammar
+sctx {{ tex Ctx^{-} }} , D {{ tex \Delta^{}{} }} :: 'scontext_nl_' ::= {{ com Simple Context }}
+    {{ coq list (sTy) }}
+  | empty                 ::   :: empty              {{ com empty context }}
+     {{ coq nil }}
+  | sctx , sTy          ::   :: ctxvar
+     {{ coq (cons [[sTy]] [[sctx]]) }}
+
+subrules
+    K   <:: eK
+    Ty  <:: eTy
+    te  <:: ete
+    ctx <:: ectx
+
+embed
+{{ coq 
+Definition sgn : Set := list (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK})).
+Definition ctx : Set := list ({eTy | is_Ty_of_eTy eTy}).
+
+Notation emptyS := (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK})).
+Notation emptyC := ({eTy | is_Ty_of_eTy eTy}).
+
+Definition castSig (e : con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK}))
+    := match e with
+    | inl (c, ty) => inl (c, proj1_sig ty)
+    | inr (beta, k) => inr (beta, proj1_sig k)
+  end.
+
+Definition fstSig (e : con*eTy + tcon*eK)
+    := match e with
+    | inl (c, ty) => inl c
+    | inr (beta, k) => inr beta
+  end.
+
+
+Definition boundCon c T0 S :=
+  exists S1, exists S2,
+    (List.map (castSig) S = List.app S1 (List.cons (inl(c,T0)) S2)) /\
+    ~In (inl(c)) (List.map (fstSig) S1).
+
+Definition boundTCon alpha T0 S :=
+  exists S1, exists S2,
+    (List.map (castSig) S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
+    ~In (inr(alpha)) (List.map (fstSig) S1).
+}}

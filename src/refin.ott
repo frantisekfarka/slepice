@@ -23,7 +23,7 @@ Jrefin :: 'r_' ::=
 %    %S ; eG ; mL |- kind( mL , eG ) ; kindS
 
   defn
-  sgn ; ectx ; eTy |- TTGoal ; eK  :: :: goaltype_nl ::'g_Ty_' 
+  sgn ; ectx ; eTy |- TTGoal ; eK  :: :: goaltype ::'g_Ty_' 
     {{tex [[sgn]] ; [[ectx]] ; [[eTy]] \vdash ( [[TTGoal]] \mid [[eK]] ) }} by
 
     a : L in S
@@ -47,7 +47,7 @@ Jrefin :: 'r_' ::=
     S ; eG ; mA |- Go & type( mA , mL, eG) ; mL
     
   defn
-  sgn ; ectx ; ete |- TTGoal ; eTy  :: :: goalterm_nl ::'g_te_' 
+  sgn ; ectx ; ete |- TTGoal ; eTy  :: :: goalterm ::'g_te_' 
   {{tex [[sgn]] ; [[ectx]] ; [[ete]] \vdash ( [[TTGoal]] \mid [[eTy]] ) }} by
 
     c : A in S
