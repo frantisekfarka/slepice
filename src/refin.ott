@@ -4,6 +4,16 @@
 %%    fodtt-flas_{n,both}.ott
 %%
 
+%defns
+%Jfresh:: 'f_' ::=
+%
+%  defn
+%  fresh( Ix ; Ix' ; Ix'' ) :: :: fresh :: '' 
+%    {{tex _{[[Ix]]}\text{fresh}_{[[Ix'']]} [[Ix']] }} by
+%
+%    -----------------------------------  :: var
+%    fresh( Ix ; succ Ix ; succ succ Ix)
+
 defns
 Jrefin :: 'r_' ::=
 
@@ -23,60 +33,61 @@ Jrefin :: 'r_' ::=
 %    %S ; eG ; mL |- kind( mL , eG ) ; kindS
 
   defn
-  sgn ; ectx ; eTy |- TTGoal ; eK  :: :: goaltype ::'g_Ty_' 
-    {{tex [[sgn]] ; [[ectx]] ; [[eTy]] \vdash ( [[TTGoal]] \mid [[eK]] ) }} by
+  sgn ; ectx ; eTy ; lnvar |- TTGoal ; eK ; lnvar' :: :: goaltype ::'g_Ty_' 
+    {{tex [[sgn]] ; [[ectx]] ; [[eTy]] ~{_{[[lnvar]]} }\vdash_{[[lnvar']]} ( [[TTGoal]] \mid [[eK]] ) }} by
 
     a : L in S
-    ------------------------  :: tcon
-    S ; eG ; a |- true ; L
+    --------------------------------  :: tcon
+    S ; eG ; a ; lnvar |- true ; L ; lnvar
 
-    S ; eG ; eA |- Go1 ; eL1
-    S ; eG ; eB |- Go2 ; eL2
-    ----------------------------------------------------- :: pi_intro
-    S ; eG ; Pi eA . eB |- ((Go1 & Go2) & eq_K( eL1, typeK, eG)) & eq_K(eL2, typeK, eG) ; typeK 
+    S ; eG ; eA ; lnvar  |- Go1 ; eL1 ; lnvar' 
+    S ; eG ; eB ; lnvar' |- Go2 ; eL2 ; lnvar''
+    --------------------------------------------------------------------------------------------------- :: pi_intro
+    S ; eG ; Pi eA . eB ; lnvar |- ((Go1 & Go2) & eq_K( eL1, typeK, eG)) & eq_K(eL2, typeK, eG) ; typeK ; lnvar'' 
 
-    % fresh mL mL'
-    S ; eG ; eA |- Go1 ; eL
-    S ; eG ; eM |- Go2 ; eB
+    S ; eG ; eA ; lnvar |- Go1 ; eL ; lnvar'
+    S ; eG ; eM ; lnvar' |- Go2 ; eB ; lnvar''
+    fresh lnvar'' mL lnvar''' 
+    fresh lnvar''' mL' lnvar'''' 
     ----------------------------------------------------------------- :: pi_elim
-    S ; eG ; eA eM |- ((Go1 & Go2) & eq_K( Pi eB . eL , mL' , eG )) & substK( mL', eM, mL) ; mL
+    S ; eG ; eA eM ; lnvar |- ((Go1 & Go2) & eq_K( Pi eB . eL , mL' , eG )) & substK( mL', eM, mL) ; mL ; lnvar''''
 
    
-    % fresh mL
-    -------------------------------------------------------- :: mvar
-    S ; eG ; mA |- Go & type( mA , mL, eG) ; mL
+    fresh lnvar mL lnvar'
+    ------------------------------------------------------------ :: mvar
+    S ; eG ; mA ; lnvar |- Go & type( mA , mL, eG) ; mL ; lnvar'
     
   defn
-  sgn ; ectx ; ete |- TTGoal ; eTy  :: :: goalterm ::'g_te_' 
-  {{tex [[sgn]] ; [[ectx]] ; [[ete]] \vdash ( [[TTGoal]] \mid [[eTy]] ) }} by
+  sgn ; ectx ; ete ; lnvar |- TTGoal ; eTy ; lnvar' :: :: goalterm ::'g_te_' 
+  {{tex [[sgn]] ; [[ectx]] ; [[ete]] {_{[[lnvar]] } }\vdash_{[[lnvar']]} ( [[TTGoal]] \mid [[eTy]] ) }} by
 
     c : A in S
-    -----------------------  :: con
-    S ; eG ; c |- true ; eA
+    ---------------------------------------  :: con
+    S ; eG ; c ; lnvar |- true ; eA ; lnvar
 
-    % mA fresh
+    fresh lnvar mA lnvar'
     ---------------------------------------------------  :: var_nil
-    S ; eG, eA ; zero |- shiftTy( eA , zero , mA ) ; mA
+    S ; eG, eA ; zero ; lnvar |- shiftTy( eA , zero , mA ) ; mA ; lnvar'
 
-    S ; eG ; ix |- Go ; eA
-    % mA fresh
+    S ; eG ; ix ; lnvar |- Go ; eA ; lnvar'
+    fresh lnvar' mA lnvar''
     ------------------------------------------------------  :: var_cons
-    S ; eG,eB ; succ ix |- Go & shiftTy(eA, zero, mA) ; mA
+    S ; eG,eB ; succ ix ; lnvar |- Go & shiftTy(eA, zero, mA) ; mA ; lnvar''
 
-    S ; eG ; eA |- Go1 ; eL 
-    S ; eG ; eM |- Go2 ; eB 
+    S ; eG ; eA ; lnvar |- Go1 ; eL ; lnvar'
+    S ; eG ; eM ; lnvar' |- Go2 ; eB ; lnvar''
     ----------------------------------------------------------------- :: pi_intro
-    S ; eG ; \eA.eM |- (Go1 & Go2) & eq_K(eL, typeK, eG); Pi eA . eB
+    S ; eG ; \eA.eM ; lnvar |- (Go1 & Go2) & eq_K(eL, typeK, eG); Pi eA . eB ; lnvar''
 
-    S ; eG ; eM |- Go1 ; eA 
-    S ; eG ; eN |- Go2 ; eA1
-    % fresh mB
+    S ; eG ; eM ; lnvar |- Go1 ; eA ; lnvar'
+    S ; eG ; eN ; lnvar' |- Go2 ; eA1 ; lnvar''
+    fresh lnvar'' mB lnvar'''
     ---------------------------------------------------------------------------------- :: pi_elim
-    S ; eG ; eM eN |- ((Go1 & Go2) & eq_Ty(eA , Pi eA1 . eB' , eG )) & substTy(eB' , eN , mB) ; mB
+    S ; eG ; eM eN ; lnvar |- ((Go1 & Go2) & eq_Ty(eA , Pi eA1 . eB' , eG )) & substTy(eB' , eN , mB) ; mB ; lnvar'''
     
-    % fresh mA
+    fresh lnvar mA lnvar'
     -------------------------------------------- :: mvar
-    S ; eG ; mN |- mN : term(mN, mA , eG)  ; mA
+    S ; eG ; mN ; lnvar |- mN : term(mN, mA , eG)  ; mA ; lnvar'
 
 %  defn 
 %  nsgn ; nctx |- TTGoal ::  :: goalctx_nl :: 'g_ctx_' {{tex [[nsgn]] ; [[nctx]] \vdash [[TTGoal]] }} by
