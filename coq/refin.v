@@ -8,12 +8,16 @@ Definition ttgoal_true := ttgoal_unbound_at ttat_true.
 
 
 Lemma goalterm_dec:
-  forall (Sig : sgn) (G : ectx) (M : ete),
-    { GA | r_goalterm Sig G M (fst GA) (snd GA) }
-    + {forall GA, ~ r_goalterm Sig G M (fst GA) (snd GA)}.
+  forall (Sig : sgn) (G : ectx) (M : ete) (v : lnvar),
+    { GA | r_goalterm Sig G M v (fst GA) (fst(snd GA)) (snd (snd GA)) }
+    + {forall GA, ~ r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))}
+  with goaltype_dec:
+  forall (Sig : sgn) (G : ectx) (A : eTy) (v : lnvar),
+    { GA | r_goaltype Sig G A v (fst GA) (fst(snd GA)) (snd (snd GA)) }
+    + {forall GA, ~ r_goaltype Sig G A (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))}.
 Proof.
-  intros Sig G M.
-  induction M as [ c | | | | ].
+  {  intros Sig G M.
+  induction M as [ c | i | A M | | v ].
 
   - (* con c in Sig *)
 
@@ -21,157 +25,157 @@ Proof.
     assert ({A | boundCon c A Sig} + {forall A, ~ boundCon c A Sig})
         as [ [A] | ]
            by (apply boundCon_dec).
-    * left; exists (ttgoal_true, A); simpl.
-        econstructor; eauto.
+    * left; exists (ttgoal_true, (A , v)); simpl.
+      econstructor; eauto.
+      admit.
     * right.
       intros; intro Hc.
       inversion Hc.
       eapply n; eauto.
   - (* ix *)
     generalize dependent G.
-    induction ix; intros.
+    induction i; intros.
     * destruct G as [ | A ].
       
       { right; intros; intro Hc.
         inversion Hc. }
       { left.
-        exists ((ttgoal_unbound_at (ttat_shiftTy eA 0 (typestar_nl_mtvar mA))), A); simpl.
-           econstructor. }
-       * destruct G as [ | B ].
+        exists (
+            (ttgoal_unbound_at (ttat_shiftTy A 0 (typestar_nl_mtvar (S v))),
+             (typestar_nl_mtvar (S v), S (S v)))); simpl.
+        econstructor.
+        simpl; auto. }
+    * destruct G as [ | B ].
 
          { right; intros; intro Hc.
            inversion Hc. }
-         {
-           (* from decidability ??? *)
-           assert ({ G'B' | cu_nctx (B :: G) 0 (fst G'B') (snd G'B')})
-             as [ [ G' B' ]  HcuTy  ]
-               by (admit).
-           
-           cbn in HcuTy.
+         { destruct IHi with G v as [ [ [ Go A' ] Hix ]  | ]; auto. }
 
-           destruct IHixc with G' as [ [ [ Go A' ] Hixc ]  | ]; auto.
-           
-           - cbn in Hixc.
+  - intros.
 
-             left.
-             (* fresh name ? *)
-             assert (mA : mtvar) by (admit).
-             exists (ttgoal_conj  Go (ttgoal_cuTy A' 0 (typestar_nl_mtvar mA)),
-                typestar_nl_mtvar mA).
-             cbn.
-             econstructor; eauto.
+    assert ({GA | r_goaltype Sig G A v (fst GA) (fst (snd GA)) (snd (snd GA))}
+           + {forall GA , ~r_goaltype Sig G A (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))})
+             by (apply goaltype_dec).
 
-           - right.
-             intros. intro Hc.
-             inversion Hc.          
-             apply n with (G0, nA').
-             subst.
-             cbn.
-             (* from determianacy : *)
-             assert (G' = nG') by (admit).
-             assert (B' = nB') by (admit).
-             subst.
-             auto. }
-    + right; intros; intro Hc.
-      inversion Hc.
+    destruct H as [ [ [ Go1 [ L v2 ] ]  ] | ].
 
-    + (* mvar *)
-      left.
-      (* fresh mvar *)
-      assert (mA : mtvar) by (admit).
-      
-      exists (ttgoal_bound_at mx (ttat_Ty (typestar_nl_mtvar mA) G), (typestar_nl_mtvar mA)).
-      constructor.
+    +  destruct IHM with v2 as [ [ [ Go2 [ B v3 ] ] ] |  ] ; simpl.
 
-  - intros G M HsM.
-    destruct M as [ | | | A M |  | ]; inversion HsM.
-  
-    assert ({ G' | cs_nctx G 0 A G'})
-      as [ G' HG' ]
-           by (admit).
-
-    assert ({M' | cstu_nte M 0 M'})
-      as [ M' HM' ]
-           by (admit).
-
-    destruct IHsM with G' M' as [ [ [Go B] HGo ] | ].
-
-    (* cstu_nte preservers struct *)
-    admit.
-
-    + (* fresh *)
-      assert (mB' : mtvar) by (admit).
-    
-      left.
-      exists (ttgoal_conj Go (ttgoal_unbound_at (ttat_cutsTy B (typestar_nl_mtvar mB'))),
-         typestar_nl_pi_intro A (typestar_nl_mtvar mB')).
-
-      econstructor; eauto.
+       * left.
+         simpl in r.
+         simpl in r0.
+         
+         exists ((ttgoal_conj (ttgoal_conj Go1 Go2)
+                         (ttgoal_unbound_at (ttat_eq_K L kindstar_nl_type G))),
+            (typestar_nl_pi_intro A B,
+             v3)).
+         simpl.
+         econstructor; simpl; eauto.
+       * right.
+         intros. intro Hc.
+         inversion Hc.          
+         subst.
+         apply n with ((lnvar2, Go2), (eB, snd (snd GA))).
+         cbn.
+         auto.
 
     + right.
       intros. intro Hc.
+      destruct GA as [ [v1 Go1] [ B v2 ] ].
+      simpl in Hc.
+      generalize dependent n.
       inversion Hc.
+      subst.
+      intro.
+      apply n with ((v1,Go0),(eL,lnvar2)).
+      simpl.
+      assumption.
+  - (* pi elim *)
 
-      (* from determianacy *)
-      assert (G' = nG') by (admit).
-      assert (M' = nM') by (admit).
+    intros.
+    destruct IHM1 with v as [ [ [ Go1 [ A v1 ]] ] | Hn1 ].
 
-      apply n with (GA := (G0, nB)).
-        
-      subst. auto.
+    + simpl in r.
 
-  - intros G M HsM.
-    destruct M; inversion HsM.
+      destruct IHM2 with v1 as [ [ [ Go2 [ B v2 ]] ] | Hn2 ].
 
-    destruct IHsM1 with G M1 as [ [ [Go1 A1] HGo1 ] | ].
-    auto.
-
-    + 
-      destruct IHsM2 with G M2 as [ [ [Go2 A2] HGo2 ] | ].
-      auto.
-
-      * 
-        assert (B : mtvar) by (admit).
-        assert (B' : mtvar) by (admit).   
-    
+      * simpl in r0.
         left.
-    
         exists (ttgoal_conj
-             (ttgoal_conj
-                (ttgoal_conj
-                   Go1
-                   Go2)
-                (ttgoal_unbound_at
-                   (ttat_eq_Ty
-                      A1
-                      (typestar_nl_pi_intro A2 (typestar_nl_mtvar B))
-                      G )))
-             (ttgoal_unbound_at
-                (ttat_tutsTy (typestar_nl_mtvar B) M2 (typestar_nl_mtvar B'))),
-           typestar_nl_mtvar B').
-        
-        constructor; auto.
+                 (ttgoal_conj (ttgoal_conj Go1 Go2)
+                              (ttgoal_unbound_at
+                                 (ttat_eq_Ty A (typestar_nl_pi_intro B (typestar_nl_mtvar (S (S (S v2)))) ) G)))
+                 (ttgoal_unbound_at
+                    (ttat_substTy (typestar_nl_mtvar (S (S (S v2)))) M2 (typestar_nl_mtvar (S (S v2))))),
+               (typestar_nl_mtvar (S (S v2)),
+                 S ( S (S (S v2))))).
 
-      * (* not goalterm M2 *)
+        simpl.
+        apply r_g_te_pi_elim with v1 v2 (S (S v2)).
+        eauto.
+        eauto.
+        simpl; auto.
+        simpl; auto.
 
-        right.
-        intros. intro Hc.
-
+      * right.
+        intros.
+        intro Hc.
+        generalize dependent Hn2.
+        destruct GA as [ [ v2 Go2 ] [ B v3 ] ].
+        simpl in Hc.
         inversion Hc.
-        eapply n with (G2, nA2); auto.
+        subst.
 
-    +  (* not goalterm M1 *)
-      
-      right.
-      intros. intro Hc.
+        intro Hn.
+        apply Hn with ((lnvar2, Go3), (eA1, lnvar3)).
+        simpl.
+        auto.
 
+    +  right.
+       intros.
+       intro Hc.
+       generalize dependent Hn1.
+       destruct GA as [ [ v2 Go2 ] [ B v3 ] ].
+       simpl in Hc.
+       inversion Hc.
+       subst.
+       
+       intro Hn.
+       apply Hn with ((v2, Go1), (eA, lnvar2)).
+       simpl.
+       auto.
+
+  - intros.
+    left.
+    exists
+      (ttgoal_bound_at v
+                       (ttat_te (termstar_nl_mvar v) (typestar_nl_mtvar (S v0)) G),
+       (typestar_nl_mtvar (S v0),
+        S (S v0))).
+    simpl.
+    
+    eapply r_g_te_mvar.
+    simpl; auto.
+  }
+  
+
+  {  intros Sig G A.
+  induction A as [ a | A M | | v ].
+
+  - (* tcon a in Sig *)
+
+    intros.
+    assert ({L | boundTCon a L Sig} + {forall L, ~ boundTCon a L Sig})
+        as [ [L] | ]
+           by (apply boundTCon_dec).
+    * left; exists (ttgoal_true, (L , v)); simpl.
+      econstructor; eauto.
+      admit.
+    * right.
+      intros; intro Hc.
       inversion Hc.
-      eapply n with (G1, nA1); auto.
-
-Admitted.
-
-
-
+      eapply n; eauto.
+  - 
       
       
     (* end *)
