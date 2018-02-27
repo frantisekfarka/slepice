@@ -67,8 +67,8 @@ Jrefin :: 'r_' ::=
    
     fresh lnvar1 mL lnvar2
     ------------------------------------------------------------ :: mvar
-    S ; eG ; mA ; lnvar1 |- Go & type( mA , mL, eG) ; mL ; lnvar2
-    
+    S ; eG ; mA ; lnvar1 |- type( mA , mL, eG) ; mL ; lnvar2
+
   defn
   sgn ; ectx ; ete ; lnvar |- TTGoal ; eTy ; lnvar' :: :: goalterm ::'g_te_' 
   {{tex [[sgn]] ; [[ectx]] ; [[ete]] {_{[[lnvar]] } }\vdash_{[[lnvar']]} ( [[TTGoal]] \mid [[eTy]] ) }} by

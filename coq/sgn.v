@@ -40,6 +40,162 @@ Proof.
 Qed.
 
 
+(**
+  * boundCon is Ty
+ **)
+Lemma boundCon_is_Ty_of_eTy:
+  forall (S : sgn) (c : con) (A : eTy),
+    boundCon c A S ->
+    is_Ty_of_eTy A.
+Proof.
+  intros.
+  induction S.
+  - unfold boundCon in H.
+    decompose record H.
+    simpl in H0.
+    apply app_cons_not_nil in H0.
+    contradiction.
+
+  - destruct a as [ [ c0 [A' wA'] ] | ].
+
+    + assert ({c = c0} + {c <> c0}) as [ | ]
+        by (apply eq_con).
+
+      * subst.
+
+        assert ({A = A'} + {A <> A'}) as [ | ]
+            by (apply eq_eTy_dec).                                
+
+        { subst.
+          assumption. }
+        { apply IHS.
+          unfold boundCon in H.
+          decompose record H.
+          unfold boundCon.
+          simpl in H0.
+          destruct x.
+          - simpl in H0.
+            inversion H0.
+            symmetry in H3; contradiction.
+          - exists x.
+              exists x0.
+
+              split.
+              inversion H0; auto.
+              intro.
+              apply H2.
+              right; auto. }
+      * apply IHS.
+        unfold boundCon in H.
+        decompose record H.
+        unfold boundCon.
+        simpl in H0.
+        destruct x.
+        { simpl in H0.
+          inversion H0.
+          symmetry in H3; contradiction. }
+        { exists x.
+          exists x0.
+
+          split.
+          inversion H0; auto.
+          intro.
+          apply H2.
+          right; auto. }
+          
+    + destruct p as [a [L wL ] ].
+      apply IHS.
+      unfold boundCon in H.
+      decompose record H.
+      unfold boundCon.
+      destruct x.
+      * inversion H0.
+      * exists x.
+          exists x0.
+
+          split.
+          inversion H0; auto.
+          intro.
+          apply H2.
+          right; auto.
+Qed.
+
+(**
+  * boundTCon is K
+ **)
+Lemma boundTCon_is_K_of_eK:
+  forall (S : sgn) (a : tcon) (L : eK),
+    boundTCon a L S ->
+    is_K_of_eK L.
+Proof.
+  intros.
+  induction S as [ | el ] .
+  - unfold boundTCon in H; decompose record H.
+    apply app_cons_not_nil in H0.
+    contradiction.
+
+  - destruct el as [ [ c [A ]] | [ a0 [L' wL'] ] ].
+
+    + apply IHS.
+      unfold boundTCon in H.
+      decompose record H.
+      unfold boundTCon.
+      destruct x.
+      * inversion H0.
+      * exists x.
+          exists x0.
+
+          split.
+          inversion H0; auto.
+          intro.
+          apply H2.
+          right; auto.
+    
+    + assert ({a0 = a} + {a0 <> a}) as [ | ]
+        by (apply eq_con).
+
+      * subst.
+
+        assert ({L' = L} + {L' <> L}) as [ | ]
+            by (apply eq_eK).                                
+
+        { subst.
+          assumption. }
+        { apply IHS.
+          unfold boundTCon in H.
+          decompose record H.
+          unfold boundTCon.
+          destruct x.
+          - inversion H0.
+            contradiction.
+          - exists x.
+              exists x0.
+
+              split.
+              inversion H0; auto.
+              intro.
+              apply H2.
+              right; auto. }
+      * apply IHS.
+        unfold boundTCon in H.
+        decompose record H.
+        simpl in H0.
+        destruct x.
+        { inversion H0.
+          contradiction. }
+        { exists x.
+          exists x0.
+
+          split.
+          inversion H0; auto.
+          intro.
+          apply H2.
+          right; auto. }          
+
+Qed.
+
+          
+
 
 (**
   * boundCon

@@ -160,7 +160,7 @@ Proof.
   
 
   {  intros Sig G A.
-  induction A as [ a | A M | | v ].
+  induction A as [ a | A IHA B IHB | A IHA M  | v ].
 
   - (* tcon a in Sig *)
 
@@ -175,7 +175,111 @@ Proof.
       intros; intro Hc.
       inversion Hc.
       eapply n; eauto.
-  - 
+  - (* pi intro *)
+    intros.
+
+    destruct IHA with v as [ [ [ Go1 [ L1 v2 ] ] ] |  ] ; simpl.
+    
+    +  destruct IHB with v2 as [ [ [ Go2 [ L2 v3 ] ] ] |  ] ; simpl.
+
+       * left.
+         simpl in r.
+         simpl in r0.
+         
+         exists ((ttgoal_conj (ttgoal_conj ((ttgoal_conj Go1 Go2))
+                         (ttgoal_unbound_at (ttat_eq_K L1 kindstar_nl_type G)))
+                         (ttgoal_unbound_at (ttat_eq_K L2 kindstar_nl_type G))),
+            (kindstar_nl_type,
+             v3)).
+         simpl.
+         econstructor; eauto.
+       * right.
+         intros. intro Hc.
+         inversion Hc.          
+         subst.
+         apply n with ((lnvar2, Go2), (eL2, snd (snd GA))).
+         cbn.
+         auto.
+
+    + right.
+      intros. intro Hc.
+      destruct GA as [ [v1 Go1] [ L v2 ] ].
+      simpl in Hc.
+      generalize dependent n.
+      inversion Hc.
+      subst.
+      intro.
+      apply n with ((v1,Go0),(eL1,lnvar2)).
+      simpl.
+      assumption.
+  - (* pi elim *)
+    intros.
+
+    destruct IHA with v as [ [ [ Go1 [ L v1 ]] ] | Hn1 ].
+
+    + simpl in r.
+
+
+      assert ({GA | r_goalterm Sig G M v1 (fst GA) (fst (snd GA)) (snd (snd GA))}
+              + {forall GA, ~ r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))})
+        as IHM by (apply goalterm_dec).
+
       
+      destruct IHM as [ [ [ Go2 [ B v2 ]] ] | Hn2 ].
+      
+      * simpl in r0.
+        left.
+        
+        exists (ttgoal_conj
+                 (ttgoal_conj (ttgoal_conj Go1 Go2)
+                              (ttgoal_unbound_at
+                                 (ttat_eq_K (kindstar_nl_pi_intro B L) (kindstar_nl_mkvar (S (S (S v2))))  G)))
+                 (ttgoal_unbound_at
+                    (ttat_substK (kindstar_nl_mkvar (S (S (S v2)))) M (kindstar_nl_mkvar (S (S v2))))),
+               (kindstar_nl_mkvar (S (S v2)),
+                 S ( S (S (S v2))))).
+
+        simpl.
+        apply r_g_Ty_pi_elim with v1 v2 (S (S v2)); simpl; auto.
+
+      * right.
+        intros.
+        intro Hc.
+        generalize dependent Hn2.
+        destruct GA as [ [ v2 Go2 ] [ B v3 ] ].
+        simpl in Hc.
+        inversion Hc.
+        subst.
+
+        intro Hn.
+        apply Hn with ((lnvar2, Go3), (eB, lnvar3)); simpl; auto.
+
+    +  right.
+       intros.
+       intro Hc.
+       generalize dependent Hn1.
+       destruct GA as [ [ v2 Go2 ] [ B v3 ] ].
+       simpl in Hc.
+       inversion Hc.
+       subst.
+       
+       intro Hn.
+       apply Hn with ((v2, Go1), (eL, lnvar2)); simpl; auto.
+
+  - intros.
+    left.
+    exists
+      (ttgoal_unbound_at 
+                       (ttat_Ty (typestar_nl_mtvar v) (kindstar_nl_mkvar (S v0)) G),
+       (kindstar_nl_mkvar (S v0),
+        S (S v0))).
+    simpl.
+    
+    eapply r_g_Ty_mvar.
+    simpl; auto.
+  }
+  
+
+    
       
     (* end *)

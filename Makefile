@@ -40,11 +40,11 @@ TERMINALS=$(SRC_DIR)terminals.ott
 OTT=../ott/bin/ott
 
 COQ=$(COQ_DIR)defns.v\
+    $(COQ_DIR)eq.v\
+    $(COQ_DIR)sgn.v\
 
 #    $(COQ_DIR)nl_fusion.v\
-#    $(COQ_DIR)nl_sgn.v\
 #    $(COQ_DIR)nl_whr.v\
-#    $(COQ_DIR)nl_eq.v\
 #    $(COQ_DIR)nl_stralgeq.v\
 #    $(COQ_DIR)nl_walgeq.v\
 #    $(COQ_DIR)nl_struct.v\
