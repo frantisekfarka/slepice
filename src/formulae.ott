@@ -13,9 +13,9 @@ formula :: formula_ ::=
   | c : A in sgn                                    :: :: cinsig_lnl
      {{ coq (boundCon [[c]] [[A]] [[sgn]]) }}
      {{ tex [[c]] : [[A]] \in [[sgn]] }}
-  | alpha : eK in sgn                              :: :: binsig_nl
-     {{ coq (boundTCon [[alpha]] [[eK]] [[sgn]]) }}
-     {{ tex [[alpha]] : [[eK]] \in [[sgn]] }}
+  | alpha : K in sgn                                :: :: binsig_nl
+     {{ coq (boundTCon [[alpha]] [[K]] [[sgn]]) }}
+     {{ tex [[alpha]] : [[K]] \in [[sgn]] }}
   | fresh lnvar lnvar' lnvar''                     :: :: fresh
      {{ coq (fresh [[lnvar]] [[lnvar']] [[lnvar'']]) }}
      {{tex _{[[lnvar]]}\text{fresh}_{[[lnvar'']]} [[lnvar']] }} 

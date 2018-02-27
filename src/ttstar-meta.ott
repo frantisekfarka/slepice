@@ -18,7 +18,7 @@
 
 
 % locally nameless metavariable
-metavar lnvar {{ tex ?_{ln} }}, mM {{ tex ?_M }}, mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }} ::=
+metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }}, mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }} ::=
     {{ coq nat }} {{ coq-equality }}
     {{ com  nameless meta-variable }} 
 
