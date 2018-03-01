@@ -32,11 +32,11 @@ with struct_ete (M : ete) : mte :=
    
 
 
-Fixpoint goalterm_dec
+Fixpoint goalterm_dec_str
   (mM : mte) (Sig : sgn) (G : ectx) (M : ete) (v : lnvar):
     (struct_ete M) = mM -> { GA | r_goalterm Sig G M v (fst GA) (fst(snd GA)) (snd (snd GA)) }
     + {forall GA, ~ r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))}
-  with goaltype_dec
+  with goaltype_dec_str
   (mA : mTy) (Sig : sgn) (G : ectx) (A : eTy) (v : lnvar):
     (struct_eTy A) = mA -> { GA | r_goaltype Sig G A v (fst GA) (fst(snd GA)) (snd (snd GA)) }
     + {forall GA, ~ r_goaltype Sig G A (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))}.
@@ -119,7 +119,7 @@ Proof.
     
     assert ({GA | r_goaltype Sig G A v (fst GA) (fst (snd GA)) (snd (snd GA))}
            + {forall GA , ~r_goaltype Sig G A (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))})
-             by (apply goaltype_dec with sA; auto).
+             by (apply goaltype_dec_str with sA; auto).
 
     destruct H as [ [ [ Go1 [ L v2 ] ]  ] | ].
 
@@ -303,7 +303,7 @@ Proof.
 
       assert ({GA | r_goalterm Sig G M v1 (fst GA) (fst (snd GA)) (snd (snd GA))}
               + {forall GA, ~ r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))})
-        as IHM by (apply goalterm_dec with sM; auto).
+        as IHM by (apply goalterm_dec_str with sM; auto).
 
       
       destruct IHM as [ [ [ Go2 [ B v2 ]] ] | Hn2 ].
@@ -348,6 +348,20 @@ Proof.
        apply Hn with ((v2, Go1), (eL, lnvar2)); simpl; auto.
 }
 Qed.
-    
-      
+
+Lemma goalterm_dec:
+  forall (Sig : sgn) (G : ectx) (M : ete) (v : lnvar),
+    { GA | r_goalterm Sig G M v (fst GA) (fst(snd GA)) (snd (snd GA)) }
+    + {forall GA, ~ r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))}
+  with goaltype_dec:
+  forall (mA : mTy) (Sig : sgn) (G : ectx) (A : eTy) (v : lnvar),
+      { GA | r_goaltype Sig G A v (fst GA) (fst(snd GA)) (snd (snd GA)) }
+      + {forall GA, ~ r_goaltype Sig G A (fst (fst GA)) (snd (fst GA)) (fst (snd GA)) (snd (snd GA))}.
+Proof.
+  - intros.
+    apply goalterm_dec_str with (struct_ete M); auto.
+  - intros.
+    apply goaltype_dec_str with (struct_eTy A); auto.
+Qed.
+
 (* end *)
