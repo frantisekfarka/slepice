@@ -22,6 +22,7 @@ K {{ tex \ttbase{K} }} , L {{ tex \ttbase{L} }} :: 'kind_nl_' ::= {{ com Kinds }
   | Pi Ty . K            ::   :: pi_intro            {{ com kind of dependent functions }}
   | ( K )                :: S :: paren                        
      {{ coq [[K]] }}
+     {{ ocaml ([[K]]) }}
 
 grammar
 sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'signature_nl_' ::= {{ com Signature }}
@@ -52,6 +53,7 @@ sTy {{ tex {T^{-} } }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Type
   | sTy1 -> sTy2         ::   :: pi_intro            {{ com type of functions }}
   | ( sTy )              :: S :: paren                        
      {{ coq [[sTy]] }}
+     {{ ocaml ([[sTy]]) }}
 
 grammar
 sK {{ tex K^{-}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple Kinds }}
@@ -59,6 +61,7 @@ sK {{ tex K^{-}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple K
   | sTy -> sK            ::   :: pi_intro            {{ com kind of functions }}
   | ( sK )               :: S :: paren                        
      {{ coq [[sK]] }}
+     {{ ocaml ([[sK]]) }}
 
 grammar
 ssgn {{ tex \mathcal{S}^{-}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signature }}

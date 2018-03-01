@@ -2,7 +2,7 @@ grammar
 terminals :: 'terminals_' ::=
   | typeK        ::   :: type      {{ tex \mathtt{type} }}
   | kindS        ::   :: kind      {{ tex \mathtt{kind} }}
-  | \            ::   :: lambda    {{ tex \lambda }}
+  | \            ::   :: lambda    {{ tex \lambda }} {{ lex "\\" }}
   | Pi           ::   :: pi        {{ tex \Pi }}
   | empty        ::   :: empty     {{ tex \cdot}}
   | zero         ::   :: zero      {{ tex 0}}

@@ -49,12 +49,26 @@ eK {{ tex {\ttstar{K} } }} , eL {{ tex {\ttstar{L} } }} :: 'kindstar_nl_' ::= {{
   | typeK                ::   :: type                {{ com kind of all types }} 
   | Pi eTy . eK          ::   :: pi_intro            {{ com kind of dependent functions }}
   | ( eK )               :: S :: paren                        
-     {{ coq [[eK]] }}
+     {{ coq ([[eK]]) }}
+     {{ ocaml ([[eK]]) }}
   | lnvar                ::   :: mkvar               {{ com kind level metavariables }}
   %| mkvar                ::   :: mkvar               {{ com kind level metavariables }}
 %  | substK( eK , ix , eN )    :: M :: subst
 %     {{ coq [[eK]] [[eN]] [[ix]] }}
 %     {{ tex  [[eK]] [ [[eN]] / [[ix]] ] }}
+
+% for parser
+grammar
+esgn {{tex \ttstar{Sig} }}, eS {{ tex \ttstar{\mathcal{S} } }} {{coq Sgn }} :: 'signaturestar_nl_' ::= {{ com Signature }}
+%    {{ coq list (con*Ty+tcon*K) }}
+%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+  | empty                ::   :: empty               {{ com empty signature }}
+     {{ coq nil }}
+  | esgn , con : eTy       ::   :: con
+     {{ coq (cons (inl([[con]],[[eTy]])) [[esgn]]) }}
+  | esgn , tcon : eK       ::   :: tcon
+     {{ coq (cons (inr([[tcon]],[[eK]])) [[esgn]]) }}
+
 
 
 grammar
@@ -70,6 +84,4 @@ ectx {{tex {\ttstar{Ctx} } }}, eG {{ tex {\ttstar{\Gamma} } }} :: 'contextstar_n
 %  | cuctx( enctx )           :: M :: cunshifting
 %     {{ tex \overrightarrow{ [[enctx]] }  }} 
 %     {{ coq ??TODO }}
-
-
 
