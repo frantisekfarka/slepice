@@ -153,3 +153,7 @@ coq/*vo
 
 # generated documentation
 doc/*
+
+# ocaml
+_build
+*.native
