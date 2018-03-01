@@ -1,0 +1,6 @@
+/rule token = parse/
++1d
+i
+| [' ' '\t' '\n' '\r'] (* patched *)
+.
+wq

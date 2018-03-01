@@ -4,11 +4,13 @@ BIBTEX=bibtex
 BIB=references.bib
 COQDOC=coqdoc -g
 COQC=coqc
+OTT=../ott/bin/ott
 
 TEX_DIR=tex/
 SRC_DIR=src/
 COQ_DIR=coq/
 DOC_DIR=doc/
+ML_DIR=ocaml/
 MAIN=exquan.tex
 WRAPPER=wrapper.tex
 
@@ -37,7 +39,6 @@ TERMINALS=$(SRC_DIR)terminals.ott
 
 
 
-OTT=../ott/bin/ott
 
 COQ=$(COQ_DIR)defns.v\
     $(COQ_DIR)eq.v\
@@ -88,6 +89,7 @@ clean:
 		*.log *.nav *.out *.vrb *.snm *.toc \
 		X.tex *.bak *.pag *.fdb_latexmk *.fls \
 		$(MAIN)
+	make -C $(ML_DIR) clean
 
 veryclean: clean
 	$(RM) *.pdf *.dvi 
