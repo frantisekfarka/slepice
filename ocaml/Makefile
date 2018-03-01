@@ -17,6 +17,7 @@ build: tt
 	ocamlbuild -use-menhir main.native
 
 clean:
+	ocamlbuild -clean
 	rm -f Lexer.ml Parser.ml ttstar.ml Parser_pp.ml \
 	   *mly *mll *mli *automaton *conflicts
 
