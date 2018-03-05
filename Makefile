@@ -55,7 +55,7 @@ exquan.tex: $(META) \
     	    $(FORMULAE) 
 	$(OTT) \
 	    -o $@ \
-	    -o $(COQ_DIR)defns.v \
+	    -o $(COQ_DIR)Defns.v \
 	    -tex_wrap false\
 	    -tex_name_prefix fodtt \
 	    $^
