@@ -18,8 +18,8 @@
 
 embed
 {{ ocaml
-let eq_con = (==)
-let eq_tcon = (==)
+let eq_con = String.equal
+let eq_tcon = String.equal
 }}
 
 % locally nameless metavariable
