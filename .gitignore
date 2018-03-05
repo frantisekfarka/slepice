@@ -139,12 +139,13 @@ sympy-plots-for-*.tex/
 # tex
 *.tex
 
-# project specific
-coq/defns.v
+# Coq project 
+coq/Defns.v
 *glob
 coq/*ml
 coq/*mli
 coq/*vo
+*.v.d
 
 # emacs
 \#*\#
@@ -157,3 +158,6 @@ doc/*
 # ocaml
 _build
 *.native
+Lexer.mll
+Parser.mly
+Parser_pp.ml

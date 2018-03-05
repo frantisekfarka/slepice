@@ -2,8 +2,6 @@ RM=rm -f
 TEX=pdflatex -interaction=nonstopmode
 BIBTEX=bibtex
 BIB=references.bib
-COQDOC=coqdoc -g
-COQC=coqc
 OTT=../ott/bin/ott
 
 TEX_DIR=tex/
@@ -37,20 +35,6 @@ REFIN=$(SRC_DIR)refin.ott
 TERMINALS=$(SRC_DIR)terminals.ott
 
 
-
-
-
-COQ=$(COQ_DIR)defns.v\
-    $(COQ_DIR)eq.v\
-    $(COQ_DIR)sgn.v\
-
-#    $(COQ_DIR)nl_fusion.v\
-#    $(COQ_DIR)nl_whr.v\
-#    $(COQ_DIR)nl_stralgeq.v\
-#    $(COQ_DIR)nl_walgeq.v\
-#    $(COQ_DIR)nl_struct.v\
-#    $(COQ_DIR)nl_tycheck.v
-
 .PHONY: clean veryclean
 
 default: $(MAIN)
@@ -76,8 +60,11 @@ exquan.tex: $(META) \
 	    -tex_name_prefix fodtt \
 	    $^
 
-doc: $(COQ)
-	$(COQDOC) --no-glob $(COQ) -d $(DOC_DIR)
+doc: coqdoc
+
+coqdoc:
+	make -C $(COQ_DIR) gallinahtml
+	cp -r $(COQ_DIR)html/*.html $(COQ_DIR)html/*.css $(DOC_DIR)
 
 coqc: $(COQ)
 	$(COQC) $(COQ) 
@@ -85,6 +72,7 @@ coqc: $(COQ)
 #cleaning rules
 
 clean:
+	$(RM) $(DOC_DIR)/.*
 	$(RM) *.aux *.xml *.bcf *.bbl *.blg *-blx.bib \
 		*.log *.nav *.out *.vrb *.snm *.toc \
 		X.tex *.bak *.pag *.fdb_latexmk *.fls \
