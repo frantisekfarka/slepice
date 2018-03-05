@@ -3,4 +3,8 @@
 i
 | [' ' '\t' '\n' '\r'] (* patched *)
 .
+/{ LNVAR/
+s/lnvar/int_of_string(lnvar)/
+/{ CIX/
+s/cIx/int_of_string(cIx)/
 wq

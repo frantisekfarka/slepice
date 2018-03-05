@@ -16,9 +16,15 @@
 %    {{ coq nat}} {{ coq-equality }}
 %    {{ ocaml string }} {{ lex alphanum}} {{ ocamllex VarAlphanum }}
 
+embed
+{{ ocaml
+let eq_con = (==)
+let eq_tcon = (==)
+}}
 
 % locally nameless metavariable
-metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }}, mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }} ::=
-    {{ coq nat }} {{ coq-equality }}
-    {{ com  nameless meta-variable }} 
+metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }} {{ocaml asdsa}}, mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }} 
+    ::= {{ com  nameless meta-variable }} 
+        {{ coq nat }} {{ coq-equality }}
+        {{ ocaml int }} {{ lex alpha }} {{ ocamllex ['0'-'9']+ }}
 

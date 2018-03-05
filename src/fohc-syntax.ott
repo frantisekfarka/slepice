@@ -80,6 +80,7 @@ TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in T
   | TTGoal1 & TTGoal2              ::   :: conj
   | ( TTGoal )                     :: M :: paren {{tex [[TTGoal]] }}
     {{ coq ( [[TTGoal]] ) }}
+    {{ ocaml ( [[TTGoal]] ) }}
   | lnvar : TTAtom                  ::   :: bound_at
   | TTAtom                         ::   :: unbound_at
 

@@ -1,14 +1,40 @@
+embed 
+{{ ocaml
+    open Datatypes
+}}
+
+metavar
+cIx {{tex I }}
+    ::= {{com deBruijn indices carrier }}
+        {{ coq nat }} {{ coq-equality }}
+        {{ ocaml int }} {{ lex alpha }} {{ ocamllex ['0'-'9']+ }}
+
 grammar
 Ix {{tex I }}, ix {{tex \iota }} :: 'ix_' ::= {{com deBruijn indices }}
   {{ coq nat }}
-  | zero                 ::   :: zero  
+  {{ ocaml int }}
+  | zero                 :: M :: zero  
   {{ coq 0 }}
-  | succ Ix              ::   :: succ
+  {{ ocaml 0 }}
+  | succ Ix              :: M :: succ
   {{ coq (S [[Ix]]) }}
-  | < Ix >               :: S :: paren                        
-     {{ coq [[Ix]] }}
-     {{ ocaml ([[Ix]]) }}
-     {{ tex ([[Ix]]) }}
+  {{ ocaml (succ [[Ix]]) }}
+  | cIx                  :: S :: ix
+  {{ coq ([[cIx]]) }}
+  {{ ocaml ([[cIx]]) }}
+
+
+%grammar
+%Ix {{tex I }}, ix {{tex \iota }} :: 'ix_' ::= {{com deBruijn indices }}
+%  {{ coq nat }}
+%  | zero                 ::   :: zero  
+%  {{ coq 0 }}
+%  | succ Ix              ::   :: succ
+%  {{ coq (S [[Ix]]) }}
+%  | < Ix >               :: S :: paren                        
+%     {{ coq [[Ix]] }}
+%     {{ ocaml ([[Ix]]) }}
+%     {{ tex ([[Ix]]) }}
 
 grammar
 eTy {{ tex {\ttstar{T} } }}, eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} } }} :: 'typestar_nl_' ::= {{ com Extended Types }}
@@ -60,8 +86,8 @@ eK {{ tex {\ttstar{K} } }} , eL {{ tex {\ttstar{L} } }} :: 'kindstar_nl_' ::= {{
 % for parser
 grammar
 esgn {{tex \ttstar{Sig} }}, eS {{ tex \ttstar{\mathcal{S} } }} {{coq Sgn }} :: 'signaturestar_nl_' ::= {{ com Signature }}
-%    {{ coq list (con*Ty+tcon*K) }}
-%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+    {{ coq list (con*eTy+tcon*eK) }}
+    {{ ocaml ((con * eTy , tcon*eK) sum)  list }}
   | empty                ::   :: empty               {{ com empty signature }}
      {{ coq nil }}
   | esgn , con : eTy       ::   :: con
@@ -69,15 +95,22 @@ esgn {{tex \ttstar{Sig} }}, eS {{ tex \ttstar{\mathcal{S} } }} {{coq Sgn }} :: '
   | esgn , tcon : eK       ::   :: tcon
      {{ coq (cons (inr([[tcon]],[[eK]])) [[esgn]]) }}
 
-
+embed
+{{ ocaml
+let ctxvar xy = match xy with
+    | (x,y) -> y :: x
+}}
 
 grammar
 ectx {{tex {\ttstar{Ctx} } }}, eG {{ tex {\ttstar{\Gamma} } }} :: 'contextstar_nl_' ::= {{ com Extended Context }}
     {{ coq list (eTy) }}
+    {{ ocaml eTy list }}
   | empty                ::   :: empty              {{ com empty context }}
      {{ coq nil }}
+     {{ ocaml [] }}
   | ectx , eTy             ::   :: ctxvar
      {{ coq (cons [[eTy]] [[ectx]]) }}
+     {{ ocaml ([[eTy]] :: [[ectx]]) }}
 %  | csctx( nctx )           :: M :: cshifting
 %     {{ tex \overleftarrow{ [[enctx]] } }} 
 %     {{ coq ??TODO }}
