@@ -1,6 +1,6 @@
 Require Import List.
 
-Require Import defns.
+Require Import Defns.
 
 
 (**
@@ -9,49 +9,40 @@ Require Import defns.
 
 (** decidability of equality for nameless syntax **)
 
-Lemma eq_eTy_dec:
-  forall (A B : eTy),
-    {A = B} + {A <> B}
-with eq_ete_dec:
-  forall (M N : ete),
-    {M = N} + {M <> N}.
+Lemma eq_eTy_dec : forall A B : eTy, {A = B} + {A <> B}
+  with eq_ete_dec : forall M N : ete, {M = N} + {M <> N}.
 Proof.
   (* lemma 1 *)
-  intros.
+  (intros **).
   decide equality.
-  apply eq_tcon.
+  (apply eq_tcon).
   decide equality.
   (* lemma 2 *)
-  intros.
+  (intros **).
   decide equality.
-  apply eq_con.
+  (apply eq_con).
   decide equality.
   decide equality.
-Qed.
+Defined.
 
-Lemma eq_sTy_dec:
-  forall (tau1 tau2 : sTy),
-    {tau1 = tau2} + {tau1 <> tau2}.
+Lemma eq_sTy_dec : forall tau1 tau2 : sTy, {tau1 = tau2} + {tau1 <> tau2}.
 Proof.
-  intros.
+  (intros **).
   decide equality.
-  apply eq_tcon.
-Qed.  
+  (apply eq_tcon).
+Defined.  
 
-Lemma eq_eK:
-  forall (K L : eK),
-    {K = L} + {K <> L}.
+Lemma eq_eK : forall K L : eK, {K = L} + {K <> L}.
 Proof.
   decide equality.
-  apply eq_eTy_dec.
+  (apply eq_eTy_dec).
   decide equality.
-Qed.
+Defined.
 
-Lemma eq_sK:
-  forall (kappa1 kappa2 : sK),
-    {kappa1 = kappa2} + {kappa1 <> kappa2}.
+Lemma eq_sK :
+  forall kappa1 kappa2 : sK, {kappa1 = kappa2} + {kappa1 <> kappa2}.
 Proof.
   decide equality.
-  apply eq_sTy_dec.
-Qed.
+  (apply eq_sTy_dec).
+Defined.
   
