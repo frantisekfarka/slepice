@@ -1,0 +1,22 @@
+# Travis integration
+language: ocaml
+
+# Explicitly request container-based infrastructure.
+sudo: false
+
+env:
+      global:
+
+cache:
+      directories:
+
+before_install:
+
+
+install: true
+
+script: true
+
+after_success:
+    - make doc
+
