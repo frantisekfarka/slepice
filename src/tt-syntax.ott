@@ -1,7 +1,7 @@
 grammar
 Ty {{ tex \ttbase{T} }}, A {{ tex \ttbase{A} }}, B {{ tex \ttbase{B} }} :: 'type_nl_' ::= {{ com Types }}
   | tcon                 ::   :: tcon                {{ com type constant }}
-  | Pi Ty1 . Ty2         ::   :: pi_intro            {{ com type of dependente functions }}
+  | Pi Ty1 . Ty2         ::   :: pi_intro            {{ com type of dependent functions }}
   | Ty te                ::   :: pi_elim             {{ com application of a type former }}
   | ( Ty )               :: S :: paren                        
      {{ coq [[Ty]] }}
@@ -33,7 +33,7 @@ grammar
 sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'signature_nl_' ::= {{ com Signature }}
 %     {{ phantom }}
     {{ coq list (con*{A : eTy | is_Ty_of_eTy A} + tcon*{L : eK  | is_K_of_eK L}) }}
-    {{ ocaml ((con * ety , tcon*k) sgn_el_type)  list }}
+    {{ ocaml (con * eTy , tcon*eK) sum  list }}
   | empty                ::   :: empty               {{ com empty signature }}
      {{ coq nil }}
   | sgn , con : Ty       ::   :: con
@@ -45,6 +45,7 @@ sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'si
 grammar
 ctx {{tex \ttbase{Ctx} }}, G {{ tex \ttbase{\Gamma} }} :: 'context_nl_' ::= {{ com Context }}
     {{ coq list ({A : eTy | is_Ty_of_eTy A}) }}
+    {{ ocaml eTy list }}
 %   defined after subrules
 %    {{ phantom }}
   | empty                ::   :: empty              {{ com empty context }}
@@ -132,3 +133,13 @@ Definition boundTCon alpha T0 S :=
     (S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
     ~In (inr(alpha)) (List.map (fstSig) S1).
 }}
+embed
+{{ ocaml
+(** val castSig : (con*eTy, tcon*eK) sum -> (con*eTy, tcon*eK) sum **)
+
+let castSig = function
+| Coq_inl p -> let c,ty = p in Coq_inl (c,ty)
+| Coq_inr p -> let beta,k = p in Coq_inr (beta,k)
+
+}}
+

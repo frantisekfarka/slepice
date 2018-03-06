@@ -112,17 +112,16 @@ defn
 
 % todo
 
-    -------------------------- :: empty
-    S ; lnvar |- empty ; lnvar 
+    ------------------------------ :: empty
+    empty ; lnvar |- empty ; lnvar 
 
     S ; lnvar1 |- TTP ; lnvar2
-    S ; empty ; A ; lnvar2 |- Go ; eL ; lnvar3
-    fresh lnvar3 mM lnvar4
-    ------------------------------------------------------------- :: var
-    S , c : A ; lnvar1 |- TTP , term(c , A , empty) <- Go , shiftte(c, zero, c) <- , substte(c, mM, c) <- ; lnvar4
+    fresh lnvar2 mM lnvar3
+    ------------------------------------------------------------- :: con
+    S , c : A ; lnvar1 |- TTP , term(c , A , empty) <- , shiftte(c, zero, c) <- , substte(c, mM, c) <- ; lnvar3
 
     S ; lnvar1 |- TTP ; lnvar2
-    fresh lnvar3 mM lnvar4
-    ------------------------------------------------------------- :: tvar
-    S , a : L ; lnvar1 |- TTP , type(a , L , empty) <- , shiftTy(a, zero, a) <- , substTy(a, mM, a) <- ; lnvar4
+    fresh lnvar2 mM lnvar3
+    ------------------------------------------------------------- :: tcon
+    S , a : L ; lnvar1 |- TTP , type(a , L , empty) <- , shiftTy(a, zero, a) <- , substTy(a, mM, a) <- ; lnvar3
 

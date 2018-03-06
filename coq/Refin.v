@@ -403,16 +403,88 @@ Proof.
     (apply goaltype_dec_str with (struct_eTy A); auto).
 Defined.
 
-     (*
-Fixpoint progsig_dec (mM : mte) (Sig : sgn) (G : ectx) 
-(M : ete) (v : lnvar) :
-struct_ete M = mM ->
-{GA : _ | g_sigprog (map castSig Sig) G M v (fst GA) (fst (snd GA)) (snd (snd GA))} +
-{(forall GA,
+Fixpoint progsig_dec (Sig : sgn) (v : lnvar) :
+{Pv : _ | r_prog (map castSig Sig) v (fst Pv) (snd Pv)} +
+{(forall Pv,
   ~
-  r_goalterm (map castSig Sig) G M (fst (fst GA)) (snd (fst GA)) 
-  (fst (snd GA)) (snd (snd GA)))}
+  r_prog (map castSig Sig) (fst Pv) (fst (snd Pv)) 
+  (snd (snd Pv)))}
 .
-  *)
-  
+Proof.
+  induction Sig as [ | [ [c [A wA ]]  | [a [L wL]] ] ]; simpl.
+  - 
+    left.
+
+    exists (ttprog_empty, v).
+    constructor.
+  - destruct IHSig as [ [[P v''] wP ] | Hn ].
+
+    + left.
+      exists (ttprog_hc_con
+           (ttprog_hc_con
+              (ttprog_hc_con P (ttgoal_unbound_at (ttat_te (termstar_nl_con c) A nil))
+                             (Nil_list_TTGoal))
+              (ttgoal_unbound_at (ttat_shiftte (termstar_nl_con c) 0 (termstar_nl_con c))) Nil_list_TTGoal)
+           (ttgoal_unbound_at (ttat_substte (termstar_nl_con c) (termstar_nl_mvar ( S v'')) (termstar_nl_con c)))
+           Nil_list_TTGoal, S v'').
+
+        
+        apply r_p_sgn_con with v''.
+
+        assumption.
+        simpl in wP.
+        assumption.
+
+        simpl; auto.
+
+    + right.
+      intro Pv.
+      destruct Pv as [ v' [ P v'']].
+      intro Hc.
+      inversion Hc.
+      
+      
+      apply Hn with (v', (TTP, lnvar2)).
+
+      simpl.
+      simpl in H6.
+      subst.
+      auto.
+
+  - destruct IHSig as [ [[P v''] wP ] | Hn ].
+
+    + left.
+      exists (ttprog_hc_con
+           (ttprog_hc_con
+              (ttprog_hc_con P (ttgoal_unbound_at (ttat_Ty (typestar_nl_tcon a) L nil))
+                             (Nil_list_TTGoal))
+              (ttgoal_unbound_at (ttat_shiftTy (typestar_nl_tcon a) 0 (typestar_nl_tcon a))) Nil_list_TTGoal)
+           (ttgoal_unbound_at (ttat_substTy (typestar_nl_tcon a) (termstar_nl_mvar ( S v'')) (typestar_nl_tcon a)))
+           Nil_list_TTGoal, S v'').
+
+        
+        apply r_p_sgn_tcon with v''.
+
+        assumption.
+        simpl in wP.
+        assumption.
+
+        simpl; auto.
+
+    + right.
+      intro Pv.
+      destruct Pv as [ v' [ P v'']].
+      intro Hc.
+      inversion Hc.
+      
+      
+      apply Hn with (v', (TTP, lnvar2)).
+
+      simpl.
+      simpl in H6.
+      subst.
+      auto.
+Qed.
+
+        
 (* end *)

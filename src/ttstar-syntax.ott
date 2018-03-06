@@ -39,7 +39,7 @@ Ix {{tex I }}, ix {{tex \iota }} :: 'ix_' ::= {{com deBruijn indices }}
 grammar
 eTy {{ tex {\ttstar{T} } }}, eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} } }} :: 'typestar_nl_' ::= {{ com Extended Types }}
   | tcon                 ::   :: tcon                {{ com type constant }}
-  | Pi eTy1 . eTy2       ::   :: pi_intro            {{ com type of dependente functions }}
+  | Pi eTy1 . eTy2       ::   :: pi_intro            {{ com type of dependent functions }}
   | eTy ete              ::   :: pi_elim             {{ com application of a type former }}
   | ( eTy )              :: S :: paren                        
      {{ coq [[eTy]] }}

@@ -43,6 +43,19 @@ Extract Inductive Defns.ete =>  "ete" [
 Extract Inductive Defns.eK =>  "eK" [
   "Kindstar_nl_type"  "Kindstar_nl_pi_intro"  "Kindstar_nl_mkvar" ].
 
+Extract Inductive Defns.TTAtom => "ttAtom" [ (* atom in TT *)
+  "Ttat_true" "Ttat_eq_te" "Ttat_eq_Ty" "Ttat_eq_K" "Ttat_Ty"
+              "Ttat_te" "Ttat_shiftK" "Ttat_substK" "Ttat_shiftTy" "Ttat_substTy"
+              "Ttat_shiftte" "Ttat_substte" ].
+
+Extract Inductive Defns.TTGoal => "tTGoal" [ (* goal in TT *)
+  "Ttgoal_conj" "Ttgoal_bound_at" "Ttgoal_unbound_at" ].
+
+Extract Inductive Defns.TTProg => "tTProg" [ (* program in TT *)
+           "Ttprog_empty" "Ttprog_hc_con" ].
+
+
+Extract Inductive Defns.list_TTGoal => "list" [ "[]" "(::)" ].
 
 
 (* extracted librarires *)
