@@ -74,6 +74,8 @@ TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | substK( eL1 , eM , eL2 )           ::   :: substK {{ tex [[eL1]] [ [[eM]] ] \equiv [[eL2]] }}
   | shiftTy( eA1 , ix , eA2 )           ::   :: shiftTy {{ tex [[eA1]] \uparrow^[[ix]] \equiv \; [[eA2]] }}
   | substTy( eA1 , eM , eA2 )           ::   :: substTy {{ tex [[eA1]] [ [[eM]] ]\equiv [[eA2]] }}
+  | shiftte( eM1 , ix , eM2 )           ::   :: shiftte {{ tex [[eM1]] \uparrow^[[ix]] \equiv \; [[eM2]] }}
+  | substte( eM1 , eN , eM2 )           ::   :: substte {{ tex [[eM1]] [ [[eN]] ]\equiv [[eM2]] }}
 
 grammar
 TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in TT }}
@@ -84,9 +86,10 @@ TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in T
   | lnvar : TTAtom                  ::   :: bound_at
   | TTAtom                         ::   :: unbound_at
 
-%TTProg {{ tex \text{Prog} }} :: 'ttprog_' ::= {{ com program in TT }}
-%  | empty                                 ::   :: empty
-%  | TTProg , con : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_con
+grammar
+TTProg {{ tex \text{Prog} }} , TTP {{ tex \mathcal{P} }}  :: 'ttprog_' ::= {{ com program in TT }}
+  | empty                                 ::   :: empty
+  | TTProg , TTGoal <- TTGoal1 .. TTGoalk ::   :: hc_con
 %  | TTProg , tcon : TTGoal <- TTGoal1 .. TTGoaln ::   :: hc_tcon
 
 

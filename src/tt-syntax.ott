@@ -24,11 +24,16 @@ K {{ tex \ttbase{K} }} , L {{ tex \ttbase{L} }} :: 'kind_nl_' ::= {{ com Kinds }
      {{ coq [[K]] }}
      {{ ocaml ([[K]]) }}
 
+subrules
+    K   <:: eK
+    Ty  <:: eTy
+    te  <:: ete
+
 grammar
 sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'signature_nl_' ::= {{ com Signature }}
-     {{ phantom }}
-%    {{ coq list (con*Ty+tcon*K) }}
-%    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
+%     {{ phantom }}
+    {{ coq list (con*{A : eTy | is_Ty_of_eTy A} + tcon*{L : eK  | is_K_of_eK L}) }}
+    {{ ocaml ((con * ety , tcon*k) sgn_el_type)  list }}
   | empty                ::   :: empty               {{ com empty signature }}
      {{ coq nil }}
   | sgn , con : Ty       ::   :: con
@@ -38,14 +43,19 @@ sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'si
 
 
 grammar
-ctx {{tex \ttbase{Ctx} }}, G {{ tex \ttbase{\Gamma} }} :: 'context_nl_' ::= {{ com Extended Context }}
-%    {{ coq list (Ty) }}
+ctx {{tex \ttbase{Ctx} }}, G {{ tex \ttbase{\Gamma} }} :: 'context_nl_' ::= {{ com Context }}
+    {{ coq list ({A : eTy | is_Ty_of_eTy A}) }}
 %   defined after subrules
-    {{ phantom }}
+%    {{ phantom }}
   | empty                ::   :: empty              {{ com empty context }}
      {{ coq nil }}
   | ctx , Ty             ::   :: ctxvar
      {{ coq (cons [[Ty]] [[ctx]]) }}
+
+subrules
+    sgn <:: esgn
+        sgn <:: esgn
+    ctx <:: ectx
 
 grammar
 sTy {{ tex {T^{-} } }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Types }}
@@ -82,16 +92,9 @@ sctx {{ tex Ctx^{-} }} , D {{ tex \Delta^{}{} }} :: 'scontext_nl_' ::= {{ com Si
   | sctx , sTy          ::   :: ctxvar
      {{ coq (cons [[sTy]] [[sctx]]) }}
 
-subrules
-    K   <:: eK
-    Ty  <:: eTy
-    te  <:: ete
-    ctx <:: ectx
 
 embed
 {{ coq 
-Definition sgn : Set := list (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK})).
-Definition ctx : Set := list ({eTy | is_Ty_of_eTy eTy}).
 
 Notation emptyS := (@nil (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK}))).
 Notation emptyC := (@nil ({eTy | is_Ty_of_eTy eTy})).
@@ -108,7 +111,7 @@ Definition fstSig (e : con*eTy + tcon*eK)
     | inr (beta, k) => inr beta
   end.
 
-
+(*
 Definition boundCon c T0 S :=
   exists S1, exists S2,
     (List.map (castSig) S = List.app S1 (List.cons (inl(c,T0)) S2)) /\
@@ -117,5 +120,15 @@ Definition boundCon c T0 S :=
 Definition boundTCon alpha T0 S :=
   exists S1, exists S2,
     (List.map (castSig) S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
+    ~In (inr(alpha)) (List.map (fstSig) S1).
+*)
+Definition boundCon c T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inl(c,T0)) S2)) /\
+    ~In (inl(c)) (List.map (fstSig) S1).
+
+Definition boundTCon alpha T0 S :=
+  exists S1, exists S2,
+    (S = List.app S1 (List.cons (inr(alpha,T0)) S2)) /\
     ~In (inr(alpha)) (List.map (fstSig) S1).
 }}

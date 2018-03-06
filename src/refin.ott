@@ -46,7 +46,7 @@ Jrefin :: 'r_' ::=
 
   defn
   sgn ; ectx ; eTy ; lnvar |- TTGoal ; eK ; lnvar' :: :: goaltype ::'g_Ty_' 
-    {{tex [[sgn]] ; [[ectx]] ; [[eTy]] ~{_{[[lnvar]]} }\vdash_{[[lnvar']]} ( [[TTGoal]] \mid [[eK]] ) }} by
+    {{tex [[sgn]] ; [[ectx]] ; [[eTy]] ~{_\tec{[[lnvar]]} }\vdash_\tec{[[lnvar']]} ( [[TTGoal]] \mid [[eK]] ) }} by
 
     a : L in S
     --------------------------------  :: tcon
@@ -71,7 +71,7 @@ Jrefin :: 'r_' ::=
 
   defn
   sgn ; ectx ; ete ; lnvar |- TTGoal ; eTy ; lnvar' :: :: goalterm ::'g_te_' 
-  {{tex [[sgn]] ; [[ectx]] ; [[ete]] {_{[[lnvar]] } }\vdash_{[[lnvar']]} ( [[TTGoal]] \mid [[eTy]] ) }} by
+  {{tex [[sgn]] ; [[ectx]] ; [[ete]] {_\tec{[[lnvar]] } }\vdash_\tec{[[lnvar']]} ( [[TTGoal]] \mid [[eTy]] ) }} by
 
     c : A in S
     ---------------------------------------  :: con
@@ -102,76 +102,27 @@ Jrefin :: 'r_' ::=
     -------------------------------------------- :: mvar
     S ; eG ; mN ; lnvar1 |- mN : term(mN, mA , eG)  ; mA ; lnvar2
 
-%  defn 
-%  nsgn ; nctx |- TTGoal ::  :: goalctx_nl :: 'g_ctx_' {{tex [[nsgn]] ; [[nctx]] \vdash [[TTGoal]] }} by
-%
-%    --------------- :: empty
-%    nS ; nG |- true
-%
-%    nS ; nG |- G1
-%    nS ; nG ; nA |- G2 ; nL
-%    ---------------------------------------------------------- :: var
-%    nS ; nG,nA |- (G1 & G2) & eq_K(enL , typeK , enctx )
+defns
+JrefinProg :: 'r_' ::=
 
-%  defn 
-%  nsgn |- TTProg ::  :: prog_nl :: 'prog_nl_' 
-%    {{ tex [[nsgn]] \vdash_{Prog} [[TTProg]]  }} by
-%
-%    --------------------------- :: empty
-%    empty |- empty
-%
-%    nS |- TTProg
-%    ------------------------------------------------ :: con
-%    nS , c:nA |- TTProg , c : type( nA , empty) <-
-%
-%    nS |- TTProg
-%    ------------------------------------------------ :: tcon
-%    nS , a:nL |- TTProg , a : kind( nL , empty) <-
-%
-%    nsgn ; nctx |- nA_1 is nA_2 
-%    nsgn ; nctx |- nA_2 is nA_3 
-%    ------------------------------- :: trans
-%    nsgn ; nctx |- nA_1 is nA_3 
-%
-%    nsgn ; nctx |- nA is nA' 
-%    nsgn ; nctx |- nB is nB' 
-%    ------------------------------------ :: 1
-%    nsgn ; nctx |- Pi nA.nB is Pi nA'.nB' 
-%
-%    nsgn ; nctx |- nA is nA' 
-%    nsgn ; nctx |- nM is nM' 
-%    ------------------------------------ :: 2
-%    nsgn ; nctx |- nA nM is nA' nM' 
-%
-%  defn 
-%  nsgn ; nctx |- nM is nM' ::  :: goalsubstapterm_nl :: 'eqt_nl_' {{ tex [[nsgn]] ; [[nctx]] \vdash [[nM]] \equiv [[nM']] }} by
-%
-%    ----------------------- :: refl
-%    nsgn ; nctx |- nM is nM 
-%
-%    nsgn ; nctx |- nM' is nM 
-%    ------------------------ :: sym
-%    nsgn ; nctx |- nM is nM' 
-%
-%    nsgn ; nctx |- nM_1 is nM_2 
-%    nsgn ; nctx |- nM_2 is nM_3 
-%    --------------------------- :: trans
-%    nsgn ; nctx |- nM_1 is nM_3 
-%
-%    nsgn ; csctx( nctx,nA ) |- nM is nM' 
-%    nsgn ; nctx |- nN is nN' 
-%    --------------------------------------- :: 1
-%    nsgn ; nctx |- (\nA.nM)nN is tutste(nM' , nN') 
-%
-%    nsgn ; nctx |- nM is nM' 
-%    nsgn ; nctx |- nN is nN' 
-%    --------------------------------------- :: 2
-%    nsgn ; nctx |- nM nN is nM' nN' 
-%
-%    nsgn ; nctx |- nA is nA' 
-%    nsgn ; nctx |- nM is nM' 
-%    ------------------------------------------ :: 3
-%    nsgn ; nctx |- \nA.nM is \nA'.nM' 
-%
-%
-%
+defn 
+  sgn ; lnvar |- TTProg ; lnvar' ::  :: prog :: 'p_sgn_' 
+    {{tex [[sgn]] _\tec{[[lnvar]]} \vdash_{Prog} {}_\tec{[[lnvar']]} [[TTProg]] }} by
+
+
+% todo
+
+    -------------------------- :: empty
+    S ; lnvar |- empty ; lnvar 
+
+    S ; lnvar1 |- TTP ; lnvar2
+    S ; empty ; A ; lnvar2 |- Go ; eL ; lnvar3
+    fresh lnvar3 mM lnvar4
+    ------------------------------------------------------------- :: var
+    S , c : A ; lnvar1 |- TTP , term(c , A , empty) <- Go , shiftte(c, zero, c) <- , substte(c, mM, c) <- ; lnvar4
+
+    S ; lnvar1 |- TTP ; lnvar2
+    fresh lnvar3 mM lnvar4
+    ------------------------------------------------------------- :: tvar
+    S , a : L ; lnvar1 |- TTP , type(a , L , empty) <- , shiftTy(a, zero, a) <- , substTy(a, mM, a) <- ; lnvar4
+

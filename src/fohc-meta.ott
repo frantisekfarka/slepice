@@ -1,0 +1,1 @@
+indexvar prgindex, k ::= {{ coq nat }} {{ ocaml int }} 

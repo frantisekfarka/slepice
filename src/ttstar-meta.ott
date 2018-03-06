@@ -23,7 +23,9 @@ let eq_tcon = String.equal
 }}
 
 % locally nameless metavariable
-metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }} {{ocaml asdsa}}, mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }} 
+metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }} {{ocaml asdsa}},
+    mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }},
+    mG {{ tex ?_\Gamma }}
     ::= {{ com  nameless meta-variable }} 
         {{ coq nat }} {{ coq-equality }}
         {{ ocaml int }} {{ lex alpha }} {{ ocamllex ['0'-'9']+ }}

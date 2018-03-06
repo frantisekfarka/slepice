@@ -35,18 +35,18 @@ with struct_ete (M : ete) : mte :=
 Fixpoint goalterm_dec_str (mM : mte) (Sig : sgn) (G : ectx) 
 (M : ete) (v : lnvar) :
 struct_ete M = mM ->
-{GA : _ | r_goalterm Sig G M v (fst GA) (fst (snd GA)) (snd (snd GA))} +
+{GA : _ | r_goalterm (map castSig Sig) G M v (fst GA) (fst (snd GA)) (snd (snd GA))} +
 {(forall GA,
   ~
-  r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) 
+  r_goalterm (map castSig Sig) G M (fst (fst GA)) (snd (fst GA)) 
     (fst (snd GA)) (snd (snd GA)))}
 with goaltype_dec_str (mA : mTy) (Sig : sgn) (G : ectx) 
 (A : eTy) (v : lnvar) :
 struct_eTy A = mA ->
-{GA : _ | r_goaltype Sig G A v (fst GA) (fst (snd GA)) (snd (snd GA))} +
+{GA : _ | r_goaltype (map castSig Sig) G A v (fst GA) (fst (snd GA)) (snd (snd GA))} +
 {(forall GA,
   ~
-  r_goaltype Sig G A (fst (fst GA)) (snd (fst GA)) 
+  r_goaltype (map castSig Sig) G A (fst (fst GA)) (snd (fst GA)) 
     (fst (snd GA)) (snd (snd GA)))}.
 Proof.
   {  (*intros Sig G M. *)
@@ -58,7 +58,7 @@ Proof.
   - (* con c in Sig *)
 
     (intros **).
-    (assert ({A : _ | boundCon c A Sig} + {(forall A, ~ boundCon c A Sig)})
+    (assert ({A : _ | boundCon c A (map castSig Sig)} + {(forall A, ~ boundCon c A (map castSig Sig))})
       as [[A]| ] by apply boundCon_dec).
     * (left; exists (ttgoal_true, (A, v)); simpl).
       (econstructor; eauto).
@@ -105,7 +105,7 @@ Proof.
              subst.
              (assert
                (~
-                r_goalterm Sig G (termstar_nl_ix i)
+                r_goalterm (map castSig Sig) G (termstar_nl_ix i)
                   (fst (fst (v0, Go0, (eA, lnvar2)))) Go0 eA lnvar2)).
              (apply n).
              (apply H).
@@ -127,10 +127,10 @@ Proof.
     (destruct M as [| | A| | ]; inversion Heq).
     
     (assert
-      ({GA : _ | r_goaltype Sig G A v (fst GA) (fst (snd GA)) (snd (snd GA))} +
+      ({GA : _ | r_goaltype (map castSig Sig) G A v (fst GA) (fst (snd GA)) (snd (snd GA))} +
        {(forall GA,
          ~
-         r_goaltype Sig G A (fst (fst GA)) (snd (fst GA)) 
+         r_goaltype (map castSig Sig) G A (fst (fst GA)) (snd (fst GA)) 
            (fst (snd GA)) (snd (snd GA)))}) by
       (apply goaltype_dec_str with sA; auto)).
 
@@ -241,12 +241,12 @@ Proof.
     (induction mA).
 
     (intros A v0 Heq).
-    (destruct A as [a| A B| A IHA | v]; inversion Heq).
+    (destruct A as [a| A B| A IHA| v]; inversion Heq).
 
   - (* tcon a in Sig *)
 
     (intros **).
-    (assert ({L : _ | boundTCon a L Sig} + {(forall L, ~ boundTCon a L Sig)})
+    (assert ({L : _ | boundTCon a L (map castSig Sig)} + {(forall L, ~ boundTCon a L (map castSig Sig))})
       as [[L]| ] by apply boundTCon_dec).
     * (left; exists (ttgoal_true, (L, v0)); simpl).
       (econstructor; eauto).
@@ -319,10 +319,10 @@ Proof.
       (assert
         (IHM :
          {GA : _ |
-         r_goalterm Sig G M v1 (fst GA) (fst (snd GA)) (snd (snd GA))} +
+         r_goalterm (map castSig Sig) G M v1 (fst GA) (fst (snd GA)) (snd (snd GA))} +
          {(forall GA,
            ~
-           r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) 
+           r_goalterm (map castSig Sig) G M (fst (fst GA)) (snd (fst GA)) 
              (fst (snd GA)) (snd (snd GA)))}) by
         (apply goalterm_dec_str with sM; auto)).
 
@@ -374,10 +374,10 @@ Defined.
 
 Lemma goalterm_dec :
   forall (Sig : sgn) (G : ectx) (M : ete) (v : lnvar),
-  {GA : _ | r_goalterm Sig G M v (fst GA) (fst (snd GA)) (snd (snd GA))} +
+  {GA : _ | r_goalterm (map castSig Sig) G M v (fst GA) (fst (snd GA)) (snd (snd GA))} +
   {(forall GA,
     ~
-    r_goalterm Sig G M (fst (fst GA)) (snd (fst GA)) 
+    r_goalterm (map castSig Sig) G M (fst (fst GA)) (snd (fst GA)) 
       (fst (snd GA)) (snd (snd GA)))} with goaltype_dec :
                                        forall (mA : mTy) 
                                          (Sig : sgn) 
@@ -385,13 +385,13 @@ Lemma goalterm_dec :
                                          (A : eTy) 
                                          (v : lnvar),
                                        {GA : _ |
-                                       r_goaltype Sig G A v 
+                                       r_goaltype (map castSig Sig) G A v 
                                          (fst GA) 
                                          (fst (snd GA)) 
                                          (snd (snd GA))} +
                                        {(forall GA,
                                          ~
-                                         r_goaltype Sig G A 
+                                         r_goaltype (map castSig Sig) G A 
                                            (fst (fst GA)) 
                                            (snd (fst GA)) 
                                            (fst (snd GA)) 
@@ -403,4 +403,16 @@ Proof.
     (apply goaltype_dec_str with (struct_eTy A); auto).
 Defined.
 
+     (*
+Fixpoint progsig_dec (mM : mte) (Sig : sgn) (G : ectx) 
+(M : ete) (v : lnvar) :
+struct_ete M = mM ->
+{GA : _ | g_sigprog (map castSig Sig) G M v (fst GA) (fst (snd GA)) (snd (snd GA))} +
+{(forall GA,
+  ~
+  r_goalterm (map castSig Sig) G M (fst (fst GA)) (snd (fst GA)) 
+  (fst (snd GA)) (snd (snd GA)))}
+.
+  *)
+  
 (* end *)

@@ -18,7 +18,7 @@ formula :: formula_ ::=
      {{ tex [[alpha]] : [[K]] \in [[sgn]] }}
   | fresh lnvar lnvar' lnvar''                     :: :: fresh
      {{ coq (fresh [[lnvar]] [[lnvar']] [[lnvar'']]) }}
-     {{tex _{[[lnvar]]}\text{fresh}_{[[lnvar'']]} [[lnvar']] }} 
+     {{tex _\tec{[[lnvar]]}\text{fresh}_{ {[[lnvar'']]} } \tec{ [[lnvar']] } }} 
 
 
 %  | mtvar # te                                          :: :: apart   
