@@ -1,4 +1,3 @@
-RM=rm -f
 TEX=pdflatex -interaction=nonstopmode
 BIBTEX=bibtex
 BIB=references.bib
@@ -72,12 +71,13 @@ coqc: $(COQ)
 #cleaning rules
 
 clean:
-	$(RM) $(DOC_DIR)/.*
+	$(RM) $(DOC_DIR)*
 	$(RM) *.aux *.xml *.bcf *.bbl *.blg *-blx.bib \
 		*.log *.nav *.out *.vrb *.snm *.toc \
 		X.tex *.bak *.pag *.fdb_latexmk *.fls \
 		$(MAIN)
 	make -C $(ML_DIR) clean
+	make -C $(COQ_DIR) clean
 
 veryclean: clean
 	$(RM) *.pdf *.dvi 

@@ -51,8 +51,8 @@ clean:
 	ocamlbuild -clean
 	rm -f Lexer.ml Parser.ml ttstar.ml Parser_pp.ml \
 	   *mly *mll *mli *automaton *conflicts
-	rm -f $(COQ_GEN)*ml
-	rmdir $(COQ_GEN)
+	$(RM) -f $(COQ_GEN)*ml
+	$(RM) $(COQ_GEN)
 
 veryclean: clean
-	rm main.native
+	$(RM) main.native
