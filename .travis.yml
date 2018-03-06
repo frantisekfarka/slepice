@@ -1,22 +1,5 @@
-# Travis integration
-language: ocaml
-
-# Explicitly request container-based infrastructure.
-sudo: false
-
+language: c
+install: wget https://raw.githubusercontent.com/ocaml/ocaml-travisci-skeleton/master/.travis-opam.sh
+script: bash -ex .travis-opam.sh
 env:
-      global:
-
-cache:
-      directories:
-
-before_install:
-
-
-install: true
-
-script: true
-
-after_success:
-    - make doc
-
+  - OCAML_VERSION=latest
