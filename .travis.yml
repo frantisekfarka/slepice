@@ -2,10 +2,10 @@
 language: c
 
 # Container-base architecture
-sudo: false
+sudo: required
 
 before_install:
-    - apt-get install ocaml-nox coq
+    - sudo apt-get install ocaml-nox coq
 
 
 after_success:
