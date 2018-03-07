@@ -4,11 +4,17 @@ language: c
 # Container-base architecture
 sudo: required
 
+addons:
+  apt:
+    packages:
+    - ocaml-nox
+    - coq
+
 before_install:
-    - sudo apt-get install ocaml-nox coq 
     - git clone https://github.com/ott-lang/ott.git
     - make -C ott
-    - export PATH=ott/bin:$PATH
+    - export PATH=$(pwd)/ott/bin/:$PATH
+    - ls ott/bin/
 
 
 
