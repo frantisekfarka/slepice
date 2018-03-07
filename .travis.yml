@@ -5,10 +5,10 @@ language: c
 sudo: required
 
 before_install:
-    - sudo apt-get install ocaml-nox coq opam
-    - opam install ott
-    - opam repo add coq-released https://coq.inria.fr/opam/released
-    - opam install coq-ott
+    - sudo apt-get install ocaml-nox coq 
+    - git clone https://github.com/ott-lang/ott.git
+    - make -C ott
+    - export PATH=ott/bin:$PATH
 
 
 
