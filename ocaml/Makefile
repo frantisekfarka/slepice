@@ -1,4 +1,4 @@
-OTT=~/STANDREWS/ott/bin/ott
+OTT=ott
 
 OTT_SRC= ../src/ttstar-meta.ott\
 	../src/tt-meta.ott\

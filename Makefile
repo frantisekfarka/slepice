@@ -1,7 +1,7 @@
 TEX=pdflatex -interaction=nonstopmode
 BIBTEX=bibtex
 BIB=references.bib
-OTT=../ott/bin/ott
+OTT=ott
 
 TEX_DIR=tex/
 SRC_DIR=src/
