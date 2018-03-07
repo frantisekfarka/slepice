@@ -61,6 +61,9 @@ exquan.tex: $(META) \
 
 doc: coqdoc
 
+test: 
+	@echo "TODO test ..."
+
 coqdoc:
 	make -C $(COQ_DIR) gallinahtml
 	cp -r $(COQ_DIR)html/*.html $(COQ_DIR)html/*.css $(DOC_DIR)
