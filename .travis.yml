@@ -6,6 +6,11 @@ sudo: required
 
 before_install:
     - sudo apt-get install ocaml-nox coq
+    - opam install ott
+    - opam repo add coq-released https://coq.inria.fr/opam/released
+    - opam install coq-ott
+
+
 
 
 after_success:
