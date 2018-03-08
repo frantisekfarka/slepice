@@ -1,16 +1,16 @@
 COQ_DIR=../coq/
-COQ_FILES=$(COQ_DIR)Eq.ml\
-	$(COQ_DIR)Sgn.ml\
-	$(COQ_DIR)Refin.ml\
-	$(COQ_DIR)Datatypes.ml\
-	$(COQ_DIR)Specif.ml
+COQ_FILES=Eq.ml\
+	Sgn.ml\
+	Refin.ml\
+	Datatypes.ml\
+	Specif.ml
 
 TO_PATCH=Parser.mly\
 	Lexer.mll\
 	Parser_pp.ml\
 	Defns.ml
 	
-.PHONY: ocaml clean coqfiles foo
+.PHONY: clean 
 
 default: build
 
@@ -20,11 +20,11 @@ $(TO_PATCH): $(addsuffix .patched,$(TO_PATCH))
 	ed $* < $< 
 	touch $@
 
-coqfiles: $(COQ_FILES) 
-	cp $(COQ_FILES) .
+$(COQ_FILES): $(addprefix, $(COQ_DIR),COQ_FILES)
+	cp $(COQ_DIR)$@ .
 
 
-build: $(TO_PATCH) coqfiles
+build: $(TO_PATCH) $(COQ_FILES)
 	ocamlbuild -use-menhir main.native
 
 #cleaning rules

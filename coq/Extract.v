@@ -1,7 +1,6 @@
 Require Import Datatypes.
 Require Import Specif.
 
-Require Import TT.
 Require Import Defns.
 Require Import Eq.
 Require Import Sgn.
