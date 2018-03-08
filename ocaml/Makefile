@@ -17,7 +17,7 @@ default: build
 $(TO_PATCH): $(addsuffix .patched,$(TO_PATCH))
 
 %.patched: %.ed
-	ed $* < $< 
+	ed -v $* < $< 
 	touch $@
 
 $(COQ_FILES): $(addprefix, $(COQ_DIR),COQ_FILES)
