@@ -1,12 +1,3 @@
-OTT=ott
-
-OTT_SRC= ../src/ttstar-meta.ott\
-	../src/tt-meta.ott\
-	../src/ttstar-syntax.ott\
-	../src/tt-syntax.ott\
-	../src/fohc-meta.ott\
-	../src/fohc-syntax.ott
-
 COQ_DIR=../coq/
 COQ_FILES=$(COQ_DIR)Eq.ml\
 	$(COQ_DIR)Sgn.ml\
@@ -14,45 +5,30 @@ COQ_FILES=$(COQ_DIR)Eq.ml\
 	$(COQ_DIR)Datatypes.ml\
 	$(COQ_DIR)Specif.ml
 
-COQ_GEN=coq/
-
-ED_PATCH=Parser.ed\
-	Lexer.ed\
-	Parser_pp.ed\
-	Defns.ed
+TO_PATCH=Parser.mly\
+	Lexer.mll\
+	Parser_pp.ml\
+	Defns.ml
 	
-OTT_ML=Parser.mly\
-       Lexer.mll\
-       Defns.ml
+.PHONY: ocaml clean coq foo
 
-.PHONY: ocaml clean coq
+$(TO_PATCH): $(addsuffix .patched,$(TO_PATCH))
+	cp $< $@ 
 
-$(OTT_ML): ${OTT_SRC} ${ED_PATCH}
-	${OTT} -o Parser.mly -o Lexer.mll -o Defns.ml ${OTT_SRC}
-	ed Lexer.mll < Lexer.ed
-	ed Parser_pp.ml < Parser_pp.ed
-	ed Parser.mly < Parser.ed
-	ed Defns.ml < Defns.ed
+%.patched: %.ed
+	ed $* < $< > $@
 
-tt: $(OTT_ML)
-
-coq: 
-	#todo ott dir
-	make -C ../ 
-	make -C $(COQ_DIR) all
-	mkdir -p $(COQ_GEN)
-	cp $(COQ_FILES) $(COQ_GEN)
+coqfiles: $(COQ_FILES) 
+	cp $(COQ_FILES) .
 
 
-build: $(OTT_ML) coq
-	ocamlbuild -I $(COQ_GEN) -use-menhir main.native
+build: $(TO_PATCH) coqfiles
+	ocamlbuild -use-menhir main.native
+
+#cleaning rules
 
 clean:
 	ocamlbuild -clean
-	rm -f Lexer.ml Parser.ml ttstar.ml Parser_pp.ml \
-	   *mly *mll *mli *automaton *conflicts
-	$(RM) -f $(COQ_GEN)*ml
-	$(RM) $(COQ_GEN)
 
 veryclean: clean
 	$(RM) main.native

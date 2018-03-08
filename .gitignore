@@ -140,7 +140,7 @@ sympy-plots-for-*.tex/
 *.tex
 
 # Coq project 
-coq/Defns.v
+Defns.v
 *glob
 coq/*ml
 coq/*mli
