@@ -4,7 +4,7 @@ COQ_DIR=coq/
 DOC_DIR=doc/
 ML_DIR=ocaml/
 
-.PHONY: clean veryclean slepice
+.PHONY: clean veryclean slepice coq ott
 
 default: slepice doc
 
@@ -28,6 +28,7 @@ coqdoc:
 
 texdoc:
 	make -C $(TEX_DIR)
+	cp $(TEX_DIR)slepice.pdf $(DOC_DIR)
 
 test: 
 	@echo "TODO test ..."

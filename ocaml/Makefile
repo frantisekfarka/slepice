@@ -10,13 +10,15 @@ TO_PATCH=Parser.mly\
 	Parser_pp.ml\
 	Defns.ml
 	
-.PHONY: ocaml clean coq foo
+.PHONY: ocaml clean coqfiles foo
+
+default: build
 
 $(TO_PATCH): $(addsuffix .patched,$(TO_PATCH))
-	cp $< $@ 
 
 %.patched: %.ed
-	ed $* < $< > $@
+	ed $* < $< 
+	touch $@
 
 coqfiles: $(COQ_FILES) 
 	cp $(COQ_FILES) .
@@ -29,7 +31,8 @@ build: $(TO_PATCH) coqfiles
 
 clean:
 	ocamlbuild -clean
-	$(RM) *.patched
+	$(RM) $(COQ_FILES) $(TO_PATCH) *.patched
+
 
 veryclean: clean
 	$(RM) main.native
