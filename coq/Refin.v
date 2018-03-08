@@ -154,7 +154,7 @@ Proof.
          (inversion Hc).          
          subst.
          (apply n with (lnvar2, Go2, (eB, snd (snd GA)))).
-         (cbn).
+         simpl.
          auto.
 
     + right.
@@ -293,7 +293,7 @@ Proof.
          (inversion Hc).          
          subst.
          (apply n with (lnvar2, Go2, (eL2, snd (snd GA)))).
-         (cbn).
+         (simpl).
          auto.
 
     + right.

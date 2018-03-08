@@ -1107,13 +1107,13 @@ Proof.
     unfold indomsnTCon in H.
     unfold boundsnTCon in H.
     decompose record H.
-    cbn in H1.
+    simpl in H1.
     apply app_cons_not_nil in H1.
     contradiction.
 
   - destruct a0.
     destruct p.
-    cbn.
+    simpl.
 
     intro H.
 
@@ -1129,12 +1129,12 @@ Proof.
     exists x.
 
     destruct x0.
-    cbn in H1; inversion H1.
+    simpl in H1; inversion H1.
 
     exists x0.
     exists x1.
 
-    cbn in H1.
+    simpl in H1.
     inversion H1.
     split; auto.
     intros; intro.
@@ -1151,7 +1151,7 @@ Proof.
     exists (inl (c, n) :: x0).
     exists x1.
     split.
-    cbn.
+    simpl.
     f_equal; auto.
 
     intros; intro.
@@ -1161,7 +1161,7 @@ Proof.
     eauto.
 
     destruct p.
-    cbn.
+    simpl.
 
     assert ({t = a} + {t <> a}) as [ | ] by (apply eq_tcon).
 
@@ -1174,7 +1174,7 @@ Proof.
       exists nil.
       exists S.
       split.
-      cbn; auto.
+      simpl; auto.
       intros; intro.
       inversion H0.
 
@@ -1187,7 +1187,7 @@ Proof.
       decompose record H.
 
       destruct x0.
-      cbn in H1.
+      simpl in H1.
       inversion H1.
       contradiction.
 
@@ -1198,7 +1198,7 @@ Proof.
       exists x1.
 
       split.
-      cbn in H1.
+      simpl in H1.
       inversion H1.
       auto.
 
@@ -1216,7 +1216,7 @@ Proof.
       exists (inr (t, n) :: x0).
       exists (x1).
       split.
-      cbn.
+      simpl.
       f_equal; auto.
       intros; intro.
       eapply H3.
@@ -1242,12 +1242,12 @@ Proof.
   
   - intro H.
     decompose record H.
-    cbn in H1.
+    simpl in H1.
     apply app_cons_not_nil in H1.
     contradiction.
 
   - destruct a0; destruct p;
-    cbn.
+    simpl.
 
     + assert ({c = a} + {c <> a}) as [ | ] by (apply eq_con).
     
@@ -1258,7 +1258,7 @@ Proof.
         exists nil.
         exists S.
         split.
-        cbn; auto.
+        simpl; auto.
         intros; intro.
         inversion H0.
 
@@ -1269,7 +1269,7 @@ Proof.
           decompose record H.
 
           destruct x0.
-          cbn in H1.
+          simpl in H1.
           inversion H1.
           contradiction.
 
@@ -1278,7 +1278,7 @@ Proof.
           exists x1.
 
           split.
-          cbn in H1.
+          simpl in H1.
           inversion H1.
           auto. 
 
@@ -1294,7 +1294,7 @@ Proof.
       exists (inl (c, n) :: x0).
       exists (x1).
       split.
-      cbn.
+      simpl.
       f_equal; auto.
       intros; intro.
       eapply H3.
@@ -1311,12 +1311,12 @@ Proof.
       
       exists x.
       destruct x0.
-      cbn in H1; inversion H1.
+      simpl in H1; inversion H1.
 
       exists x0.
       exists x1.
 
-      cbn in H1.
+      simpl in H1.
       inversion H1.
       split; auto.
       intros; intro.
@@ -1331,7 +1331,7 @@ Proof.
     exists (inr (t, n) :: x3).
     exists x4.
     split.
-    cbn.
+    simpl.
     f_equal; auto.
 
     intros; intro.
