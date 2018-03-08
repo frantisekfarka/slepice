@@ -1,3 +1,16 @@
 #!/bin/sh
 
-echo "Configuration ..."
+OTT_DIR="${OTT_DIR:-$(pwd)}"
+PATH=$OTT_DIR/ott/bin:$PATH
+
+if `hash ott 2> /dev/null`
+then
+    echo "ott found"
+else
+    echo "Installing ott ..."
+
+    cd $OTT_DIR
+    git clone https://github.com/ott-lang/ott.git
+    make -C ott
+
+fi

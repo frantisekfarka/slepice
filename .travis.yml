@@ -4,6 +4,9 @@ language: c
 # Container-base architecture
 sudo: required
 
+env:
+  - OTT_DIR=~
+
 addons:
   apt:
     packages:
@@ -11,11 +14,6 @@ addons:
     - coq
 
 before_install:
-    - git clone https://github.com/ott-lang/ott.git
-    - make -C ott
-    - export PATH=$(pwd)/ott/bin:$PATH
-    - ls ott/bin/
-
 
 after_success:
     - make doc
