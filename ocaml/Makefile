@@ -29,6 +29,7 @@ build: $(TO_PATCH) coqfiles
 
 clean:
 	ocamlbuild -clean
+	$(RM) *.patched
 
 veryclean: clean
 	$(RM) main.native
