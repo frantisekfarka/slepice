@@ -28,5 +28,5 @@ metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }} {{ocaml asdsa}},
     mG {{ tex ?_\Gamma }}
     ::= {{ com  nameless meta-variable }} 
         {{ coq nat }} {{ coq-equality }}
-        {{ ocaml int }} {{ lex alpha }} {{ ocamllex ['0'-'9']+ }}
+        {{ ocaml int }} {{ ocamllex ['0'-'9']+ }}
 

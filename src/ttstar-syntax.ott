@@ -7,7 +7,7 @@ metavar
 cIx {{tex I }}
     ::= {{com deBruijn indices carrier }}
         {{ coq nat }} {{ coq-equality }}
-        {{ ocaml int }} {{ lex alpha }} {{ ocamllex ['0'-'9']+ }}
+        {{ ocaml int }} {{ ocamllex ['0'-'9']+ }}
 
 grammar
 Ix {{tex I }}, ix {{tex \iota }} :: 'ix_' ::= {{com deBruijn indices }}
