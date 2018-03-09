@@ -12,6 +12,7 @@ addons:
     packages:
     - ocaml-nox
     - ocaml-native-compilers
+    - menhir
     - coq
 
 before_install:
