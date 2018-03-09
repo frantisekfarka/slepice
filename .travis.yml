@@ -13,10 +13,10 @@ addons:
     - ocaml-nox
     - ocaml-native-compilers
     - menhir
-    - ocaml-core
     - coq
     - latexmk
     - texlive-latex-extra
+    - latex-xcolor
 
 
 before_install:
