@@ -25,7 +25,7 @@ $(COQ_FILES): $(addprefix, $(COQ_DIR),COQ_FILES)
 
 
 build: $(TO_PATCH) $(COQ_FILES)
-	ocamlbuild -use-menhir main.native
+	ocamlbuild -use-ocamlfind -use-menhir main.native
 
 #cleaning rules
 
