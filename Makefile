@@ -33,7 +33,9 @@ texdoc:
 	cp $(TEX_DIR)slepice.pdf $(DOC_DIR)
 
 test: 
-	@echo "TODO test ..."
+	./slepice -print false\
+	    -sig examples/fromJust.sig\
+	    -term examples/fromJust.tt
 
 #cleaning rules
 
