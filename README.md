@@ -8,14 +8,14 @@ Prototype type-inference engine for LF via proof-relevant resolution.
 ## Prerequisites
 
 The following tools need to be available before building `slepice`:
-- ``ocaml`` development environment
-- ``coq``
-- ``ott`` version 2.25 (https://github.com/ott-lang/ott)
+- _Ocaml_ development environment
+- _Coq_
+- _Ott_ version 0.25 (https://github.com/ott-lang/ott)
 
 A local copy of ``ott`` can be installed by running the ``confugure`` script.
 
-Documentation further requires ``latex`` distribution available with
-``latex-extra`` and ``xcolor`` packages.
+Documentation further requires _latex_ distribution available with
+_latex-extra_ and _xcolor_ packages.
 
 
 ## Installation 
