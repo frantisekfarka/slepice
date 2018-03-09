@@ -12,7 +12,7 @@ The following tools need to be available before building `slepice`:
 - _Coq_
 - _Ott_ version 0.25 (https://github.com/ott-lang/ott)
 
-A local copy of ``ott`` can be installed by running the ``confugure`` script.
+A local copy of ``ott`` can be installed by running the ``configure`` script.
 
 Documentation further requires _latex_ distribution available with
 _latex-extra_ and _xcolor_ packages.
