@@ -50,7 +50,7 @@ let options = Arg.align [
 
 let usage_msg =
     ("\n"
-     ^ "usage: slepice -sig <filename> -term <filenamen> [ -o <basename> ]\n"
+     ^ "usage: slepice <options> -sig <filename> -term <filename> [ -o <basename> ]\n"
     )
 
 

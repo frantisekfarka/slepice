@@ -5,6 +5,19 @@
 
 Prototype type-inference engine for LF via proof-relevant resolution.
 
+## Prerequisites
+
+The following tools need to be available before building `slepice`:
+- ``ocaml`` development environment
+- ``coq``
+- ``ott`` version 2.25 (https://github.com/ott-lang/ott)
+
+A local copy of ``ott`` can be installed by running the ``confugure`` script.
+
+Documentation further requires ``latex`` distribution available with
+``latex-extra`` and ``xcolor`` packages.
+
+
 ## Installation 
 
 The command `make` builds the `main.native` binary in the `ocaml/` subdirectory.
@@ -14,7 +27,7 @@ The command `make doc` builds documentation in the `doc/` subdirectory.
 ## Usage
 
 ```
-usage: slepice -sig <filename> -term <filenamen> [ -o <basename> ]
+usage: slepice <options> -sig <filename> -term <filenamen> [ -o <basename> ]
 
   -sig <filename>         Input signature
   -term <filename>        Input term
@@ -26,5 +39,18 @@ usage: slepice -sig <filename> -term <filenamen> [ -o <basename> ]
   --help                  Display this list of options
 ```
 
+## Documentation
 
+The directory ``doc/`` contains html documentation generated from Coq and
+the file ``slepice.pdf`` that contains an overview of Ott grammar.
+
+## Examples
+
+Run the following command:
+
+```
+./slepice \
+    -sig examples/fromJust.sig \
+    -term examples/fromJust.tt
+```
 
