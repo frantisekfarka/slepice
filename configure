@@ -9,8 +9,13 @@ then
 else
     echo "Installing ott ..."
 
+    PWD=`pwd`
     cd $OTT_DIR
-    git clone https://github.com/ott-lang/ott.git
-    make -C ott
+    git clone https://github.com/ott-lang/ott.git ./ott
+    cd ott
+    git reset --hard 50c0ad4
+    make world 
+
+    cd $PWD
 
 fi

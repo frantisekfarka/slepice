@@ -8,7 +8,7 @@ OTT_DIR ?= $(shell pwd)
 
 .PHONY: clean veryclean slepice coq ott
 
-default: slepice doc
+default: slepice 
 
 slepice: ott coq ocaml
 	cp $(ML_DIR)main.native slepice
