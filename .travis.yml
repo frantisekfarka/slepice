@@ -12,6 +12,7 @@ addons:
     packages:
     - ocaml-nox
     - ocaml-native-compilers
+    - ocaml-core
     - menhir
     - coq
     - latexmk
