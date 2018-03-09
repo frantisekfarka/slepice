@@ -15,6 +15,7 @@ addons:
     - menhir
     - ocaml-core
     - coq
+    - latexmk
 
 before_install:
 
