@@ -9,22 +9,21 @@ TO_PATCH=Parser.mly\
 	Lexer.mll\
 	Parser_pp.ml\
 	Defns.ml
-	
-.PHONY: clean 
+
+PATCHED=$(addsuffix .patched,$(TO_PATCH))
+
+.PHONY: clean default build
 
 default: build
 
-$(TO_PATCH): $(addsuffix .patched,$(TO_PATCH))
-
-%.patched: %.ed
-	ed -v $* < $< 
-	touch $@
+$(PATCHED):%.patched:% %.ed 
+	ed -v $< < $<.ed && touch $@
 
 $(COQ_FILES): $(addprefix, $(COQ_DIR),COQ_FILES)
 	cp $(COQ_DIR)$@ .
 
 
-build: $(TO_PATCH) $(COQ_FILES)
+build: $(PATCHED) $(COQ_FILES)
 	ocamlbuild -use-ocamlfind -use-menhir main.native
 
 #cleaning rules

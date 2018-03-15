@@ -49,4 +49,5 @@ clean:
 veryclean: clean
 	make -C $(TEX_DIR) veryclean
 	make -C $(OTT_DIR)/ott clean
+	$(RM) slepice $(DOC_DIR)*
 
