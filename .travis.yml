@@ -7,6 +7,10 @@ sudo: required
 env:
   - OTT_DIR=~
 
+cache:
+      directories:
+            - $HOME/ott
+
 addons:
   apt:
     packages:
