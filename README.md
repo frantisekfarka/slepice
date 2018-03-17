@@ -20,7 +20,7 @@ _latex-extra_ and _xcolor_ packages.
 
 ## Installation 
 
-The command `make` builds the `main.native` binary in the `ocaml/` subdirectory.
+The command `make` builds the `slepice` binary. 
 The command `make doc` builds documentation in the `doc/` subdirectory.
 
 
@@ -38,6 +38,10 @@ usage: slepice <options> -sig <filename> -term <filenamen> [ -o <basename> ]
   -help                   Display this list of options
   --help                  Display this list of options
 ```
+
+The binary either displays the generated logic program and goal or, when a basename
+is provided, it generates files `basename.prog` and `basename.g` with the generated 
+program and the generated goal respectively.
 
 ## Documentation
 
