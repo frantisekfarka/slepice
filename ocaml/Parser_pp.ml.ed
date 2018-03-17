@@ -2,7 +2,7 @@
 /| Termstar_nl_pi_intro/
 s/\\/\\\\/
 % s/lnvar/LNVAR/
-% s/lnvar/string_of_int\(lnvar\)/g
+% s/lnvar/"?_" ^ string_of_int\(lnvar\)/g
 % s/LNVAR/lnvar/
 /let rec pp_raw_ix x/
 +1 i

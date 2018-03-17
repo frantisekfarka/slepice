@@ -163,3 +163,5 @@ Parser.mly
 Parser_pp.ml
 Defns.ml
 slepice
+
+*.patched

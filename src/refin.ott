@@ -53,7 +53,7 @@ Jrefin :: 'r_' ::=
     S ; eG ; a ; lnvar |- true ; L ; lnvar
 
     S ; eG ; eA ; lnvar1  |- Go1 ; eL1 ; lnvar2
-    S ; eG ; eB ; lnvar2 |- Go2 ; eL2 ; lnvar3
+    S ; eG , eA ; eB ; lnvar2 |- Go2 ; eL2 ; lnvar3
     --------------------------------------------------------------------------------------------------- :: pi_intro
     S ; eG ; Pi eA . eB ; lnvar1 |- ((Go1 & Go2) & eq_K( eL1, typeK, eG)) & eq_K(eL2, typeK, eG) ; typeK ; lnvar3
 
@@ -87,7 +87,7 @@ Jrefin :: 'r_' ::=
     S ; eG,eB ; succ ix ; lnvar1 |- Go & shiftTy(eA, zero, mA) ; mA ; lnvar3
 
     S ; eG ; eA ; lnvar1 |- Go1 ; eL ; lnvar2
-    S ; eG ; eM ; lnvar2 |- Go2 ; eB ; lnvar3
+    S ; eG , eA ; eM ; lnvar2 |- Go2 ; eB ; lnvar3
     ----------------------------------------------------------------- :: pi_intro
     S ; eG ; \eA.eM ; lnvar1 |- (Go1 & Go2) & eq_K(eL, typeK, eG); Pi eA . eB ; lnvar3
 

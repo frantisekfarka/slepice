@@ -4,7 +4,7 @@ i
 | [' ' '\t' '\n' '\r'] (* patched *)
 .
 /{ LNVAR/
-s/lnvar/int_of_string(lnvar)/
+s/lnvar/int_of_string( lnvarval )/
 /{ CIX/
 s/cIx/int_of_string(cIx)/
 wq
