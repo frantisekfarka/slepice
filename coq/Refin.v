@@ -306,7 +306,7 @@ Proof.
   - (* pi elim *)
     (intros [| | A M| ] v G Heq; inversion Heq).
 
-    (destruct IHmA with A v G as [[[Go1 [L v1]]]| Hn1]; auto).
+    (destruct IHmA with A v G  as [[[Go1 [L v1]]]| Hn1]; auto).
 
     + (simpl in r).
 
@@ -414,14 +414,13 @@ Proof.
   - destruct IHSig as [ [[P v''] wP ] | Hn ].
 
     + left.
-      exists (ttprog_hc_con
-           (ttprog_hc_con
-              (ttprog_hc_con P (ttgoal_unbound_at (ttat_te (termstar_nl_con c) A nil))
-                             (Nil_list_TTGoal))
-              (ttgoal_unbound_at (ttat_shiftte (termstar_nl_con c) 0 (termstar_nl_con c))) Nil_list_TTGoal)
+      exists (ttprog_hc_nob
+           (ttprog_hc_nob
+              (ttprog_hc_nob P (ttgoal_unbound_at (ttat_te (termstar_nl_con c) A nil))
+                             )
+              (ttgoal_unbound_at (ttat_shiftte (termstar_nl_con c) 0 (termstar_nl_con c))))
            (ttgoal_unbound_at (ttat_substte (termstar_nl_con c) (termstar_nl_mvar ( S v'')) (termstar_nl_con c)))
-           Nil_list_TTGoal, S v'').
-
+           , S v'').
         
         apply r_p_sgn_con with v''.
 
@@ -448,13 +447,13 @@ Proof.
   - destruct IHSig as [ [[P v''] wP ] | Hn ].
 
     + left.
-      exists (ttprog_hc_con
-           (ttprog_hc_con
-              (ttprog_hc_con P (ttgoal_unbound_at (ttat_Ty (typestar_nl_tcon a) L nil))
-                             (Nil_list_TTGoal))
-              (ttgoal_unbound_at (ttat_shiftTy (typestar_nl_tcon a) 0 (typestar_nl_tcon a))) Nil_list_TTGoal)
+      exists (ttprog_hc_nob
+           (ttprog_hc_nob
+              (ttprog_hc_nob P (ttgoal_unbound_at (ttat_Ty (typestar_nl_tcon a) L nil))
+                             )
+              (ttgoal_unbound_at (ttat_shiftTy (typestar_nl_tcon a) 0 (typestar_nl_tcon a))) )
            (ttgoal_unbound_at (ttat_substTy (typestar_nl_tcon a) (termstar_nl_mvar ( S v'')) (typestar_nl_tcon a)))
-           Nil_list_TTGoal, S v'').
+           , S v'').
 
         
         apply r_p_sgn_tcon with v''.

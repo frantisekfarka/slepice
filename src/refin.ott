@@ -55,19 +55,19 @@ Jrefin :: 'r_' ::=
     S ; eG ; eA ; lnvar1  |- Go1 ; eL1 ; lnvar2
     S ; eG , eA ; eB ; lnvar2 |- Go2 ; eL2 ; lnvar3
     --------------------------------------------------------------------------------------------------- :: pi_intro
-    S ; eG ; Pi eA . eB ; lnvar1 |- ((Go1 & Go2) & eq_K( eL1, typeK, eG)) & eq_K(eL2, typeK, eG) ; typeK ; lnvar3
+    S ; eG ; Pi eA . eB ; lnvar1 |- ((Go1 & Go2) & eq_K eL1 typeK eG) & eq_K eL2 typeK eG ; typeK ; lnvar3
 
     S ; eG ; eA ; lnvar1 |- Go1 ; eL ; lnvar2
     S ; eG ; eM ; lnvar2 |- Go2 ; eB ; lnvar3
     fresh lnvar3 mL lnvar4
     fresh lnvar4 mL' lnvar5
     ----------------------------------------------------------------- :: pi_elim
-    S ; eG ; eA eM ; lnvar1 |- ((Go1 & Go2) & eq_K( Pi eB . eL , mL' , eG )) & substK( mL', eM, mL) ; mL ; lnvar5
+    S ; eG ; eA eM ; lnvar1 |- ((Go1 & Go2) & eq_K Pi eB . eL mL' eG ) & substK mL' eM mL ; mL ; lnvar5
 
    
     fresh lnvar1 mL lnvar2
     ------------------------------------------------------------ :: mvar
-    S ; eG ; mA ; lnvar1 |- type( mA , mL, eG) ; mL ; lnvar2
+    S ; eG ; mA ; lnvar1 |- typeP mA mL eG ; mL ; lnvar2
 
   defn
   sgn ; ectx ; ete ; lnvar |- TTGoal ; eTy ; lnvar' :: :: goalterm ::'g_te_' 
@@ -79,28 +79,28 @@ Jrefin :: 'r_' ::=
 
     fresh lnvar1 mA lnvar2
     ---------------------------------------------------  :: var_nil
-    S ; eG, eA ; zero ; lnvar1 |- shiftTy( eA , zero , mA ) ; mA ; lnvar2
+    S ; eG, eA ; zero ; lnvar1 |- shiftTy eA zero mA ; mA ; lnvar2
 
     S ; eG ; ix ; lnvar1 |- Go ; eA ; lnvar2
     fresh lnvar2 mA lnvar3
     ------------------------------------------------------  :: var_cons
-    S ; eG,eB ; succ ix ; lnvar1 |- Go & shiftTy(eA, zero, mA) ; mA ; lnvar3
+    S ; eG,eB ; succ ix ; lnvar1 |- Go & shiftTy eA zero mA ; mA ; lnvar3
 
     S ; eG ; eA ; lnvar1 |- Go1 ; eL ; lnvar2
     S ; eG , eA ; eM ; lnvar2 |- Go2 ; eB ; lnvar3
     ----------------------------------------------------------------- :: pi_intro
-    S ; eG ; \eA.eM ; lnvar1 |- (Go1 & Go2) & eq_K(eL, typeK, eG); Pi eA . eB ; lnvar3
+    S ; eG ; \eA.eM ; lnvar1 |- (Go1 & Go2) & eq_K eL typeK eG; Pi eA . eB ; lnvar3
 
     S ; eG ; eM ; lnvar1 |- Go1 ; eA ; lnvar2
     S ; eG ; eN ; lnvar2 |- Go2 ; eA1 ; lnvar3
     fresh lnvar3 mB lnvar4
     fresh lnvar4 mB' lnvar5
     ---------------------------------------------------------------------------------- :: pi_elim
-    S ; eG ; eM eN ; lnvar1 |- ((Go1 & Go2) & eq_Ty(eA , Pi eA1 . mB' , eG )) & substTy(mB' , eN , mB) ; mB ; lnvar5
+    S ; eG ; eM eN ; lnvar1 |- ((Go1 & Go2) & eq_Ty eA Pi eA1 . mB' eG ) & substTy mB' eN mB ; mB ; lnvar5
     
     fresh lnvar1 mA lnvar2
     -------------------------------------------- :: mvar
-    S ; eG ; mN ; lnvar1 |- mN : term(mN, mA , eG)  ; mA ; lnvar2
+    S ; eG ; mN ; lnvar1 |- mN : termP mN mA eG ; mA ; lnvar2
 
 defns
 JrefinProg :: 'r_' ::=
@@ -118,10 +118,10 @@ defn
     S ; lnvar1 |- TTP ; lnvar2
     fresh lnvar2 mM lnvar3
     ------------------------------------------------------------- :: con
-    S , c : A ; lnvar1 |- TTP , term(c , A , empty) <- , shiftte(c, zero, c) <- , substte(c, mM, c) <- ; lnvar3
+    S , c : A ; lnvar1 |- TTP , termP c A empty . , shiftte c zero c . , substte c mM c .  ; lnvar3
 
     S ; lnvar1 |- TTP ; lnvar2
     fresh lnvar2 mM lnvar3
     ------------------------------------------------------------- :: tcon
-    S , a : L ; lnvar1 |- TTP , type(a , L , empty) <- , shiftTy(a, zero, a) <- , substTy(a, mM, a) <- ; lnvar3
+    S , a : L ; lnvar1 |- TTP , typeP a L empty . , shiftTy a zero a . , substTy a mM a . ; lnvar3
 

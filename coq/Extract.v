@@ -32,8 +32,7 @@ Extract Inductive Defns.TTAtom =>  "tTAtom" [
 
 
 Extract Inductive Defns.eTy =>  "eTy" [
-  "Typestar_nl_tcon"  "Typestar_nl_pi_intro"  "Typestar_nl_pi_elim" 
- "Typestar_nl_mtvar" ].
+  "Typestar_nl_tcon"  "Typestar_nl_pi_intro"  "Typestar_nl_pi_elim"  "Typestar_nl_mtvar" ].
 
 Extract Inductive Defns.ete =>  "ete" [
   "Termstar_nl_con"  "Termstar_nl_ix"  "Termstar_nl_pi_intro" 
@@ -51,7 +50,7 @@ Extract Inductive Defns.TTGoal => "tTGoal" [ (* goal in TT *)
   "Ttgoal_conj" "Ttgoal_bound_at" "Ttgoal_unbound_at" ].
 
 Extract Inductive Defns.TTProg => "tTProg" [ (* program in TT *)
-           "Ttprog_empty" "Ttprog_hc_con" ].
+           "Ttprog_empty" "Ttprog_hc_con" "Ttprog_hc_nob" ].
 
 
 Extract Inductive Defns.list_TTGoal => "list" [ "[]" "(::)" ].

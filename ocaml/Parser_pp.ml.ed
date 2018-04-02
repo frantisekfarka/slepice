@@ -21,4 +21,21 @@ s/\\/\\\\/
 +1 i
 open Datatypes
 .
+/pp_tTProg x/
+/Ttprog_empty/
+s/\"empty\"/""/
+/Ttprog_hc_con/
+s/\",\"/"\\\n"/
+/Ttprog_hc_nob/
+s/\",\"/"\\\n"/
+/pp_eTy x/
+/Typestar_nl_pi_intro/
+s/\"Pi\"/"Pi("/
+s/\"\.\"/","/
+s/$/^ ")"/
+/pp_eK x/
+/Kindstar_nl_pi_intro/
+s/\"Pi\"/"Pi("/
+s/\"\.\"/","/
+s/$/^ ")"/
 wq
