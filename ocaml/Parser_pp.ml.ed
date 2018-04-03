@@ -2,8 +2,9 @@
 /| Termstar_nl_pi_intro/
 s/\\/\\\\/
 % s/lnvar/LNVAR/
-% s/lnvar/"?_" ^ string_of_int\(lnvar\)/g
+% s/lnvar/"M_" ^ string_of_int\(lnvar\)/g
 % s/LNVAR/lnvar/
+% s/ tvar/ "T_" ^ string_of_int\(tvar\)/g
 /let rec pp_raw_ix x/
 +1 i
 | x -> string_of_int x
@@ -38,4 +39,8 @@ s/$/^ ")"/
 s/\"Pi\"/"Pi("/
 s/\"\.\"/","/
 s/$/^ ")"/
+/pp_ectx x/
+/ectx -> pp_ectx/
+s/->/ -> "cons(" ^/
+s/$/ ^ ")"/
 wq

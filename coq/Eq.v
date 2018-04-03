@@ -17,10 +17,12 @@ Proof.
   decide equality.
   (apply eq_tcon).
   decide equality.
+  decide equality.
   (* lemma 2 *)
   (intros **).
   decide equality.
   (apply eq_con).
+  decide equality.
   decide equality.
   decide equality.
 Defined.
@@ -36,6 +38,7 @@ Lemma eq_eK : forall K L : eK, {K = L} + {K <> L}.
 Proof.
   decide equality.
   (apply eq_eTy_dec).
+  decide equality.
   decide equality.
 Defined.
 

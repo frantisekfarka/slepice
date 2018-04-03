@@ -45,83 +45,91 @@ Jrefin :: 'r_' ::=
 %    %S ; eG ; mL |- kind( mL , eG ) ; kindS
 
   defn
-  sgn ; ectx ; eTy ; lnvar |- TTGoal ; eK ; lnvar' :: :: goaltype ::'g_Ty_' 
-    {{tex [[sgn]] ; [[ectx]] ; [[eTy]] ~{_\tec{[[lnvar]]} }\vdash_\tec{[[lnvar']]} ( [[TTGoal]] \mid [[eK]] ) }} by
+  sgn ; ectx ; eTy ; tvar |- TTGoal ; eK ; tvar' :: :: goaltype ::'g_Ty_' 
+    {{tex [[sgn]] ; [[ectx]] ; [[eTy]] ~{_\tec{[[tvar]]} }\vdash_\tec{[[tvar']]} ( [[TTGoal]] \mid [[eK]] ) }} by
 
     a : L in S
     --------------------------------  :: tcon
-    S ; eG ; a ; lnvar |- true ; L ; lnvar
+    S ; eG ; a ; tvar |- true ; L ; tvar
 
-    S ; eG ; eA ; lnvar1  |- Go1 ; eL1 ; lnvar2
-    S ; eG , eA ; eB ; lnvar2 |- Go2 ; eL2 ; lnvar3
+    S ; eG ; eA ; tvar1  |- Go1 ; eL1 ; tvar2
+    S ; eG , eA ; eB ; tvar2 |- Go2 ; eL2 ; tvar3
     --------------------------------------------------------------------------------------------------- :: pi_intro
-    S ; eG ; Pi eA . eB ; lnvar1 |- ((Go1 & Go2) & eq_K eL1 typeK eG) & eq_K eL2 typeK eG ; typeK ; lnvar3
+    S ; eG ; Pi eA . eB ; tvar1 |- ((Go1 & Go2) & eq_K eL1 typeK eG) & eq_K eL2 typeK eG ; typeK ; tvar3
 
-    S ; eG ; eA ; lnvar1 |- Go1 ; eL ; lnvar2
-    S ; eG ; eM ; lnvar2 |- Go2 ; eB ; lnvar3
-    fresh lnvar3 mL lnvar4
-    fresh lnvar4 mL' lnvar5
+    S ; eG ; eA ; tvar1 |- Go1 ; eL ; tvar2
+    S ; eG ; eM ; tvar2 |- Go2 ; eB ; tvar3
+    fresh tvar3 tL tvar4
+    fresh tvar4 tL' tvar5
     ----------------------------------------------------------------- :: pi_elim
-    S ; eG ; eA eM ; lnvar1 |- ((Go1 & Go2) & eq_K Pi eB . eL mL' eG ) & substK mL' eM mL ; mL ; lnvar5
+    S ; eG ; eA eM ; tvar1 |- ((Go1 & Go2) & eq_K Pi eB . eL tL' eG ) & substK tL' eM tL ; tL ; tvar5
 
    
-    fresh lnvar1 mL lnvar2
+    fresh tvar1 tL tvar2
     ------------------------------------------------------------ :: mvar
-    S ; eG ; mA ; lnvar1 |- typeP mA mL eG ; mL ; lnvar2
+    S ; eG ; mA ; tvar1 |- typeP mA tL eG ; tL ; tvar2
+
+    fresh tvar1 tL tvar2
+    ------------------------------------------------------------ :: tvar
+    S ; eG ; tA ; tvar1 |- typeP tA tL eG ; tL ; tvar2
 
   defn
-  sgn ; ectx ; ete ; lnvar |- TTGoal ; eTy ; lnvar' :: :: goalterm ::'g_te_' 
-  {{tex [[sgn]] ; [[ectx]] ; [[ete]] {_\tec{[[lnvar]] } }\vdash_\tec{[[lnvar']]} ( [[TTGoal]] \mid [[eTy]] ) }} by
+  sgn ; ectx ; ete ; tvar |- TTGoal ; eTy ; tvar' :: :: goalterm ::'g_te_' 
+  {{tex [[sgn]] ; [[ectx]] ; [[ete]] {_\tec{[[tvar]] } }\vdash_\tec{[[tvar']]} ( [[TTGoal]] \mid [[eTy]] ) }} by
 
     c : A in S
     ---------------------------------------  :: con
-    S ; eG ; c ; lnvar1 |- true ; A ; lnvar1
+    S ; eG ; c ; tvar1 |- true ; A ; tvar1
 
-    fresh lnvar1 mA lnvar2
+    fresh tvar1 tA tvar2
     ---------------------------------------------------  :: var_nil
-    S ; eG, eA ; zero ; lnvar1 |- shiftTy eA zero mA ; mA ; lnvar2
+    S ; eG, eA ; zero ; tvar1 |- shiftTy eA zero tA ; tA ; tvar2
 
-    S ; eG ; ix ; lnvar1 |- Go ; eA ; lnvar2
-    fresh lnvar2 mA lnvar3
+    S ; eG ; ix ; tvar1 |- Go ; eA ; tvar2
+    fresh tvar2 tA tvar3
     ------------------------------------------------------  :: var_cons
-    S ; eG,eB ; succ ix ; lnvar1 |- Go & shiftTy eA zero mA ; mA ; lnvar3
+    S ; eG,eB ; succ ix ; tvar1 |- Go & shiftTy eA zero tA ; tA ; tvar3
 
-    S ; eG ; eA ; lnvar1 |- Go1 ; eL ; lnvar2
-    S ; eG , eA ; eM ; lnvar2 |- Go2 ; eB ; lnvar3
+    S ; eG ; eA ; tvar1 |- Go1 ; eL ; tvar2
+    S ; eG , eA ; eM ; tvar2 |- Go2 ; eB ; tvar3
     ----------------------------------------------------------------- :: pi_intro
-    S ; eG ; \eA.eM ; lnvar1 |- (Go1 & Go2) & eq_K eL typeK eG; Pi eA . eB ; lnvar3
+    S ; eG ; \eA.eM ; tvar1 |- (Go1 & Go2) & eq_K eL typeK eG; Pi eA . eB ; tvar3
 
-    S ; eG ; eM ; lnvar1 |- Go1 ; eA ; lnvar2
-    S ; eG ; eN ; lnvar2 |- Go2 ; eA1 ; lnvar3
-    fresh lnvar3 mB lnvar4
-    fresh lnvar4 mB' lnvar5
+    S ; eG ; eM ; tvar1 |- Go1 ; eA ; tvar2
+    S ; eG ; eN ; tvar2 |- Go2 ; eA1 ; tvar3
+    fresh tvar3 tA tvar4
+    fresh tvar4 tA' tvar5
     ---------------------------------------------------------------------------------- :: pi_elim
-    S ; eG ; eM eN ; lnvar1 |- ((Go1 & Go2) & eq_Ty eA Pi eA1 . mB' eG ) & substTy mB' eN mB ; mB ; lnvar5
+    S ; eG ; eM eN ; tvar1 |- ((Go1 & Go2) & eq_Ty eA Pi eA1 . tA' eG ) & substTy tA' eN tA ; tA ; tvar5
     
-    fresh lnvar1 mA lnvar2
+    fresh tvar1 tA tvar2
     -------------------------------------------- :: mvar
-    S ; eG ; mN ; lnvar1 |- mN : termP mN mA eG ; mA ; lnvar2
+    S ; eG ; mN ; tvar1 |- mN : termP mN tA eG ; tA ; tvar2
+
+    fresh tvar1 tA tvar2
+    -------------------------------------------------- :: tvar
+    S ; eG ; tM ; tvar1 |- termP tM tA eG ; tA ; tvar2
 
 defns
 JrefinProg :: 'r_' ::=
 
 defn 
-  sgn ; lnvar |- TTProg ; lnvar' ::  :: prog :: 'p_sgn_' 
-    {{tex [[sgn]] _\tec{[[lnvar]]} \vdash_{Prog} {}_\tec{[[lnvar']]} [[TTProg]] }} by
+  sgn ; tvar |- TTProg ; tvar' ::  :: prog :: 'p_sgn_' 
+    {{tex [[sgn]] _\tec{[[tvar]]} \vdash_{Prog} {}_\tec{[[tvar']]} [[TTProg]] }} by
 
 
 % todo
 
     ------------------------------ :: empty
-    empty ; lnvar |- empty ; lnvar 
+    empty ; tvar |- empty ; tvar 
 
-    S ; lnvar1 |- TTP ; lnvar2
-    fresh lnvar2 mM lnvar3
+    S ; tvar1 |- TTP ; tvar2
+    fresh tvar2 tM tvar3
     ------------------------------------------------------------- :: con
-    S , c : A ; lnvar1 |- TTP , termP c A empty . , shiftte c zero c . , substte c mM c .  ; lnvar3
+    S , c : A ; tvar1 |- TTP , termP c A empty . , shiftte c zero c . , substte c tM c .  ; tvar3
 
-    S ; lnvar1 |- TTP ; lnvar2
-    fresh lnvar2 mM lnvar3
+    S ; tvar1 |- TTP ; tvar2
+    fresh tvar2 tM tvar3
     ------------------------------------------------------------- :: tcon
-    S , a : L ; lnvar1 |- TTP , typeP a L empty . , shiftTy a zero a . , substTy a mM a . ; lnvar3
+    S , a : L ; tvar1 |- TTP , typeP a L empty . , shiftTy a zero a . , substTy a tM a . ; tvar3
 

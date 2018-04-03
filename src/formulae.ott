@@ -16,9 +16,9 @@ formula :: formula_ ::=
   | alpha : K in sgn                                :: :: binsig_nl
      {{ coq (boundTCon [[alpha]] [[K]] [[sgn]]) }}
      {{ tex [[alpha]] : [[K]] \in [[sgn]] }}
-  | fresh lnvar lnvar' lnvar''                     :: :: fresh
-     {{ coq (fresh [[lnvar]] [[lnvar']] [[lnvar'']]) }}
-     {{tex _\tec{[[lnvar]]}\text{fresh}_{ {[[lnvar'']]} } \tec{ [[lnvar']] } }} 
+  | fresh tvar tvar' tvar''                     :: :: fresh
+     {{ coq (fresh [[tvar]] [[tvar']] [[tvar'']]) }}
+     {{tex _\tec{[[tvar]]}\text{fresh}_{ {[[tvar'']]} } \tec{ [[tvar']] } }} 
 
 
 %  | mtvar # te                                          :: :: apart   

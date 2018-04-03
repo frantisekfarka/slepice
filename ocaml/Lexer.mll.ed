@@ -5,6 +5,8 @@ i
 .
 /{ LNVAR/
 s/lnvar/int_of_string( lnvarval )/
+/{ TVAR/
+s/tvar/int_of_string( tvarval )/
 /{ CIX/
 s/cIx/int_of_string(cIx)/
 wq

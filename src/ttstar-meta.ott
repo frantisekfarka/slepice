@@ -23,10 +23,14 @@ let eq_tcon x y = (String.compare x y) == 0
 }}
 
 % locally nameless metavariable
-metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }} {{ocaml asdsa}},
+metavar lnvar {{ tex {?_{ln} } }}, mM {{ tex ?_M }} {{ocaml Logical variable}},
     mN {{ tex ?_M }}, mA {{ tex ?_A }}, mB {{ tex ?_B }}, mL {{ tex ?_L }},
     mG {{ tex ?_\Gamma }}
     ::= {{ com  nameless meta-variable }} 
         {{ coq nat }} {{ coq-equality }}
-        {{ ocaml int }} {{ ocamllex '?''_'(['0'-'9']+ as lnvarval) }}
+        {{ ocaml int }} {{ ocamllex 'M''_'(['0'-'9']+ as lnvarval) }}
 
+metavar tvar {{ tex {?_{t} } }}, tM {{ tex ?_M^t }}, tA {{ tex ?_A^t }}, tL {{ tex ?_L^t }}
+    ::= {{ com  technical meta-variable }} 
+        {{ coq nat }} {{ coq-equality }}
+        {{ ocaml int }} {{ ocamllex 'T''_'(['0'-'9']+ as tvarval) }}

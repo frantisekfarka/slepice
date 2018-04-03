@@ -19,7 +19,8 @@ Fixpoint struct_eTy (A : eTy) : mTy :=
   | typestar_nl_tcon a => mTy_leaf
   | typestar_nl_pi_intro A B => mTy_pi_intro (struct_eTy A) (struct_eTy B)
   | typestar_nl_pi_elim A M => mTy_pi_elim (struct_eTy A) (struct_ete M)
-  | typestar_nl_mtvar _ => mTy_leaf
+  | typestar_nl_mvar _ => mTy_leaf
+  | typestar_nl_tvar _ => mTy_leaf
   end
 with struct_ete (M : ete) : mte :=
   match M with
@@ -28,6 +29,7 @@ with struct_ete (M : ete) : mte :=
   | termstar_nl_pi_intro A M => mte_pi_intro (struct_eTy A) (struct_ete M)
   | termstar_nl_pi_elim M N => mte_pi_elim (struct_ete M) (struct_ete N)
   | termstar_nl_mvar _ => mte_leaf
+  | termstar_nl_tvar _ => mte_leaf
   end.
    
 
@@ -54,7 +56,7 @@ Proof.
     generalize dependent v.
     generalize dependent M.
     (induction mM).
-    (intros [c | i | A M | | mv] v G Heq; inversion Heq).
+    (intros [c | i | A M | | mv | tv] v G Heq; inversion Heq).
     - (* con c in Sig *)
       
       (assert ({A : _ | boundCon c A (map castSig Sig)} + {(forall A, ~ boundCon c A (map castSig Sig))})
@@ -76,8 +78,9 @@ Proof.
               (inversion Hc). }
             { left.
               (exists 
-                  (ttgoal_unbound_at (ttat_shiftTy A 0 (typestar_nl_mtvar (S v))),
-                   (typestar_nl_mtvar (S v), S (S v))); simpl).
+                  (ttgoal_unbound_at (ttat_shiftTy A 0 (typestar_nl_tvar (S v))),
+                   (typestar_nl_tvar (S v), S (S v))); simpl).
+              simpl.
               econstructor.
               (simpl; auto). }
           * (destruct G as [| B]).
@@ -90,8 +93,8 @@ Proof.
                 exists 
                   (ttgoal_conj Go
                                (ttgoal_unbound_at
-                                  (ttat_shiftTy A1 0 (typestar_nl_mtvar (S v0)))),
-                   (typestar_nl_mtvar (S v0), S (S v0))).
+                                  (ttat_shiftTy A1 0 (typestar_nl_tvar (S v0)))),
+                   (typestar_nl_tvar (S v0), S (S v0))).
                 (eapply r_g_te_var_cons).
                 eauto.
                 (simpl; auto).
@@ -105,7 +108,7 @@ Proof.
                  (assert
                     (~
                        r_goalterm (map castSig Sig) G (termstar_nl_ix i)
-                       (fst (fst (v0, Go0, (eA, lnvar2)))) Go0 eA lnvar2)).
+                       (fst (fst (v0, Go0, (eA, tvar2)))) Go0 eA tvar2)).
                  (apply n).
                  (apply H).
                  (simpl).
@@ -115,15 +118,25 @@ Proof.
                       left.
                       exists 
                         (ttgoal_bound_at mv
-                                         (ttat_te (termstar_nl_mvar mv) (typestar_nl_mtvar (S v)) G),
-                         (typestar_nl_mtvar (S v), S (S v))).
+                                         (ttat_te (termstar_nl_mvar mv) (typestar_nl_tvar (S v)) G),
+                         (typestar_nl_tvar (S v), S (S v))).
                       (simpl).
                       
                       (eapply r_g_te_mvar).
                       (simpl; auto).
 
+                      - intros.
+                        left.
+                        exists 
+                        (ttgoal_unbound_at
+                                         (ttat_te (termstar_nl_tvar tv) (typestar_nl_tvar (S v)) G),
+                         (typestar_nl_tvar (S v), S (S v))).
+                        (simpl).
+                        constructor.
+                        simpl; auto.
+                        
                       - (* pi intro *)
-                        (intros [ | | A M | |  ] v G Heq ; inversion Heq).
+                        (intros [ | | A M | | |  ] v G Heq ; inversion Heq).
     
                         (assert
                            ({GA : _ | r_goaltype (map castSig Sig) G A v (fst GA) (fst (snd GA)) (snd (snd GA))} +
@@ -152,7 +165,7 @@ Proof.
          (intros **). intro Hc.
          (inversion Hc).          
          subst.
-         (apply n with (lnvar2, Go2, (eB, snd (snd GA)))).
+         (apply n with (tvar2, Go2, (eB, snd (snd GA)))).
          simpl.
          auto.
 
@@ -164,13 +177,13 @@ Proof.
       (inversion Hc).
       subst.
       intro.
-      (apply n with (v1, Go0, (eL, lnvar2))).
+      (apply n with (v1, Go0, (eL, tvar2))).
       (simpl).
       assumption.
 
     
   - (* pi elim *)
-    (intros [ | | | M1 M2 | ] v G Heq; inversion Heq).
+    (intros [ | | | M1 M2 | | ] v G Heq; inversion Heq).
     
     (destruct IHmM1 with M1 v G as [[[Go1 [A v1]]]| Hn1]; auto).
     
@@ -186,11 +199,11 @@ Proof.
                 (ttgoal_unbound_at
                    (ttat_eq_Ty A
                       (typestar_nl_pi_intro B
-                         (typestar_nl_mtvar (S (S (S v2))))) G)))
+                         (typestar_nl_tvar (S (S (S v2))))) G)))
              (ttgoal_unbound_at
-                (ttat_substTy (typestar_nl_mtvar (S (S (S v2)))) M2
-                   (typestar_nl_mtvar (S (S v2))))),
-          (typestar_nl_mtvar (S (S v2)), S (S (S (S v2))))).
+                (ttat_substTy (typestar_nl_tvar (S (S (S v2)))) M2
+                   (typestar_nl_tvar (S (S v2))))),
+          (typestar_nl_tvar (S (S v2)), S (S (S (S v2))))).
 
         (simpl).
         (apply r_g_te_pi_elim with v1 v2 (S (S v2))).
@@ -209,7 +222,7 @@ Proof.
         subst.
 
         intro Hn.
-        (apply Hn with (lnvar2, Go3, (eA1, lnvar3))).
+        (apply Hn with (tvar2, Go3, (eA1, tvar3))).
         (simpl).
         auto.
 
@@ -223,7 +236,7 @@ Proof.
        subst.
        
        intro Hn.
-       (apply Hn with (v2, Go1, (eA, lnvar2))).
+       (apply Hn with (v2, Go1, (eA, tvar2))).
        (simpl).
        auto.
 
@@ -239,7 +252,7 @@ Proof.
     generalize dependent A.
     (induction mA).
 
-    (intros [a| A B| A IHA| v] v0 G Heq ; inversion Heq).
+    (intros [a| A B| A IHA| v | t ] v0 G Heq ; inversion Heq).
 
   - (* tcon a in Sig *)
 
@@ -258,15 +271,23 @@ Proof.
     left.
     exists 
       (ttgoal_unbound_at
-         (ttat_Ty (typestar_nl_mtvar v) (kindstar_nl_mkvar (S v0)) G),
-      (kindstar_nl_mkvar (S v0), S (S v0))).
+         (ttat_Ty (typestar_nl_mvar v) (kindstar_nl_tvar (S v0)) G),
+      (kindstar_nl_tvar (S v0), S (S v0))).
     (simpl).
     
     (eapply r_g_Ty_mvar).
     (simpl; auto).
-      
+
+     - intros **.
+       left.
+       exists (ttgoal_unbound_at
+            (ttat_Ty (typestar_nl_tvar t) (kindstar_nl_tvar (S v0)) G),
+             (kindstar_nl_tvar (S v0), S (S v0))).
+       simpl; constructor.
+       simpl; auto.
+       
   - (* pi intro *)
-    (intros [ | A1 A2 | | ] v G Heq; inversion Heq).
+    (intros [ | A1 A2 | | | ] v G Heq; inversion Heq).
     
     (destruct IHmA1 with A1 v G as [[[Go1 [L1 v2]]]| ]; simpl; auto).
     
@@ -288,7 +309,7 @@ Proof.
          (intros **). intro Hc.
          (inversion Hc).          
          subst.
-         (apply n with (lnvar2, Go2, (eL2, snd (snd GA)))).
+         (apply n with (tvar2, Go2, (eL2, snd (snd GA)))).
          (simpl).
          auto.
 
@@ -300,11 +321,11 @@ Proof.
       (inversion Hc).
       subst.
       intro.
-      (apply n with (v1, Go0, (eL1, lnvar2))).
+      (apply n with (v1, Go0, (eL1, tvar2))).
       (simpl).
       assumption.
   - (* pi elim *)
-    (intros [| | A M| ] v G Heq; inversion Heq).
+    (intros [| | A M| | ] v G Heq; inversion Heq).
 
     (destruct IHmA with A v G  as [[[Go1 [L v1]]]| Hn1]; auto).
 
@@ -331,11 +352,11 @@ Proof.
              (ttgoal_conj (ttgoal_conj Go1 Go2)
                 (ttgoal_unbound_at
                    (ttat_eq_K (kindstar_nl_pi_intro B L)
-                      (kindstar_nl_mkvar (S (S (S v2)))) G)))
+                      (kindstar_nl_tvar (S (S (S v2)))) G)))
              (ttgoal_unbound_at
-                (ttat_substK (kindstar_nl_mkvar (S (S (S v2)))) M
-                   (kindstar_nl_mkvar (S (S v2))))),
-          (kindstar_nl_mkvar (S (S v2)), S (S (S (S v2))))).
+                (ttat_substK (kindstar_nl_tvar (S (S (S v2)))) M
+                   (kindstar_nl_tvar (S (S v2))))),
+          (kindstar_nl_tvar (S (S v2)), S (S (S (S v2))))).
 
         (simpl).
         (apply r_g_Ty_pi_elim with v1 v2 (S (S v2)); simpl; auto).
@@ -350,7 +371,7 @@ Proof.
         subst.
 
         intro Hn.
-        (apply Hn with (lnvar2, Go3, (eB, lnvar3)); simpl; auto).
+        (apply Hn with (tvar2, Go3, (eB, tvar3)); simpl; auto).
 
     +  right.
        (intros **).
@@ -362,7 +383,7 @@ Proof.
        subst.
        
        intro Hn.
-       (apply Hn with (v2, Go1, (eL, lnvar2)); simpl; auto).
+       (apply Hn with (v2, Go1, (eL, tvar2)); simpl; auto).
 }
 Defined.
 
@@ -419,7 +440,7 @@ Proof.
               (ttprog_hc_nob P (ttgoal_unbound_at (ttat_te (termstar_nl_con c) A nil))
                              )
               (ttgoal_unbound_at (ttat_shiftte (termstar_nl_con c) 0 (termstar_nl_con c))))
-           (ttgoal_unbound_at (ttat_substte (termstar_nl_con c) (termstar_nl_mvar ( S v'')) (termstar_nl_con c)))
+           (ttgoal_unbound_at (ttat_substte (termstar_nl_con c) (termstar_nl_tvar ( S v'')) (termstar_nl_con c)))
            , S v'').
         
         apply r_p_sgn_con with v''.
@@ -437,7 +458,7 @@ Proof.
       inversion Hc.
       
       
-      apply Hn with (v', (TTP, lnvar2)).
+      apply Hn with (v', (TTP, tvar2)).
 
       simpl.
       simpl in H6.
@@ -452,7 +473,7 @@ Proof.
               (ttprog_hc_nob P (ttgoal_unbound_at (ttat_Ty (typestar_nl_tcon a) L nil))
                              )
               (ttgoal_unbound_at (ttat_shiftTy (typestar_nl_tcon a) 0 (typestar_nl_tcon a))) )
-           (ttgoal_unbound_at (ttat_substTy (typestar_nl_tcon a) (termstar_nl_mvar ( S v'')) (typestar_nl_tcon a)))
+           (ttgoal_unbound_at (ttat_substTy (typestar_nl_tcon a) (termstar_nl_tvar ( S v'')) (typestar_nl_tcon a)))
            , S v'').
 
         
@@ -471,7 +492,7 @@ Proof.
       inversion Hc.
       
       
-      apply Hn with (v', (TTP, lnvar2)).
+      apply Hn with (v', (TTP, tvar2)).
 
       simpl.
       simpl in H6.

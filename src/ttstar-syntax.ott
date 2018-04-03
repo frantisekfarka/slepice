@@ -44,7 +44,8 @@ eTy {{ tex {\ttstar{T} } }}, eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} }
   | ( eTy )              :: S :: paren                        
      {{ coq [[eTy]] }}
      {{ ocaml ([[eTy]]) }}
-  | lnvar                ::   :: mtvar               {{ com type level metavariables }}
+  | lnvar                ::   :: mvar                {{ com type level metavariables }}
+  | tvar                 ::   :: tvar                {{ com type level metavariables - technical}}
   %| mtvar                ::   :: mtvar               {{ com type level metavariables }}
 %  | shiftTy( eTy , ix )  :: M :: shift
 %     {{ coq [[eTy]] }}
@@ -62,6 +63,7 @@ ete {{ tex {\ttstar{t} } }}, eM {{ tex {\ttstar{M} } }}, eN {{ tex {\ttstar{N} }
      {{ coq [[ete]] }}
      {{ ocaml ([[ete]]) }}
   | lnvar                ::   :: mvar                {{ com term level metavariables }}
+  | tvar                 ::   :: tvar                {{ com term level metavariables - technical }}
   %| mvar                 ::   :: mvar                {{ com term level metavariables }}
 %  | shiftte( ete , ix )  :: M :: shift
 %     {{ coq [[ete]] }}
@@ -77,7 +79,8 @@ eK {{ tex {\ttstar{K} } }} , eL {{ tex {\ttstar{L} } }} :: 'kindstar_nl_' ::= {{
   | ( eK )               :: S :: paren                        
      {{ coq ([[eK]]) }}
      {{ ocaml ([[eK]]) }}
-  | lnvar                ::   :: mkvar               {{ com kind level metavariables }}
+  | lnvar                ::   :: mvar                {{ com kind level metavariables }}
+  | tvar                 ::   :: tvar                {{ com kind level metavariables - technical }}
   %| mkvar                ::   :: mkvar               {{ com kind level metavariables }}
 %  | substK( eK , ix , eN )    :: M :: subst
 %     {{ coq [[eK]] [[eN]] [[ix]] }}

@@ -31,15 +31,26 @@ Extract Inductive Defns.TTAtom =>  "tTAtom" [
  "Ttat_shiftK"  "Ttat_substK"  "Ttat_shiftTy"  "Ttat_substTy" "Ttat_subste" "Ttat_shifte" ].
 
 
-Extract Inductive Defns.eTy =>  "eTy" [
-  "Typestar_nl_tcon"  "Typestar_nl_pi_intro"  "Typestar_nl_pi_elim"  "Typestar_nl_mtvar" ].
+Extract Inductive Defns.eTy =>  "eTy" [ "Typestar_nl_tcon"
+                                         "Typestar_nl_pi_intro"
+                                         "Typestar_nl_pi_elim"
+                                         "Typestar_nl_mtvar"
+                                         "Typestar_nl_tvar"
+                                     ].
 
-Extract Inductive Defns.ete =>  "ete" [
-  "Termstar_nl_con"  "Termstar_nl_ix"  "Termstar_nl_pi_intro" 
- "Termstar_nl_pi_elim"  "Termstar_nl_mvar" ].
+Extract Inductive Defns.ete =>  "ete" [ "Termstar_nl_con"
+                                         "Termstar_nl_ix"
+                                         "Termstar_nl_pi_intro"
+                                         "Termstar_nl_pi_elim"
+                                         "Termstar_nl_mvar"
+                                         "Termstar_nl_tvar"
+                                     ].
 
-Extract Inductive Defns.eK =>  "eK" [
-  "Kindstar_nl_type"  "Kindstar_nl_pi_intro"  "Kindstar_nl_mkvar" ].
+Extract Inductive Defns.eK =>  "eK" [ "Kindstar_nl_type"
+                                       "Kindstar_nl_pi_intro"
+                                       "Kindstar_nl_mkvar"
+                                       "Kindstar_nl_tvar"
+                                   ].
 
 Extract Inductive Defns.TTAtom => "ttAtom" [ (* atom in TT *)
   "Ttat_true" "Ttat_eq_te" "Ttat_eq_Ty" "Ttat_eq_K" "Ttat_Ty"
