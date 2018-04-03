@@ -6,7 +6,7 @@ i
 /{ LNVAR/
 s/lnvar/int_of_string( lnvarval )/
 /{ TVAR/
-s/tvar/int_of_string( tvarval )/
+s/tvar/raise (Error ("T-var " ^ tvar ^ " not allowed here"))/
 /{ CIX/
 s/cIx/int_of_string(cIx)/
 wq
