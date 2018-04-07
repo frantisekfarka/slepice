@@ -99,10 +99,13 @@ eS {{ tex \ttstar{\mathcal{S} } }} {{coq Sgn }} :: 'esgn_' ::= {{ com extended s
     {{ ocaml ((con * eTy , tcon*eK) sum)  list }}
   | empty                ::   :: empty               {{ com empty signature }}
      {{ coq nil }}
+     {{ ocaml [] }}
   | esgn , con : eTy       ::   :: con
      {{ coq (cons (inl([[con]],[[eTy]])) [[esgn]]) }}
+     {{ ocaml Coq_inl([[con]],[[eTy]]) :: [[esgn]] }}
   | esgn , tcon : eK       ::   :: tcon
      {{ coq (cons (inr([[tcon]],[[eK]])) [[esgn]]) }}
+     {{ ocaml Coq_inr([[tcon]],[[eK]]) :: [[esgn]] }}
 
 embed
 {{ ocaml

@@ -7,8 +7,7 @@ COQ_FILES=Eq.ml\
 
 TO_PATCH=Parser.mly\
 	Lexer.mll\
-	Parser_pp.ml\
-	Defns.ml
+	Parser_pp.ml
 
 PATCHED=$(addsuffix .patched,$(TO_PATCH))
 
