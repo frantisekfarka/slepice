@@ -93,7 +93,8 @@ eL {{ tex {\ttstar{L} } }} :: 'ek_' ::= {{ com extended kinds }}
 
 % for parser
 grammar
-esgn {{tex \ttstar{Sig} }}, eS {{ tex \ttstar{\mathcal{S} } }} {{coq Sgn }} :: 'signaturestar_nl_' ::= {{ com Signature }}
+esgn {{tex \ttstar{Sig} }},
+eS {{ tex \ttstar{\mathcal{S} } }} {{coq Sgn }} :: 'esgn_' ::= {{ com extended signature }}
     {{ coq list (con*eTy+tcon*eK) }}
     {{ ocaml ((con * eTy , tcon*eK) sum)  list }}
   | empty                ::   :: empty               {{ com empty signature }}
@@ -110,7 +111,8 @@ let ctxvar xy = match xy with
 }}
 
 grammar
-ectx {{tex {\ttstar{Ctx} } }}, eG {{ tex {\ttstar{\Gamma} } }} :: 'contextstar_nl_' ::= {{ com Extended Context }}
+ectx {{tex {\ttstar{Ctx} } }},
+eG {{ tex {\ttstar{\Gamma} } }} :: 'ectx_' ::= {{ com Extended Context }}
     {{ coq list (eTy) }}
     {{ ocaml eTy list }}
   | empty                ::   :: empty              {{ com empty context }}

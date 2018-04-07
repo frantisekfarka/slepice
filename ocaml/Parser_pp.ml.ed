@@ -13,11 +13,11 @@ s/\\/\\\\/
 +1 i
 | x -> pp_raw_ix x
 .
-% s/Contextstar_nl_empty/[]/
-% s/Contextstar_nl_ctxvar(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/\2 :: \1/
-% s/Signaturestar_nl_empty/[]/
-% s/Signaturestar_nl_tcon(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/Coq_inr( \2 , \3 ) :: \1/
-% s/Signaturestar_nl_con(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/Coq_inl( \2 , \3 ) :: \1/
+% s/Ectx_empty/[]/
+% s/Ectx_ctxvar(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/\2 :: \1/
+% s/Esgn_empty/[]/
+% s/Esgn_tcon(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/Coq_inr( \2 , \3 ) :: \1/
+% s/Esgn_con(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/Coq_inl( \2 , \3 ) :: \1/
 /open Defns/
 +1 i
 open Datatypes
