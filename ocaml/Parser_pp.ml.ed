@@ -1,5 +1,5 @@
 /pp_ete x/
-/| Termstar_nl_pi_intro/
+/| Ete_pi_intro/
 s/\\/\\\\/
 % s/lnvar/LNVAR/
 % s/lnvar/"M_" ^ string_of_int\(lnvar\)/g
@@ -30,12 +30,12 @@ s/\",\"/"\\\n"/
 /Ttprog_hc_nob/
 s/\",\"/"\\\n"/
 /pp_eTy x/
-/Typestar_nl_pi_intro/
+/Ety_pi_intro/
 s/\"Pi\"/"Pi("/
 s/\"\.\"/","/
 s/$/^ ")"/
 /pp_eK x/
-/Kindstar_nl_pi_intro/
+/Ek_pi_intro/
 s/\"Pi\"/"Pi("/
 s/\"\.\"/","/
 s/$/^ ")"/

@@ -111,6 +111,16 @@ Jrefin :: 'r_' ::=
     S ; eG ; tM ; tvar1 |- termP tM tA eG ; tA ; tvar2
 
 defns
+JrefinProgEmpty :: 'r_' ::=
+
+defn 
+  tvar |-e TTProg ; tvar' ::  :: pe :: 'pe_' 
+    {{tex _\tec{[[tvar]]} \vdash_{P_\text{empty} } {}_\tec{[[tvar']]} [[TTProg]] }} by
+
+    ------------------------------------------- :: eq_K
+    tvar1 |-e empty , eq_K typeK typeK empty . ; tvar2 
+
+defns
 JrefinProg :: 'r_' ::=
 
 defn 
@@ -119,9 +129,10 @@ defn
 
 
 % todo
-
+    
+    tvar |-e TTP ; tvar'
     ------------------------------ :: empty
-    empty ; tvar |- empty ; tvar 
+    empty ; tvar |- TTP ; tvar'
 
     S ; tvar1 |- TTP ; tvar2
     fresh tvar2 tM tvar3

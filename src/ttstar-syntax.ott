@@ -37,7 +37,9 @@ Ix {{tex I }}, ix {{tex \iota }} :: 'ix_' ::= {{com deBruijn indices }}
 %     {{ tex ([[Ix]]) }}
 
 grammar
-eTy {{ tex {\ttstar{T} } }}, eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} } }} :: 'typestar_nl_' ::= {{ com Extended Types }}
+eTy {{ tex {\ttstar{T} } }},
+eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} } }} :: 'ety_' ::=
+    {{ com extended types }}
   | tcon                 ::   :: tcon                {{ com type constant }}
   | Pi eTy1 . eTy2       ::   :: pi_intro            {{ com type of dependent functions }}
   | eTy ete              ::   :: pi_elim             {{ com application of a type former }}
@@ -54,7 +56,9 @@ eTy {{ tex {\ttstar{T} } }}, eA {{ tex {\ttstar{A} } }}, eB {{ tex {\ttstar{B} }
 %     {{ coq [[eTy]] [[eN]] [[ix]] }}
 %     {{ tex [[eTy]] [ [[eN]] / [[ix]] ] }}
 
-ete {{ tex {\ttstar{t} } }}, eM {{ tex {\ttstar{M} } }}, eN {{ tex {\ttstar{N} } }} :: 'termstar_nl_' ::= {{ com Extended Terms }}
+ete {{ tex {\ttstar{t} } }},
+eM {{ tex {\ttstar{M} } }}, eN {{ tex {\ttstar{N} } }} :: 'ete_' ::=
+    {{ com extended terms }}
   | con                  ::   :: con                 {{ com term constant }} 
   | ix                   ::   :: ix                  {{ com de Bruijn indices }} 
   | \ eTy . ete          ::   :: pi_intro            {{ com formation of $\Pi$ type }}
@@ -73,7 +77,8 @@ ete {{ tex {\ttstar{t} } }}, eM {{ tex {\ttstar{M} } }}, eN {{ tex {\ttstar{N} }
 %     {{ tex [[ete]] [ [[eN]] / [[ix]] ] }}
 
 grammar
-eK {{ tex {\ttstar{K} } }} , eL {{ tex {\ttstar{L} } }} :: 'kindstar_nl_' ::= {{ com Extended Kinds }}
+eK {{ tex {\ttstar{K} } }} , 
+eL {{ tex {\ttstar{L} } }} :: 'ek_' ::= {{ com extended kinds }}
   | typeK                ::   :: type                {{ com kind of all types }} 
   | Pi eTy . eK          ::   :: pi_intro            {{ com kind of dependent functions }}
   | ( eK )               :: S :: paren                        

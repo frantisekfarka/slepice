@@ -1,5 +1,5 @@
 grammar
-Ty {{ tex \ttbase{T} }}, A {{ tex \ttbase{A} }}, B {{ tex \ttbase{B} }} :: 'type_nl_' ::= {{ com Types }}
+Ty {{ tex \ttbase{T} }}, A {{ tex \ttbase{A} }}, B {{ tex \ttbase{B} }} :: 'ty_' ::= {{ com types }}
   | tcon                 ::   :: tcon                {{ com type constant }}
   | Pi Ty1 . Ty2         ::   :: pi_intro            {{ com type of dependent functions }}
   | Ty te                ::   :: pi_elim             {{ com application of a type former }}
@@ -7,7 +7,7 @@ Ty {{ tex \ttbase{T} }}, A {{ tex \ttbase{A} }}, B {{ tex \ttbase{B} }} :: 'type
      {{ coq [[Ty]] }}
      {{ ocaml ([[Ty]]) }}
 
-te {{ tex \ttbase{t} }}, M {{ tex \ttbase{M} }}, N {{ tex \ttbase{N} }} :: 'term_nl_' ::= {{ com Terms }}
+te {{ tex \ttbase{t} }}, M {{ tex \ttbase{M} }}, N {{ tex \ttbase{N} }} :: 'te_' ::= {{ com terms }}
   | con                  ::   :: con                 {{ com term constant }} 
   | ix                   ::   :: ix                  {{ com de Bruijn indices }} 
   | \ Ty . te            ::   :: pi_intro            {{ com formation of $\Pi$ type }}
@@ -17,7 +17,7 @@ te {{ tex \ttbase{t} }}, M {{ tex \ttbase{M} }}, N {{ tex \ttbase{N} }} :: 'term
      {{ ocaml ([[te]]) }}
 
 grammar
-K {{ tex \ttbase{K} }} , L {{ tex \ttbase{L} }} :: 'kind_nl_' ::= {{ com Kinds }}
+K {{ tex \ttbase{K} }} , L {{ tex \ttbase{L} }} :: 'k_' ::= {{ com kinds }}
   | typeK                ::   :: type                {{ com kind of all types }} 
   | Pi Ty . K            ::   :: pi_intro            {{ com kind of dependent functions }}
   | ( K )                :: S :: paren                        

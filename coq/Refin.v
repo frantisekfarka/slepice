@@ -16,20 +16,20 @@ with mte : Set :=
 
 Fixpoint struct_eTy (A : eTy) : mTy :=
   match A with
-  | typestar_nl_tcon a => mTy_leaf
-  | typestar_nl_pi_intro A B => mTy_pi_intro (struct_eTy A) (struct_eTy B)
-  | typestar_nl_pi_elim A M => mTy_pi_elim (struct_eTy A) (struct_ete M)
-  | typestar_nl_mvar _ => mTy_leaf
-  | typestar_nl_tvar _ => mTy_leaf
+  | ety_tcon a => mTy_leaf
+  | ety_pi_intro A B => mTy_pi_intro (struct_eTy A) (struct_eTy B)
+  | ety_pi_elim A M => mTy_pi_elim (struct_eTy A) (struct_ete M)
+  | ety_mvar _ => mTy_leaf
+  | ety_tvar _ => mTy_leaf
   end
 with struct_ete (M : ete) : mte :=
   match M with
-  | termstar_nl_con c => mte_leaf
-  | termstar_nl_ix i => mte_leaf
-  | termstar_nl_pi_intro A M => mte_pi_intro (struct_eTy A) (struct_ete M)
-  | termstar_nl_pi_elim M N => mte_pi_elim (struct_ete M) (struct_ete N)
-  | termstar_nl_mvar _ => mte_leaf
-  | termstar_nl_tvar _ => mte_leaf
+  | ete_con c => mte_leaf
+  | ete_ix i => mte_leaf
+  | ete_pi_intro A M => mte_pi_intro (struct_eTy A) (struct_ete M)
+  | ete_pi_elim M N => mte_pi_elim (struct_ete M) (struct_ete N)
+  | ete_mvar _ => mte_leaf
+  | ete_tvar _ => mte_leaf
   end.
    
 
@@ -78,8 +78,8 @@ Proof.
               (inversion Hc). }
             { left.
               (exists 
-                  (ttgoal_unbound_at (ttat_shiftTy A 0 (typestar_nl_tvar (S v))),
-                   (typestar_nl_tvar (S v), S (S v))); simpl).
+                  (ttgoal_unbound_at (ttat_shiftTy A 0 (ety_tvar (S v))),
+                   (ety_tvar (S v), S (S v))); simpl).
               simpl.
               econstructor.
               (simpl; auto). }
@@ -93,8 +93,8 @@ Proof.
                 exists 
                   (ttgoal_conj Go
                                (ttgoal_unbound_at
-                                  (ttat_shiftTy A1 0 (typestar_nl_tvar (S v0)))),
-                   (typestar_nl_tvar (S v0), S (S v0))).
+                                  (ttat_shiftTy A1 0 (ety_tvar (S v0)))),
+                   (ety_tvar (S v0), S (S v0))).
                 (eapply r_g_te_var_cons).
                 eauto.
                 (simpl; auto).
@@ -107,7 +107,7 @@ Proof.
                  subst.
                  (assert
                     (~
-                       r_goalterm (map castSig Sig) G (termstar_nl_ix i)
+                       r_goalterm (map castSig Sig) G (ete_ix i)
                        (fst (fst (v0, Go0, (eA, tvar2)))) Go0 eA tvar2)).
                  (apply n).
                  (apply H).
@@ -118,8 +118,8 @@ Proof.
                       left.
                       exists 
                         (ttgoal_bound_at mv
-                                         (ttat_te (termstar_nl_mvar mv) (typestar_nl_tvar (S v)) G),
-                         (typestar_nl_tvar (S v), S (S v))).
+                                         (ttat_te (ete_mvar mv) (ety_tvar (S v)) G),
+                         (ety_tvar (S v), S (S v))).
                       (simpl).
                       
                       (eapply r_g_te_mvar).
@@ -129,8 +129,8 @@ Proof.
                         left.
                         exists 
                         (ttgoal_unbound_at
-                                         (ttat_te (termstar_nl_tvar tv) (typestar_nl_tvar (S v)) G),
-                         (typestar_nl_tvar (S v), S (S v))).
+                                         (ttat_te (ete_tvar tv) (ety_tvar (S v)) G),
+                         (ety_tvar (S v), S (S v))).
                         (simpl).
                         constructor.
                         simpl; auto.
@@ -156,8 +156,8 @@ Proof.
          
          exists 
            (ttgoal_conj (ttgoal_conj Go1 Go2)
-              (ttgoal_unbound_at (ttat_eq_K L kindstar_nl_type G)),
-           (typestar_nl_pi_intro A B, v3)).
+              (ttgoal_unbound_at (ttat_eq_K L ek_type G)),
+           (ety_pi_intro A B, v3)).
          (simpl).
          (econstructor; simpl; eauto).
          
@@ -198,12 +198,12 @@ Proof.
              (ttgoal_conj (ttgoal_conj Go1 Go2)
                 (ttgoal_unbound_at
                    (ttat_eq_Ty A
-                      (typestar_nl_pi_intro B
-                         (typestar_nl_tvar (S (S (S v2))))) G)))
+                      (ety_pi_intro B
+                         (ety_tvar (S (S (S v2))))) G)))
              (ttgoal_unbound_at
-                (ttat_substTy (typestar_nl_tvar (S (S (S v2)))) M2
-                   (typestar_nl_tvar (S (S v2))))),
-          (typestar_nl_tvar (S (S v2)), S (S (S (S v2))))).
+                (ttat_substTy (ety_tvar (S (S (S v2)))) M2
+                   (ety_tvar (S (S v2))))),
+          (ety_tvar (S (S v2)), S (S (S (S v2))))).
 
         (simpl).
         (apply r_g_te_pi_elim with v1 v2 (S (S v2))).
@@ -271,8 +271,8 @@ Proof.
     left.
     exists 
       (ttgoal_unbound_at
-         (ttat_Ty (typestar_nl_mvar v) (kindstar_nl_tvar (S v0)) G),
-      (kindstar_nl_tvar (S v0), S (S v0))).
+         (ttat_Ty (ety_mvar v) (ek_tvar (S v0)) G),
+      (ek_tvar (S v0), S (S v0))).
     (simpl).
     
     (eapply r_g_Ty_mvar).
@@ -281,8 +281,8 @@ Proof.
      - intros **.
        left.
        exists (ttgoal_unbound_at
-            (ttat_Ty (typestar_nl_tvar t) (kindstar_nl_tvar (S v0)) G),
-             (kindstar_nl_tvar (S v0), S (S v0))).
+            (ttat_Ty (ety_tvar t) (ek_tvar (S v0)) G),
+             (ek_tvar (S v0), S (S v0))).
        simpl; constructor.
        simpl; auto.
        
@@ -300,9 +300,9 @@ Proof.
          exists 
            (ttgoal_conj
               (ttgoal_conj (ttgoal_conj Go1 Go2)
-                 (ttgoal_unbound_at (ttat_eq_K L1 kindstar_nl_type G)))
-              (ttgoal_unbound_at (ttat_eq_K L2 kindstar_nl_type G)),
-           (kindstar_nl_type, v3)).
+                 (ttgoal_unbound_at (ttat_eq_K L1 ek_type G)))
+              (ttgoal_unbound_at (ttat_eq_K L2 ek_type G)),
+           (ek_type, v3)).
          (simpl).
          (econstructor; eauto).
        * right.
@@ -351,12 +351,12 @@ Proof.
           (ttgoal_conj
              (ttgoal_conj (ttgoal_conj Go1 Go2)
                 (ttgoal_unbound_at
-                   (ttat_eq_K (kindstar_nl_pi_intro B L)
-                      (kindstar_nl_tvar (S (S (S v2)))) G)))
+                   (ttat_eq_K (ek_pi_intro B L)
+                      (ek_tvar (S (S (S v2)))) G)))
              (ttgoal_unbound_at
-                (ttat_substK (kindstar_nl_tvar (S (S (S v2)))) M
-                   (kindstar_nl_tvar (S (S v2))))),
-          (kindstar_nl_tvar (S (S v2)), S (S (S (S v2))))).
+                (ttat_substK (ek_tvar (S (S (S v2)))) M
+                   (ek_tvar (S (S v2))))),
+          (ek_tvar (S (S v2)), S (S (S (S v2))))).
 
         (simpl).
         (apply r_g_Ty_pi_elim with v1 v2 (S (S v2)); simpl; auto).
@@ -388,29 +388,39 @@ Proof.
 Defined.
 
 Lemma goalterm_dec :
-  forall (Sig : sgn) (G : ectx) (M : ete) (v : lnvar),
-  {GA : _ | r_goalterm (map castSig Sig) G M v (fst GA) (fst (snd GA)) (snd (snd GA))} +
-  {(forall GA,
-    ~
-    r_goalterm (map castSig Sig) G M (fst (fst GA)) (snd (fst GA)) 
-      (fst (snd GA)) (snd (snd GA)))} with goaltype_dec :
-                                       forall (mA : mTy) 
-                                         (Sig : sgn) 
-                                         (G : ectx) 
-                                         (A : eTy) 
-                                         (v : lnvar),
-                                       {GA : _ |
-                                       r_goaltype (map castSig Sig) G A v 
-                                         (fst GA) 
-                                         (fst (snd GA)) 
-                                         (snd (snd GA))} +
-                                       {(forall GA,
-                                         ~
-                                         r_goaltype (map castSig Sig) G A 
-                                           (fst (fst GA)) 
-                                           (snd (fst GA)) 
-                                           (fst (snd GA)) 
-                                           (snd (snd GA)))}.
+  forall (Sig : sgn)
+    (G : ectx)
+    (M : ete)
+    (v : tvar),
+    {GoA : _ |
+     r_goalterm (map castSig Sig) G M v
+                (fst GoA)
+                (fst (snd GoA))
+                (snd (snd GoA))} +
+    {(forall GoA : (tvar * TTGoal * (eTy * tvar)) ,
+         ~
+           r_goalterm (map castSig Sig) G M
+           (fst (fst GoA))
+           (snd (fst GoA)) 
+           (fst (snd GoA))
+           (snd (snd GoA)))}
+with goaltype_dec :
+       forall (Sig : sgn) 
+         (G : ectx) 
+         (A : eTy) 
+         (v : lnvar),
+         {GoL : _ |
+          r_goaltype (map castSig Sig) G A v 
+                     (fst GoL) 
+                     (fst (snd GoL)) 
+                     (snd (snd GoL))} +
+         {(forall GoL,
+              ~
+                r_goaltype (map castSig Sig) G A 
+                (fst (fst GoL)) 
+                (snd (fst GoL)) 
+                (fst (snd GoL)) 
+                (snd (snd GoL)))}.
 Proof.
   - (intros **).
     (apply goalterm_dec_str with (struct_ete M); auto).
@@ -418,7 +428,16 @@ Proof.
     (apply goaltype_dec_str with (struct_eTy A); auto).
 Defined.
 
-Fixpoint progsig_dec (Sig : sgn) (v : lnvar) :
+Fixpoint pesig_dec (v : tvar) :
+  {Pv : _ | r_pe v (fst Pv) (snd Pv)}.
+Proof.
+  exists (ttprog_hc_nob ttprog_empty
+     (ttgoal_unbound_at (ttat_eq_K ek_type ek_type nil)), v).
+  simpl.
+  constructor.
+Qed.
+     
+Fixpoint progsig_dec (Sig : sgn) (v : tvar) :
 {Pv : _ | r_prog (map castSig Sig) v (fst Pv) (snd Pv)} +
 {(forall Pv,
   ~
@@ -430,17 +449,22 @@ Proof.
   - 
     left.
 
-    exists (ttprog_empty, v).
+    assert {PeV | r_pe v (fst PeV) (snd PeV)} as [ [Pempty v'] Hrpe ]
+      by (apply pesig_dec; assumption).
+    
+    exists (Pempty, v').
     constructor.
+    assumption.
+    
   - destruct IHSig as [ [[P v''] wP ] | Hn ].
 
     + left.
       exists (ttprog_hc_nob
            (ttprog_hc_nob
-              (ttprog_hc_nob P (ttgoal_unbound_at (ttat_te (termstar_nl_con c) A nil))
+              (ttprog_hc_nob P (ttgoal_unbound_at (ttat_te (ete_con c) A nil))
                              )
-              (ttgoal_unbound_at (ttat_shiftte (termstar_nl_con c) 0 (termstar_nl_con c))))
-           (ttgoal_unbound_at (ttat_substte (termstar_nl_con c) (termstar_nl_tvar ( S v'')) (termstar_nl_con c)))
+              (ttgoal_unbound_at (ttat_shiftte (ete_con c) 0 (ete_con c))))
+           (ttgoal_unbound_at (ttat_substte (ete_con c) (ete_tvar ( S v'')) (ete_con c)))
            , S v'').
         
         apply r_p_sgn_con with v''.
@@ -470,10 +494,10 @@ Proof.
     + left.
       exists (ttprog_hc_nob
            (ttprog_hc_nob
-              (ttprog_hc_nob P (ttgoal_unbound_at (ttat_Ty (typestar_nl_tcon a) L nil))
+              (ttprog_hc_nob P (ttgoal_unbound_at (ttat_Ty (ety_tcon a) L nil))
                              )
-              (ttgoal_unbound_at (ttat_shiftTy (typestar_nl_tcon a) 0 (typestar_nl_tcon a))) )
-           (ttgoal_unbound_at (ttat_substTy (typestar_nl_tcon a) (termstar_nl_tvar ( S v'')) (typestar_nl_tcon a)))
+              (ttgoal_unbound_at (ttat_shiftTy (ety_tcon a) 0 (ety_tcon a))) )
+           (ttgoal_unbound_at (ttat_substTy (ety_tcon a) (ete_tvar ( S v'')) (ety_tcon a)))
            , S v'').
 
         
