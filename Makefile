@@ -2,6 +2,7 @@ TEX_DIR=tex/
 SRC_DIR=src/
 COQ_DIR=coq/
 DOC_DIR=doc/
+TEST_DIR=test/
 ML_DIR=ocaml/
 
 OTT_DIR ?= $(shell pwd)
@@ -32,7 +33,9 @@ texdoc:
 	make -C $(TEX_DIR)
 	cp $(TEX_DIR)slepice.pdf $(DOC_DIR)
 
-test: 
+test: slepice
+	make -C $(TEST_DIR)
+	#todo rm
 	./slepice -print false\
 	    -sig examples/fromJust.sig\
 	    -term examples/fromJust.tt
@@ -44,6 +47,7 @@ clean:
 	make -C $(SRC_DIR) clean
 	make -C $(ML_DIR) clean
 	make -C $(COQ_DIR) clean
+	make -C $(TEST_DIR) clean
 	$(RM) $(COQ_DIR)*.ml $(COQ_DIR)*.mli
 
 veryclean: clean
