@@ -30,7 +30,8 @@ subrules
     te  <:: ete
 
 grammar
-sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'signature_nl_' ::= {{ com Signature }}
+sgn {{tex \ttbase{Sig} }},
+S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'sgn_' ::= {{ com signature }}
 %     {{ phantom }}
     {{ coq list (con*{A : eTy | is_Ty_of_eTy A} + tcon*{L : eK  | is_K_of_eK L}) }}
     {{ ocaml (con * eTy , tcon*eK) sum  list }}
@@ -43,7 +44,8 @@ sgn {{tex \ttbase{Sig} }}, S {{ tex \ttbase{\mathcal{S} } }} {{coq Sgn }} :: 'si
 
 
 grammar
-ctx {{tex \ttbase{Ctx} }}, G {{ tex \ttbase{\Gamma} }} :: 'context_nl_' ::= {{ com Context }}
+ctx {{tex \ttbase{Ctx} }},
+G {{ tex \ttbase{\Gamma} }} :: 'ctx_' ::= {{ com context }}
     {{ coq list ({A : eTy | is_Ty_of_eTy A}) }}
     {{ ocaml eTy list }}
 %   defined after subrules
@@ -55,11 +57,11 @@ ctx {{tex \ttbase{Ctx} }}, G {{ tex \ttbase{\Gamma} }} :: 'context_nl_' ::= {{ c
 
 subrules
     sgn <:: esgn
-        sgn <:: esgn
     ctx <:: ectx
 
 grammar
-sTy {{ tex {T^{-} } }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Types }}
+sTy {{ tex {T^{-} } }},
+tau {{ tex \tau }} :: 'sty_' ::= {{ com simple types }}
   | tcon                 ::   :: tcon                {{ com type constant }}
   | sTy1 -> sTy2         ::   :: pi_intro            {{ com type of functions }}
   | ( sTy )              :: S :: paren                        
@@ -67,7 +69,8 @@ sTy {{ tex {T^{-} } }}, tau {{ tex \tau }} :: 'stype_nl_' ::= {{ com Simple Type
      {{ ocaml ([[sTy]]) }}
 
 grammar
-sK {{ tex K^{-}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple Kinds }}
+sK {{ tex K^{-}{} }} ,
+kappa {{ tex \kappa }} :: 'sk_' ::= {{ com simple kinds }}
   | typeK                ::   :: type                {{ com kind of all types }} 
   | sTy -> sK            ::   :: pi_intro            {{ com kind of functions }}
   | ( sK )               :: S :: paren                        
@@ -75,7 +78,7 @@ sK {{ tex K^{-}{} }} , kappa {{ tex \kappa }} :: 'skind_nl_' ::= {{ com Simple K
      {{ ocaml ([[sK]]) }}
 
 grammar
-ssgn {{ tex \mathcal{S}^{-}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signature }}
+ssgn {{ tex \mathcal{S}^{-}{} }} :: 'ssgn_' ::= {{ com simple signature }}
     {{ coq list (con*sTy+tcon*sK) }}
 %    {{ ocaml ((con * ty , tcon*k) sgn_el_type)  list }}
   | empty                ::   :: empty               {{ com empty signature }}
@@ -86,7 +89,7 @@ ssgn {{ tex \mathcal{S}^{-}{} }} :: 'ssignature_nl_' ::= {{ com Simple Signature
      {{ coq (cons (inr([[tcon]],[[sK]])) [[ssgn]]) }}
 
 grammar
-sctx {{ tex Ctx^{-} }} , D {{ tex \Delta^{}{} }} :: 'scontext_nl_' ::= {{ com Simple Context }}
+sctx {{ tex Ctx^{-} }} , D {{ tex \Delta^{}{} }} :: 'sctx_' ::= {{ com simple context }}
     {{ coq list (sTy) }}
   | empty                 ::   :: empty              {{ com empty context }}
      {{ coq nil }}
@@ -96,9 +99,6 @@ sctx {{ tex Ctx^{-} }} , D {{ tex \Delta^{}{} }} :: 'scontext_nl_' ::= {{ com Si
 
 embed
 {{ coq 
-
-Notation emptyS := (@nil (con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK}))).
-Notation emptyC := (@nil ({eTy | is_Ty_of_eTy eTy})).
 
 Definition castSig (e : con*({eTy | is_Ty_of_eTy eTy})+tcon*({eK | is_K_of_eK eK}))
     := match e with
