@@ -62,6 +62,10 @@
 %
 
 grammar
+TTPt {{ tex \text{Proof term} }} , TTe :: 'ttpt_' ::= {{ com proof term in TT }}
+  | true                         ::   :: true
+
+grammar
 TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | true                         ::   :: true
   | eq_te  ete1 ete2 ectx        ::   :: eq_te {{ tex [[ete1]] \equiv_{[[ectx]]} [[ete2]] }}
@@ -89,7 +93,7 @@ TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in T
 grammar
 TTProg {{ tex \text{Prog} }} , TTP {{ tex \mathcal{P} }}  :: 'ttprog_' ::= {{ com program in TT }}
   | empty                                   ::   :: empty
-  | TTProg , TTGoal :- TTGoal1 .. TTGoalk . ::   :: hc_con
-  | TTProg , TTGoal .                       ::   :: hc_nob
+  | TTProg , TTAtom :- TTAtom1 .. TTAtomk . ::   :: hc_con
+  | TTProg , TTAtom .                       ::   :: hc_nob
 
 

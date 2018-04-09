@@ -64,7 +64,7 @@ Extract Inductive Defns.TTProg => "tTProg" [ (* program in TT *)
            "Ttprog_empty" "Ttprog_hc_con" "Ttprog_hc_nob" ].
 
 
-Extract Inductive Defns.list_TTGoal => "list" [ "[]" "(::)" ].
+Extract Inductive Defns.list_TTAtom => "list" [ "[]" "(::)" ].
 
 
 (* extracted librarires *)
