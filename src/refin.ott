@@ -118,7 +118,7 @@ defn
     {{tex _\tec{[[tvar]]} \vdash_{P_\text{empty} } {}_\tec{[[tvar']]} [[TTProg]] }} by
 
     ------------------------------------------- :: eq_K
-    tvar1 |-e empty , eq_K typeK typeK empty . ; tvar2 
+    tvar1 |-e empty , axType : eq_K typeK typeK empty . ; tvar2 
 
 defns
 JrefinProg :: 'r_' ::=
@@ -137,10 +137,10 @@ defn
     S ; tvar1 |- TTP ; tvar2
     fresh tvar2 tM tvar3
     ------------------------------------------------------------- :: con
-    S , c : A ; tvar1 |- TTP , termP c A empty . , shiftte c zero c . , substte c tM c .  ; tvar3
+    S , c : A ; tvar1 |- TTP , axCon c : termP c A empty . , axShiftC : shiftte c zero c . , axSubstC : substte c tM c .  ; tvar3
 
     S ; tvar1 |- TTP ; tvar2
     fresh tvar2 tM tvar3
     ------------------------------------------------------------- :: tcon
-    S , a : L ; tvar1 |- TTP , typeP a L empty . , shiftTy a zero a . , substTy a tM a . ; tvar3
+    S , a : L ; tvar1 |- TTP , axTCon a : typeP a L empty . , axShiftC : shiftTy a zero a . , axSubstC : substTy a tM a . ; tvar3
 

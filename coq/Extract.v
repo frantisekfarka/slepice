@@ -52,7 +52,7 @@ Extract Inductive Defns.eK =>  "eK" [ "Ek_type"
                                        "Ek_tvar"
                                    ].
 
-Extract Inductive Defns.TTAtom => "ttAtom" [ (* atom in TT *)
+Extract Inductive Defns.TTAtom => "tTAtom" [ (* atom in TT *)
   "Ttat_true" "Ttat_eq_te" "Ttat_eq_Ty" "Ttat_eq_K" "Ttat_Ty"
               "Ttat_te" "Ttat_shiftK" "Ttat_substK" "Ttat_shiftTy" "Ttat_substTy"
               "Ttat_shiftte" "Ttat_substte" ].
@@ -66,6 +66,13 @@ Extract Inductive Defns.TTProg => "tTProg" [ (* program in TT *)
 
 Extract Inductive Defns.list_TTAtom => "list" [ "[]" "(::)" ].
 
+Extract Inductive Defns.TTPt => "tTPt" [ "Ttpt_true"
+                                          "Ttpt_axType"
+                                          "Ttpt_axCon"
+                                          "Ttpt_axTCon"
+                                          "Ttpt_axShiftC"
+                                          "Ttpt_axSubstC"                           
+                                   ].
 
 (* extracted librarires *)
 Extraction Library Datatypes.

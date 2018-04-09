@@ -432,6 +432,7 @@ Fixpoint pesig_dec (v : tvar) :
   {Pv : _ | r_pe v (fst Pv) (snd Pv)}.
 Proof.
   exists (ttprog_hc_nob ttprog_empty
+     (ttpt_axType)
      (ttat_eq_K ek_type ek_type nil), v).
   simpl.
   constructor.
@@ -461,9 +462,9 @@ Proof.
     + left.
       exists (ttprog_hc_nob
            (ttprog_hc_nob
-              (ttprog_hc_nob P (ttat_te (ete_con c) A nil))
-              (ttat_shiftte (ete_con c) 0 (ete_con c)))
-              (ttat_substte (ete_con c) (ete_tvar ( S v'')) (ete_con c))
+              (ttprog_hc_nob P (ttpt_axCon c) (ttat_te (ete_con c) A nil))
+              (ttpt_axShiftC) (ttat_shiftte (ete_con c) 0 (ete_con c)))
+              (ttpt_axSubstC) (ttat_substte (ete_con c) (ete_tvar ( S v'')) (ete_con c))
            , S v'').
         
         apply r_p_sgn_con with v''.
@@ -493,9 +494,9 @@ Proof.
     + left.
       exists (ttprog_hc_nob
            (ttprog_hc_nob
-              (ttprog_hc_nob P (ttat_Ty (ety_tcon a) L nil))
-              (ttat_shiftTy (ety_tcon a) 0 (ety_tcon a)))
-              (ttat_substTy (ety_tcon a) (ete_tvar ( S v'')) (ety_tcon a))
+              (ttprog_hc_nob P (ttpt_axTCon a) (ttat_Ty (ety_tcon a) L nil))
+              (ttpt_axShiftC) (ttat_shiftTy (ety_tcon a) 0 (ety_tcon a)))
+              (ttpt_axSubstC) (ttat_substTy (ety_tcon a) (ete_tvar ( S v'')) (ety_tcon a))
            , S v'').
 
         
