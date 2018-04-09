@@ -45,10 +45,14 @@ s/->/ -> "cons(" ^/
 s/$/ ^ ")"/
 /and pp_tTGoal x/
 /Ttgoal_bound_at/
-s/->/-> "pr(" ^ /
-s/":"/","/
+s/->/-> "pr " ^ /
+s/":"/"("/
 s/$/^ ")"/
 /Ttgoal_unbound_at/
-s/->/-> "pr( _ , " ^ /
+s/->/-> "pr _ ( " ^ /
 s/$/^ ")"/
+/Ttprog_hc_nob/
+s/pp_tTPt/"pr (" ^ pp_tTPt/
+s/":"/") ("/
+s/"\."$/")."/
 wq
