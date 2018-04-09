@@ -1,4 +1,0 @@
-% s/Esgn_empty/[]/
-% s/Esgn_con[ ]*(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/Coq_inl( \2 , \3 ) :: \1/
-% s/Esgn_tcon[ ]*(\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\),\([a-z][a-zA-Z]*\))/Coq_inr( \2 , \3 ) :: \1/
-wq
