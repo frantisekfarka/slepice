@@ -99,6 +99,6 @@ grammar
 TTProg {{ tex \text{Prog} }} , TTP {{ tex \mathcal{P} }}  :: 'ttprog_' ::= {{ com program in TT }}
   | empty                                   ::   :: empty
   | TTProg , TTAtom :- TTAtom1 .. TTAtomk . ::   :: hc_con
-  | TTProg , TTPt : TTAtom .                       ::   :: hc_nob
+  | TTProg , TTPt : TTAtom .                ::   :: hc_nob
 
 

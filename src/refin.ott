@@ -144,3 +144,18 @@ defn
     ------------------------------------------------------------- :: tcon
     S , a : L ; tvar1 |- TTP , axTCon a : typeP a L empty . , axShiftC : shiftTy a zero a . , axSubstC : substTy a tM a . ; tvar3
 
+%defns
+%JrefinProgFinal :: 'r_' ::=
+%
+%defn 
+%  sgn ; tvar |-f TTProg ; tvar' ::  :: pf :: 'pf_' 
+%    {{tex [[sgn]] _\tec{[[tvar]]} \vdash_{P_\text{final} } {}_\tec{[[tvar']]} [[TTProg]] }} by
+%
+%
+%    S ; tvar1 |- TTP ; tvar2
+%    fresh tvar2 tM tvar3
+%    fresh tvar3 tA1 tvar4
+%    fresh tvar3 tA2 tvar4
+%    ------------------------------------------- :: proj
+%    S ; tvar1 |-f TTP , termP zero tA1 empty , tA2  :- shiftTy tA1 zero tA2 . ; tvar2 
+

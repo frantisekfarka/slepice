@@ -45,7 +45,7 @@ s/->/ -> "cons(" ^/
 s/$/ ^ ")"/
 /and pp_tTGoal x/
 /Ttgoal_bound_at/
-s/->/-> "pr " ^ /
+s/->/-> "pr Po" ^ /
 s/":"/"("/
 s/$/^ ")"/
 /Ttgoal_unbound_at/
