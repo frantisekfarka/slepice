@@ -9,6 +9,8 @@ TO_PATCH=Parser.mly\
 	Lexer.mll\
 	Parser_pp.ml
 
+ED=ed -s
+
 PATCHED=$(addsuffix .patched,$(TO_PATCH))
 
 .PHONY: clean default build
@@ -16,7 +18,7 @@ PATCHED=$(addsuffix .patched,$(TO_PATCH))
 default: build
 
 $(PATCHED):%.patched:% %.ed 
-	ed -v $< < $<.ed && touch $@
+	$(ED) $< < $<.ed && touch $@
 
 $(COQ_FILES): $(addprefix, $(COQ_DIR),COQ_FILES)
 	cp $(COQ_DIR)$@ .
