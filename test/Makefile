@@ -14,4 +14,4 @@ default: $(TESTS:=.test)
 	diff $*.exp_out $*.out
 
 clean:
-	$(RM) *.out
+	$(RM) *.out *.prog *.g
