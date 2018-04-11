@@ -100,7 +100,7 @@ Jrefin :: 'r_' ::=
     fresh tvar3 tA tvar4
     fresh tvar4 tA' tvar5
     ---------------------------------------------------------------------------------- :: pi_elim
-    S ; eG ; eM eN ; tvar1 |- ((Go1 & Go2) & eq_Ty eA Pi eA1 . tA' typeK eG ) & substTy tA' eN zero tA ; tA ; tvar5
+    S ; eG ; eM eN ; tvar1 |- ((Go1 & Go2) & eq_Ty Pi eA1 . eA tA' typeK eG ) & substTy tA' eN zero tA ; tA ; tvar5
     
     fresh tvar1 tA tvar2
     -------------------------------------------- :: mvar

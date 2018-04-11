@@ -197,9 +197,8 @@ Proof.
           (ttgoal_conj
              (ttgoal_conj (ttgoal_conj Go1 Go2)
                 (ttgoal_unbound_at
-                   (ttat_eq_Ty A
-                      (ety_pi_intro B
-                         (ety_tvar (S (S (S v2))))) (ek_type) G)))
+                   (ttat_eq_Ty (ety_pi_intro B A)
+                         (ety_tvar (S (S (S v2)))) (ek_type) G)))
              (ttgoal_unbound_at
                 (ttat_substTy (ety_tvar (S (S (S v2)))) M2 (ete_ix 0)
                    (ety_tvar (S (S v2))))),
