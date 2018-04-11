@@ -82,11 +82,11 @@ TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | typeP eTy eK ectx            ::   :: Ty
   | termP ete eTy ectx           ::   :: te
   | shiftK eL1 ix eL2            ::   :: shiftK {{ tex [[eL1]] \uparrow^[[ix]] \equiv \; [[eL2]] }}
-  | substK eL1 eM eL2            ::   :: substK {{ tex [[eL1]] [ [[eM]] ] \equiv [[eL2]] }}
-  | shiftTy eA1 ix eA2           ::   :: shiftTy {{ tex [[eA1]] \uparrow^[[ix]] \equiv \; [[eA2]] }}
-  | substTy eA1 eM eA2           ::   :: substTy {{ tex [[eA1]] [ [[eM]] ]\equiv [[eA2]] }}
-  | shiftte eM1 ix eM2           ::   :: shiftte {{ tex [[eM1]] \uparrow^[[ix]] \equiv \; [[eM2]] }}
-  | substte eM1 eN eM2           ::   :: substte {{ tex [[eM1]] [ [[eN]] ]\equiv [[eM2]] }}
+  | substK eL1 eM ix eL2            ::   :: substK {{ tex [[eL1]] [ [[eM]] / [[ix ]] ] \equiv [[eL2]] }}
+  | shiftTy eA1 ete eA2           ::   :: shiftTy {{ tex [[eA1]] \uparrow^[[ete]] \equiv \; [[eA2]] }}
+  | substTy eA1 eM ete eA2           ::   :: substTy {{ tex [[eA1]] [ [[eM]] / [[ete]] ]\equiv [[eA2]] }}
+  | shiftte eM1 ete eM2           ::   :: shiftte {{ tex [[eM1]] \uparrow^[[ete]] \equiv \; [[eM2]] }}
+  | substte eM1 eN ete eM2           ::   :: substte {{ tex [[eM1]] [ [[eN]] / [[ete]] ]\equiv [[eM2]] }}
 
 grammar
 TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in TT }}

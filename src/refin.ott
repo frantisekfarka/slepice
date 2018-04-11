@@ -62,7 +62,7 @@ Jrefin :: 'r_' ::=
     fresh tvar3 tL tvar4
     fresh tvar4 tL' tvar5
     ----------------------------------------------------------------- :: pi_elim
-    S ; eG ; eA eM ; tvar1 |- ((Go1 & Go2) & eq_K Pi eB . eL tL' eG ) & substK tL' eM tL ; tL ; tvar5
+    S ; eG ; eA eM ; tvar1 |- ((Go1 & Go2) & eq_K Pi eB . eL tL' eG ) & substK tL' eM zero tL ; tL ; tvar5
 
    
     fresh tvar1 tL tvar2
@@ -100,7 +100,7 @@ Jrefin :: 'r_' ::=
     fresh tvar3 tA tvar4
     fresh tvar4 tA' tvar5
     ---------------------------------------------------------------------------------- :: pi_elim
-    S ; eG ; eM eN ; tvar1 |- ((Go1 & Go2) & eq_Ty eA Pi eA1 . tA' typeK eG ) & substTy tA' eN tA ; tA ; tvar5
+    S ; eG ; eM eN ; tvar1 |- ((Go1 & Go2) & eq_Ty eA Pi eA1 . tA' typeK eG ) & substTy tA' eN zero tA ; tA ; tvar5
     
     fresh tvar1 tA tvar2
     -------------------------------------------- :: mvar
@@ -136,13 +136,17 @@ defn
 
     S ; tvar1 |- TTP ; tvar2
     fresh tvar2 tM tvar3
+    fresh tvar3 tIx tvar4
+    fresh tvar4 tIx' tvar5
     ------------------------------------------------------------- :: con
-    S , c : A ; tvar1 |- TTP , axCon c : termP c A empty . , axShiftC : shiftte c zero c . , axSubstC : substte c tM c . , axEqCon : eq_te c c A empty . ; tvar3
+    S , c : A ; tvar1 |- TTP , axCon c : termP c A empty . , axShiftC : shiftte c tIx c . , axSubstC : substte c tM tIx' c . , axEqCon : eq_te c c A empty . ; tvar5
 
     S ; tvar1 |- TTP ; tvar2
     fresh tvar2 tM tvar3
+    fresh tvar3 tIx tvar4
+    fresh tvar4 tIx' tvar5
     ------------------------------------------------------------- :: tcon
-    S , a : L ; tvar1 |- TTP , axTCon a : typeP a L empty . , axShiftC : shiftTy a zero a . , axSubstC : substTy a tM a . , axEqTCon : eq_Ty a a L empty . ; tvar3
+    S , a : L ; tvar1 |- TTP , axTCon a : typeP a L empty . , axShiftC : shiftTy a tIx a . , axSubstC : substTy a tM tIx' a . , axEqTCon : eq_Ty a a L empty . ; tvar5
 
 %defns
 %JrefinProgFinal :: 'r_' ::=

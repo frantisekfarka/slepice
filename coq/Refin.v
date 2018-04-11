@@ -78,7 +78,7 @@ Proof.
               (inversion Hc). }
             { left.
               (exists 
-                  (ttgoal_unbound_at (ttat_shiftTy A 0 (ety_tvar (S v))),
+                  (ttgoal_unbound_at (ttat_shiftTy A (ete_ix 0) (ety_tvar (S v))),
                    (ety_tvar (S v), S (S v))); simpl).
               simpl.
               econstructor.
@@ -93,7 +93,7 @@ Proof.
                 exists 
                   (ttgoal_conj Go
                                (ttgoal_unbound_at
-                                  (ttat_shiftTy A1 0 (ety_tvar (S v0)))),
+                                  (ttat_shiftTy A1 (ete_ix 0) (ety_tvar (S v0)))),
                    (ety_tvar (S v0), S (S v0))).
                 (eapply r_g_te_var_cons).
                 eauto.
@@ -201,7 +201,7 @@ Proof.
                       (ety_pi_intro B
                          (ety_tvar (S (S (S v2))))) (ek_type) G)))
              (ttgoal_unbound_at
-                (ttat_substTy (ety_tvar (S (S (S v2)))) M2
+                (ttat_substTy (ety_tvar (S (S (S v2)))) M2 (ete_ix 0)
                    (ety_tvar (S (S v2))))),
           (ety_tvar (S (S v2)), S (S (S (S v2))))).
 
@@ -354,7 +354,7 @@ Proof.
                    (ttat_eq_K (ek_pi_intro B L)
                       (ek_tvar (S (S (S v2)))) G)))
              (ttgoal_unbound_at
-                (ttat_substK (ek_tvar (S (S (S v2)))) M
+                (ttat_substK (ek_tvar (S (S (S v2)))) M 0
                    (ek_tvar (S (S v2))))),
           (ek_tvar (S (S v2)), S (S (S (S v2))))).
 
@@ -462,19 +462,20 @@ Proof.
     + left.
       exists (ttprog_hc_nob (ttprog_hc_nob (ttprog_hc_nob (ttprog_hc_nob P
               (ttpt_axCon c)  (ttat_te (ete_con c) A nil))
-              (ttpt_axShiftC) (ttat_shiftte (ete_con c) 0 (ete_con c)))
-              (ttpt_axSubstC) (ttat_substte (ete_con c) (ete_tvar ( S v'')) (ete_con c)))
+              (ttpt_axShiftC) (ttat_shiftte (ete_con c) (ete_tvar (S v'') ) (ete_con c)))
+              (ttpt_axSubstC) (ttat_substte (ete_con c) (ete_tvar (S ( S v''))) (ete_tvar (S (S (S v'')))) (ete_con c)))
               (ttpt_axEqCon)  (ttat_eq_te (ete_con c) (ete_con c) A nil)         
-           , S v'').
-        
-        apply r_p_sgn_con with v''.
+           , S (S v'')).
 
-        assumption.
         simpl in wP.
+        eapply r_p_sgn_con with v'' ( S ( S  v'')) (S (S (S v''))).
+
         assumption.
-
+        assumption.
         simpl; auto.
-
+        simpl; auto.
+        simpl; auto.
+        
     + right.
       intro Pv.
       destruct Pv as [ v' [ P v'']].
@@ -494,20 +495,22 @@ Proof.
     + left.
       exists (ttprog_hc_nob (ttprog_hc_nob (ttprog_hc_nob (ttprog_hc_nob P
               (ttpt_axTCon a) (ttat_Ty (ety_tcon a) L nil))
-              (ttpt_axShiftC) (ttat_shiftTy (ety_tcon a) 0 (ety_tcon a)))
-              (ttpt_axSubstC) (ttat_substTy (ety_tcon a) (ete_tvar ( S v'')) (ety_tcon a)))
+              (ttpt_axShiftC) (ttat_shiftTy (ety_tcon a) (ete_tvar (S (S v''))) (ety_tcon a)))
+              (ttpt_axSubstC) (ttat_substTy (ety_tcon a) (ete_tvar ( S v'')) (ete_tvar (S (S (S v'')))) (ety_tcon a)))
               (ttpt_axEqTCon)   (ttat_eq_Ty (ety_tcon a) (ety_tcon a) L nil)                        
            , S v'').
 
         
-        apply r_p_sgn_tcon with v''.
+        apply r_p_sgn_tcon with (v'') (S (S v'')) (S (S (S v''))).
 
         assumption.
         simpl in wP.
         assumption.
 
         simpl; auto.
-
+        simpl; auto.
+        simpl; auto.
+        
     + right.
       intro Pv.
       destruct Pv as [ v' [ P v'']].
