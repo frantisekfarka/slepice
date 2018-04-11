@@ -1,13 +1,14 @@
 /pp_ete x/
 /| Ete_pi_intro/
-s/\\/\\\\/
+s/\\/lam/
 % s/lnvar/LNVAR/
 % s/lnvar/"M_" ^ string_of_int\(lnvar\)/g
 % s/LNVAR/lnvar/
 % s/ tvar/ "T_" ^ string_of_int\(tvar\)/g
 /let rec pp_raw_ix x/
 +1 i
-| x -> string_of_int x
+| 0 -> "(z)"
+| x -> "(s" ^ pp_raw_ix (x-1) ^ ")"
 .
 /let rec pp_ix x/
 +1 i
@@ -31,17 +32,31 @@ s/\",\"/"\\\n"/
 s/\",\"/"\\\n"/
 /pp_eTy x/
 /Ety_pi_intro/
-s/\"Pi\"/"Pi("/
-s/\"\.\"/","/
+s/\"Pi\"/"(piTy"/
+s/\"\.\"/""/
+s/$/^ ")"/
+/Ety_pi_elim/
+s/-> / -> "(apTy " ^/
 s/$/^ ")"/
 /pp_eK x/
 /Ek_pi_intro/
-s/\"Pi\"/"Pi("/
-s/\"\.\"/","/
+s/\"Pi\"/"(piK"/
+s/\"\.\"/""/
 s/$/^ ")"/
+/pp_ete x/
+/Ete_pi_intro/
+s/\"lam\"/"(lam"/
+s/\"\.\"/""/
+s/$/^ ")"/
+/Ete_pi_elim/
+s/-> / -> "(apte " ^/
+s/$/^ ")"/
+/pp_eK x/
+
 /pp_ectx x/
 /ectx -> pp_ectx/
-s/->/ -> "cons(" ^/
+s/->/ -> "(cons " ^/
+s/ ^ "," //
 s/$/ ^ ")"/
 /and pp_tTGoal x/
 /Ttgoal_bound_at/
@@ -55,4 +70,9 @@ s/$/^ ")"/
 s/pp_tTPt/"pr (" ^ pp_tTPt/
 s/":"/") ("/
 s/"\."$/")."/
+/and pp_tTAtom x/
+/Ttat_true/
+s/"true"/"trueP"/
+/Ttgoal_conj/
+s/"&"/","/
 wq

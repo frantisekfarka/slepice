@@ -69,12 +69,14 @@ TTPt {{ tex \text{Proof term} }} , TTe :: 'ttpt_' ::= {{ com proof term in TT }}
   | axTCon tcon                  ::   :: axTCon
   | axShiftC                     ::   :: axShiftC
   | axSubstC                     ::   :: axSubstC
+  | axEqCon                      ::   :: axEqCon
+  | axEqTCon                     ::   :: axEqTCon
 
 grammar
 TTAtom {{ tex \text{Atom} }} , TTAt :: 'ttat_' ::= {{ com atom in TT }}
   | true                         ::   :: true
-  | eq_te  ete1 ete2 ectx        ::   :: eq_te {{ tex [[ete1]] \equiv_{[[ectx]]} [[ete2]] }}
-  | eq_Ty  eTy1 eTy2 ectx        ::   :: eq_Ty {{ tex [[eTy1]] \equiv_{[[ectx]]} [[eTy2]] }}
+  | eq_te  ete1 ete2 eTy ectx    ::   :: eq_te {{ tex [[ete1]] \equiv_{[[ectx]]}^{[[eTy]]} [[ete2]] }}
+  | eq_Ty  eTy1 eTy2 eK ectx     ::   :: eq_Ty {{ tex [[eTy1]] \equiv_{[[ectx]]}^{[[eK]]} [[eTy2]] }}
   | eq_K  eL1   eL2 ectx         ::   :: eq_K  {{ tex [[eL1]] \equiv_{[[ectx]]} [[eL2]] }}
 %  | kind( K , ctx )            ::   :: K
   | typeP eTy eK ectx            ::   :: Ty

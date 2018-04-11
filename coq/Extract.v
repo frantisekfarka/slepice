@@ -71,7 +71,9 @@ Extract Inductive Defns.TTPt => "tTPt" [ "Ttpt_true"
                                           "Ttpt_axCon"
                                           "Ttpt_axTCon"
                                           "Ttpt_axShiftC"
-                                          "Ttpt_axSubstC"                           
+                                          "Ttpt_axSubstC"
+                                          "Ttpt_axEqCon"
+                                          "Ttpt_axEqTCon"
                                    ].
 
 (* extracted librarires *)

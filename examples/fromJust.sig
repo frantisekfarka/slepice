@@ -8,7 +8,7 @@
 , 'elimEqBool : Pi 'EqBool 'tt 'ff . 'A
 , 'MaybeA : Pi 'Bool . typeK
 , 'nothing : 'MaybeA 'ff
-, 'just : Pi 'A . 'Maybe 'tt
+, 'just : Pi 'A . 'MaybeA 'tt
 , 'elimMaybeA : Pi 'Bool . Pi 'MaybeA 0 .
     Pi ( Pi 'EqBool 1 'ff . 'A ) .
     Pi ( Pi 'EqBool 2 'tt . Pi 'A . 'A ) . 'A
