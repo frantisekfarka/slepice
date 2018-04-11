@@ -1,14 +1,17 @@
 SLEPICE=../slepice
 
-TESTS ?= no_T
+TESTS ?= no_T idA
 
 .PHONY: $(TESTS) clean
 
-default: $(TESTS)
+default: $(TESTS:=.test)
 
-%:
-	$(SLEPICE) -sig $?.sig -term $?.tt -o $? > $?.out || true
-	diff $?.out $?.exp_out
+%.test: %.out %.prog %.g
+	@echo "Test" $* "passed"
+
+%.out %.prog %.g: %.sig %.tt
+	$(SLEPICE) -sig $*.sig -term $*.tt -o $* > $*.out || true
+	diff $*.exp_out $*.out
 
 clean:
 	$(RM) *.out

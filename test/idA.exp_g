@@ -1,0 +1,1 @@
+pr _ ( trueP) , pr _ ( trueP) , pr _ ( shiftTy 'A (z) T_1) , pr _ ( eq_Ty (piTy 'A  'A) (piTy T_1  T_5) typeK (cons empty  'A)) , pr _ ( substTy T_5 (z) T_4) , pr _ ( eq_K typeK typeK empty)
