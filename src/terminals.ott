@@ -16,4 +16,11 @@ terminals :: 'terminals_' ::=
   | <-           ::   :: larrow    {{ tex \leftarrow }}
   | &            ::   :: and       {{ tex \land }}
   | Leaf         ::   :: leaf      {{ tex \bullet }}
+  | axType       ::   :: axType    {{ tex \kappa_\text{type} }}
+  | axCon        ::   :: axCon     {{ tex \kappa_\text{con} }}
+  | axTCon       ::   :: axTCon    {{ tex \kappa_\text{tcon} }}
+  | axShiftC     ::   :: axShiftC  {{ tex \kappa_\text{shiftC} }}
+  | axSubstC     ::   :: axSubstC  {{ tex \kappa_\text{substC} }}
+  | axEqCon      ::   :: axEqCon   {{ tex \kappa_\text{eqCon} }}
+  | axEqTCon     ::   :: axEqTCon  {{ tex \kappa_\text{eqTCon} }}
 

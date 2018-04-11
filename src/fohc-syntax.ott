@@ -64,7 +64,7 @@
 grammar
 TTPt {{ tex \text{Proof term} }} , TTe :: 'ttpt_' ::= {{ com proof term in TT }}
   | true                         ::   :: true
-  | axType                       ::   :: axType
+  | axType                       ::   :: axType 
   | axCon con                    ::   :: axCon
   | axTCon tcon                  ::   :: axTCon
   | axShiftC                     ::   :: axShiftC
