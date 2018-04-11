@@ -1,3 +1,5 @@
   empty
 , 'A : typeK
-, 'id : Pi 'A . 'A
+, 'Bool : typeK
+, 'tt : 'Bool
+, 'ff : 'Bool

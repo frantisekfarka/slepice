@@ -1,10 +1,10 @@
  
  pr (axType ) ( eq_K typeK typeK empty ). 
  pr (axTCon 'A ) ( typeP 'A typeK empty ). 
- pr (axShiftC ) ( shiftTy 'A (z) 'A ). 
- pr (axSubstC ) ( substTy 'A T_1 'A ). 
+ pr (axShiftC ) ( shiftTy 'A T_2 'A ). 
+ pr (axSubstC ) ( substTy 'A T_1 T_3 'A ). 
  pr (axEqTCon ) ( eq_Ty 'A 'A typeK empty ). 
  pr (axCon 'id ) ( termP 'id (piTy 'A  'A) empty ). 
- pr (axShiftC ) ( shiftte 'id (z) 'id ). 
- pr (axSubstC ) ( substte 'id T_2 'id ). 
+ pr (axShiftC ) ( shiftte 'id T_2 'id ). 
+ pr (axSubstC ) ( substte 'id T_3 T_4 'id ). 
  pr (axEqCon ) ( eq_te 'id 'id (piTy 'A  'A) empty ).

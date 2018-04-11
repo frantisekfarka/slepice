@@ -1,0 +1,46 @@
+ 
+ pr (axType ) ( eq_K typeK typeK empty ). 
+ pr (axTCon 'A ) ( typeP 'A typeK empty ). 
+ pr (axShiftC ) ( shiftTy 'A T_2 'A ). 
+ pr (axSubstC ) ( substTy 'A T_1 T_3 'A ). 
+ pr (axEqTCon ) ( eq_Ty 'A 'A typeK empty ). 
+ pr (axTCon 'Bool ) ( typeP 'Bool typeK empty ). 
+ pr (axShiftC ) ( shiftTy 'Bool T_3 'Bool ). 
+ pr (axSubstC ) ( substTy 'Bool T_2 T_4 'Bool ). 
+ pr (axEqTCon ) ( eq_Ty 'Bool 'Bool typeK empty ). 
+ pr (axCon 'tt ) ( termP 'tt 'Bool empty ). 
+ pr (axShiftC ) ( shiftte 'tt T_3 'tt ). 
+ pr (axSubstC ) ( substte 'tt T_4 T_5 'tt ). 
+ pr (axEqCon ) ( eq_te 'tt 'tt 'Bool empty ). 
+ pr (axCon 'ff ) ( termP 'ff 'Bool empty ). 
+ pr (axShiftC ) ( shiftte 'ff T_5 'ff ). 
+ pr (axSubstC ) ( substte 'ff T_6 T_7 'ff ). 
+ pr (axEqCon ) ( eq_te 'ff 'ff 'Bool empty ). 
+ pr (axTCon 'EqBool ) ( typeP 'EqBool (piK 'Bool  (piK 'Bool  typeK)) empty ). 
+ pr (axShiftC ) ( shiftTy 'EqBool T_8 'EqBool ). 
+ pr (axSubstC ) ( substTy 'EqBool T_7 T_9 'EqBool ). 
+ pr (axEqTCon ) ( eq_Ty 'EqBool 'EqBool (piK 'Bool  (piK 'Bool  typeK)) empty ). 
+ pr (axCon 'refl ) ( termP 'refl (piTy 'Bool  (apTy 'EqBool (apte (z) (z)))) empty ). 
+ pr (axShiftC ) ( shiftte 'refl T_8 'refl ). 
+ pr (axSubstC ) ( substte 'refl T_9 T_10 'refl ). 
+ pr (axEqCon ) ( eq_te 'refl 'refl (piTy 'Bool  (apTy 'EqBool (apte (z) (z)))) empty ). 
+ pr (axCon 'elimEqBool ) ( termP 'elimEqBool (piTy (apTy 'EqBool (apte 'tt 'ff))  'A) empty ). 
+ pr (axShiftC ) ( shiftte 'elimEqBool T_10 'elimEqBool ). 
+ pr (axSubstC ) ( substte 'elimEqBool T_11 T_12 'elimEqBool ). 
+ pr (axEqCon ) ( eq_te 'elimEqBool 'elimEqBool (piTy (apTy 'EqBool (apte 'tt 'ff))  'A) empty ). 
+ pr (axTCon 'MaybeA ) ( typeP 'MaybeA (piK 'Bool  typeK) empty ). 
+ pr (axShiftC ) ( shiftTy 'MaybeA T_13 'MaybeA ). 
+ pr (axSubstC ) ( substTy 'MaybeA T_12 T_14 'MaybeA ). 
+ pr (axEqTCon ) ( eq_Ty 'MaybeA 'MaybeA (piK 'Bool  typeK) empty ). 
+ pr (axCon 'nothing ) ( termP 'nothing (apTy 'MaybeA 'ff) empty ). 
+ pr (axShiftC ) ( shiftte 'nothing T_13 'nothing ). 
+ pr (axSubstC ) ( substte 'nothing T_14 T_15 'nothing ). 
+ pr (axEqCon ) ( eq_te 'nothing 'nothing (apTy 'MaybeA 'ff) empty ). 
+ pr (axCon 'just ) ( termP 'just (piTy 'A  (apTy 'MaybeA 'tt)) empty ). 
+ pr (axShiftC ) ( shiftte 'just T_15 'just ). 
+ pr (axSubstC ) ( substte 'just T_16 T_17 'just ). 
+ pr (axEqCon ) ( eq_te 'just 'just (piTy 'A  (apTy 'MaybeA 'tt)) empty ). 
+ pr (axCon 'elimMaybeA ) ( termP 'elimMaybeA (piTy 'Bool  (piTy (apTy 'MaybeA (z))  (piTy (piTy (apTy 'EqBool (apte (s(z)) 'ff))  'A)  (piTy (piTy (apTy 'EqBool (apte (s(s(z))) 'tt))  (piTy 'A  'A))  'A)))) empty ). 
+ pr (axShiftC ) ( shiftte 'elimMaybeA T_17 'elimMaybeA ). 
+ pr (axSubstC ) ( substte 'elimMaybeA T_18 T_19 'elimMaybeA ). 
+ pr (axEqCon ) ( eq_te 'elimMaybeA 'elimMaybeA (piTy 'Bool  (piTy (apTy 'MaybeA (z))  (piTy (piTy (apTy 'EqBool (apte (s(z)) 'ff))  'A)  (piTy (piTy (apTy 'EqBool (apte (s(s(z))) 'tt))  (piTy 'A  'A))  'A)))) empty ).
