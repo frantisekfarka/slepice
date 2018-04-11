@@ -35,10 +35,6 @@ texdoc:
 
 test: slepice
 	make -C $(TEST_DIR)
-	#todo rm
-	./slepice -print false\
-	    -sig examples/fromJust.sig\
-	    -term examples/fromJust.tt
 
 #cleaning rules
 
