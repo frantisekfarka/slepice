@@ -62,7 +62,7 @@ Jrefin :: 'r_' ::=
     fresh tvar3 tL tvar4
     fresh tvar4 tL' tvar5
     ----------------------------------------------------------------- :: pi_elim
-    S ; eG ; eA eM ; tvar1 |- ((Go1 & Go2) & eq_K Pi eB . eL tL' eG ) & substK tL' eM zero tL ; tL ; tvar5
+    S ; eG ; eA eM ; tvar1 |- ((Go1 & Go2) & eq_K eL Pi eB . tL' eG ) & substK tL' eM zero tL ; tL ; tvar5
 
    
     fresh tvar1 tL tvar2

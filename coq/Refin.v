@@ -351,8 +351,7 @@ Proof.
           (ttgoal_conj
              (ttgoal_conj (ttgoal_conj Go1 Go2)
                 (ttgoal_unbound_at
-                   (ttat_eq_K (ek_pi_intro B L)
-                      (ek_tvar (S (S (S v2)))) G)))
+                   (ttat_eq_K L (ek_pi_intro B (ek_tvar (S (S (S v2))))) G)))
              (ttgoal_unbound_at
                 (ttat_substK (ek_tvar (S (S (S v2)))) M 0
                    (ek_tvar (S (S v2))))),
