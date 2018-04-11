@@ -50,6 +50,13 @@ the file ``slepice.pdf`` that contains an overview of Ott grammar.
 
 ## Examples
 
+The example ``fromJust``:
+
+```
+fromJust.sig            signature
+fromJust-tc.sig         fully elaborated example for type checking
+```
+
 Run the following command:
 
 ```

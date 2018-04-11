@@ -11,7 +11,8 @@ default: $(TESTS:=.test)
 
 %.out %.prog %.g: %.sig %.tt
 	@$(SLEPICE) -sig $*.sig -term $*.tt -o $* > $*.out \
-		&& diff $*.exp_prog $*.prog && diff $*.exp_g $*.g || true
+		&& diff $*.exp_prog $*.prog \
+		&& diff $*.exp_g $*.g || true
 	@diff $*.exp_out $*.out 
 
 clean:
