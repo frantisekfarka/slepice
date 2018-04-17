@@ -76,6 +76,12 @@ eM {{ tex {\ttstar{M} } }}, eN {{ tex {\ttstar{N} } }} :: 'ete_' ::=
 %     {{ coq [[ete]] [[eN]] [[ix]] }}
 %     {{ tex [[ete]] [ [[eN]] / [[ix]] ] }}
 
+parsing
+ety_pi_elim left ety_pi_elim
+ete_pi_elim left ete_pi_elim
+ety_pi_elim left ete_pi_elim
+ete_pi_elim left ety_pi_elim
+
 grammar
 eK {{ tex {\ttstar{K} } }} , 
 eL {{ tex {\ttstar{L} } }} :: 'ek_' ::= {{ com extended kinds }}
@@ -130,4 +136,5 @@ eG {{ tex {\ttstar{\Gamma} } }} :: 'ectx_' ::= {{ com Extended Context }}
 %  | cuctx( enctx )           :: M :: cunshifting
 %     {{ tex \overrightarrow{ [[enctx]] }  }} 
 %     {{ coq ??TODO }}
+
 

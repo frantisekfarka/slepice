@@ -97,6 +97,9 @@ TTGoal {{ tex \text{Goal} }} , Go {{ tex G }}  :: 'ttgoal_' ::= {{ com goal in T
   | lnvar : TTAtom                  ::   :: bound_at
   | TTAtom                         ::   :: unbound_at
 
+parsing
+ttgoal_conj left ttgoal_conj
+
 grammar
 TTProg {{ tex \text{Prog} }} , TTP {{ tex \mathcal{P} }}  :: 'ttprog_' ::= {{ com program in TT }}
   | empty                                   ::   :: empty
