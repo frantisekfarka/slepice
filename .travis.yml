@@ -5,8 +5,7 @@ language: c
 sudo: required
 
 env:
-  - OTT_DIR=~/ott
-  - ELPI_DIR=~/elpi
+  - OTT_DIR=~/ott ELPI_DIR=~/elpi
 
 cache:
       directories:
