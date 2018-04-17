@@ -5,7 +5,7 @@ DOC_DIR=doc/
 TEST_DIR=test/
 ML_DIR=ocaml/
 
-OTT_DIR ?= $(shell pwd)
+OTT_DIR ?= $(shell pwd)/ott
 
 .PHONY: clean veryclean slepice coq ott
 
@@ -15,7 +15,7 @@ slepice: ott coq ocaml
 	cp $(ML_DIR)main.native slepice
 
 ott:
-	PATH=$(OTT_DIR)/ott/bin:$(PATH) make -C $(SRC_DIR)
+	PATH=$(OTT_DIR)/bin:$(PATH) make -C $(SRC_DIR)
 
 coq:
 	make -C $(COQ_DIR)

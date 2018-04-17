@@ -20,7 +20,7 @@ else
     make world 
 
     cd $PWD
-    #export PATH=$OTT_DIR/bin:$PATH
+    PATH=$OTT_DIR/bin:$PATH
 fi
 
 ELPI_DIR="${ELPI_DIR:-$(pwd)/elpi}"
@@ -40,9 +40,8 @@ else
     make 
 
     cd $PWD
-    
-    #export PATH=$ELPI_DIR:$PATH
+    PATH=$ELPI_DIR:$PATH
 fi
 
-echo export PATH=$ELPI_DIR:$PATH
+echo export PATH=$PATH
 
