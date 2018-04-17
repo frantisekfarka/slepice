@@ -11,12 +11,20 @@ else
     OUT=gen_out
 fi
 
+if `hash elpi 2> /dev/null`
+then
+    ELPI=elpi
+else
+    ELPI_DIR ?= $(shell pwd)/elpi
+    ELPI=$ELPI_DIR/elpi
+fi
+
 ./slepice -sig "$IN_SIG" -term "$IN_TERM" -o $OUT
 cat init.prog $OUT.prog final.prog > ${OUT}_full.prog
 
 GOAL=`cat $OUT.g`"."
 
-../elpi/elpi ${OUT}_full.prog -exec "$GOAL" 
+$ELPI ${OUT}_full.prog -exec "$GOAL" 
 
 
 rm ${OUT}.prog ${OUT}.g ${OUT}_full.prog

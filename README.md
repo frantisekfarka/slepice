@@ -57,11 +57,19 @@ fromJust.sig            signature
 fromJust-tc.sig         fully elaborated example for type checking
 ```
 
-Run the following command:
+Run the following command to see output of slepice:
 
 ```
 ./slepice \
     -sig examples/fromJust.sig \
     -term examples/fromJust.tt
+```
+
+Run the following command to see a solution resolved by ELPI
+
+```
+./slepice_wraper \
+    examples/fromJust.sig \
+    examples/fromJust.tt
 ```
 
