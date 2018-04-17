@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ -z "$1" -o -z "$2" ]
+then
+    echo "usage: $0 <signature> <term>"
+    echo
+    exit
+else
+    IN_SIG=$1
+    IN_TERM=$2
+    OUT=gen_out
+fi
+
+./slepice -sig "$IN_SIG" -term "$IN_TERM" -o $OUT
+cat init.prog $OUT.prog final.prog > ${OUT}_full.prog
+
+GOAL=`cat $OUT.g`"."
+
+../elpi/elpi ${OUT}_full.prog -exec "$GOAL" 
+
+
+rm ${OUT}.prog ${OUT}.g ${OUT}_full.prog
+

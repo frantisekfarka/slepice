@@ -1,0 +1,110 @@
+
+ pr (axProjZ Po) ( proj z A1 (cons _G A2) ) :- pr Po ( shiftTy A2 z A1 ).
+ pr (axProjS Po0 Po1) ( proj (s Ix) A1 (cons G _B) ) :- 
+    pr Po0 ( proj Ix A2 G) , pr Po1 ( shiftTy A2 z A1 ).
+
+ pr Po (termP M A G) :- pr Po (proj M A G).
+
+
+ pr (axEqPiKIntro Po1 Po2) (eq_K (piK A1 L1) (piK A2 L2) G) :-
+    pr Po1 (eq_Ty A1 A2 typeK G),
+    pr Po2 (eq_K L1 L2 (cons G A1)).
+
+% pr (axPiKel PoA PoL) (eq_K (piK A1 L1) (piK A2 L2) G) :-
+%    pr PoA (algeqTy A1 A2 G) , pr PoL (eq_K L1 L2 (cons G A1)).
+
+ pr (axEqPiTyIntro Po1 Po2) (eq_Ty (piTy A1 A2)  (piTy B1 B2) typeK G) :-
+    pr Po1 (eq_Ty A1 B1 typeK G),
+    pr Po2 (eq_Ty A2 B2 typeK (cons G A1)).
+
+ pr (axEqPiTyElim Po1 Po2) (eq_Ty (apTy A1 M1) (apTy A2 M2) L G) :-
+    pr Po1 (eq_Ty A1 A2 (piK A L) G),
+    pr Po2 (eq_te M1 M2 A G).
+
+
+% pr (foobar M1 A G) (eq_te M1 M2 (piTy A B) G).
+% pr (foobaz M1 A G) (eq_te M1 M2 (apTy A M) G).
+% pr (foobaz M1 A G) (eq_te_str M1 M2 (apTy A M) G).
+
+ pr axSubstType (substK typeK _N _I typeK).
+
+
+ pr (axSubstKPiIntro Po0 Po1 Po2) (substK (piK A L) M I (piK A1 L1)) :- 
+    pr Po0 (substTy A M I A1), 
+    pr Po1 (shiftte M z M1),
+    pr Po2 (substK L M1 (s I) L1).
+
+ pr (axSubstTyPiIntro Po0 Po1 Po2) (substTy (piTy A B) M I (piTy A1 B1)) :- 
+    pr Po0 (substTy A M I A1), 
+    pr Po1 (shiftte M z M1),
+    pr Po2 (substTy B M1 (s I) B1).
+
+
+ pr (axEqteZ) (eq_te_str z z A (cons _G A)).
+ pr (axEqteS Po) (eq_te_str (s M1) (s M2) A (cons G _B)) :-
+    pr Po (eq_te_str M1 M2 A G).
+
+
+ pr (axEqteStr Po) (eq_te M1 M2 A G) :-
+    pr Po (eq_te_str M1 M2 A G).
+
+ pr (axEqWeak Po1) (eq_K L1 L2 (cons G _B)) :-
+    pr Po1 (eq_K L1 L2 G).
+
+ pr (axEqWeak Po1) (eq_Ty A1 A2 L (cons G _B)) :-
+    pr Po1 (eq_Ty A1 A2 L G).
+
+ pr (axEqWeak Po1) (eq_te M1 M2 A (cons G _B)) :-
+    pr Po1 (eq_te M1 M2 A G).
+
+
+ pr (axShiftZpr) (shiftte I z (s I)). 
+ pr (axShiftZgt) (shiftte z (s _I) z). 
+ pr (axShiftS Po) (shiftte (s I1) (s I2) (s I3)) :-
+    pr Po (shiftte I1 I2 I3). 
+
+% pr (axShiftKPiIntro Po0 Po0 Po1) (shiftK (piK A L) I (piK A1 L1)) :- 
+%    pr Po0 (shiftTy A I A1), 
+%    pr Po1 (shiftK L (s I) L1).
+
+ pr (axShiftTyPiIntro Po0 Po1) (shiftTy (piTy A B) I (piTy A1 B1)) :- 
+    pr Po0 (shiftTy A I A1), 
+    pr Po1 (shiftTy B (s I) B1).
+
+ pr (axShiftTyPiElim Po0 Po1) (shiftTy (apTy A M) I (apTy A1 M1)) :- 
+    pr Po0 (shiftTy A I A1), 
+    pr Po1 (shiftte M I M1).
+
+ pr (axShifttePiIntro Po0 Po1) (shiftte (lam A M) I (lam A1 M1)) :- 
+    pr Po0 (shiftTy A I A1), 
+    pr Po1 (shiftte M (s I) M1).
+
+ pr (axShifttePiElim Po0 Po1) (shiftte (apte M N) I (apte M1 N1)) :- 
+    pr Po0 (shiftte M I M1), 
+    pr Po1 (shiftte N I N1).
+
+ pr (axSubstTyPiIntro Po0 Po1 Po2) (substTy (piTy A B) N I (piTy A1 B1)) :- 
+    pr Po0 (substTy A N I A1), 
+    pr Po1 (shiftte N z N1),
+    pr Po2 (substTy B N1 (s I) B1).
+
+ pr (axSubstTyPiElim Po0 Po1) (substTy (apTy A M) N I (apTy A1 M1)) :-
+    pr Po0 (substTy A N I A1),
+    pr Po1 (substte M N I M1).
+
+ pr (axSubsttePiIntro Po0 Po1 Po2) (substte (lam A M) N I (lam A1 M1)) :- 
+    pr Po0 (substTy A N I A1), 
+    pr Po1 (shiftte N z N1),
+    pr Po2 (substte M N1 (s I) M1).
+
+ pr (axSubsttePiElim Po0 Po1) (substte (apte M1 M2) N I (apte M11 M21)) :- 
+    pr Po0 (substte M1 N I M11), 
+    pr Po1 (substte M2 N I M21).
+
+ pr (axSubstZpr) (substte z N z N).
+ pr (axSubstZgt) (substte z _N (s _I) z).
+ pr (axSubstS Po) (substte (s I1) N (s I2) (I3)) :-
+    pr Po (substte I1 N I2 I3).
+
+
+

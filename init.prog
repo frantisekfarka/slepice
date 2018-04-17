@@ -1,0 +1,85 @@
+type typeK k.
+
+type cons ctx -> ty -> ctx.
+type empty ctx.
+
+type z te.
+type s te -> te.
+
+
+type piTy ty -> ty -> ty.
+type apTy ty -> te -> ty.
+type piK ty -> k -> k.
+type apte te -> te -> te.
+type lam ty -> te -> te.
+
+type tt pt.
+type axType pt.
+type axCon te -> pt.
+type axTCon ty -> pt.
+type axShiftC pt.
+type axSubstC pt.
+type axProjZ pt -> pt.
+type axProjS pt -> pt -> pt.
+type axPiKel pt -> pt -> pt.
+type axEqCon pt.
+type axEqTCon pt.
+type axEqPiTyIntro pt -> pt -> pt.
+type axEqPiTyElim pt -> pt -> pt.
+type axEqPiKIntro pt -> pt -> pt.
+type axEqWeak pt -> pt.
+type axSubstType pt.
+type axSubstKPiIntro pt -> pt -> pt -> pt.
+type axSubstTyPiIntro pt -> pt -> pt -> pt.
+type axEqteStr pt -> pt.
+type axEqteZ pt.
+type axEqteS pt -> pt.
+type axShiftZpr pt.
+type axShiftZgt pt.
+type axShiftS pt -> pt.
+type axShiftTyPiIntro pt -> pt -> pt.
+type axShiftTyPiElim pt -> pt -> pt.
+type axShifttePiIntro pt -> pt -> pt.
+type axShifttePiElim pt -> pt -> pt.
+type axSubstTyPiIntro pt -> pt -> pt.
+type axSubstTyPiElim pt -> pt -> pt.
+type axSubsttePiIntro pt -> pt -> pt -> pt.
+type axSubsttePiElim pt -> pt -> pt.
+type axSubstZpr pt.
+type axSubstZgt pt.
+type axSubstZlt pt.
+type axSubstS pt -> pt.
+
+
+
+type eq_K k -> k -> ctx -> pro.
+type eq_Ty ty -> ty -> k -> ctx -> pro.
+type eq_te te -> te -> ty -> ctx -> pro.
+type eq_te_str te -> te -> ty -> ctx -> pro.
+type typeP ty -> k -> ctx -> pro.
+type termP te -> ty -> ctx -> pro.
+type shiftTy ty -> te -> ty -> pro.
+type shiftte te -> te -> te -> pro.
+type substTy ty -> te -> te -> ty -> pro.
+type substK k -> te -> te -> k -> pro.
+type substte te -> te -> te -> te -> pro.
+type proj te -> ty -> ctx -> pro.
+type trueP pro.
+
+
+type 'A ty.
+type 'a te.
+type 'Bool ty.
+type 'tt te.
+type 'ff te.
+type 'EqBool ty.
+type 'refl te.
+type 'elimEqBool te.
+type 'MaybeA ty.
+type 'nothing te.
+type 'just te.
+type 'elimMaybeA te.
+type 'id te.
+
+
+ pr tt trueP.
