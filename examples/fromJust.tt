@@ -1,3 +1,3 @@
-\ ('MaybeA 'tt) . 'elimMaybeA 'tt 'tt
-    (\ ('EqBool 'tt 'ff) . 'elimEqBool 'tt)
-    (\ ('EqBool 'tt 'tt) . \ 'A . 'tt)
+\ 'MaybeA 'tt . ((('elimMaybeA 'tt) 0)
+    (\ ('EqBool 'tt) 'ff . 'elimEqBool 0))
+    \ ('EqBool 'tt) 'tt . \ 'A . 0
