@@ -1,7 +1,6 @@
 #!/bin/sh
 
-OTT_DIR="${OTT_DIR:-$(pwd)}"
-PATH=$OTT_DIR/ott/bin:$PATH
+OTT_DIR="${OTT_DIR:-$(pwd)/ott}"
 
 if `hash ott 2> /dev/null`
 then
@@ -9,13 +8,41 @@ then
 else
     echo "Installing ott ..."
 
+    OTT_ROOT=`dirname $OTT_DIR`
+    OTT_BASE=`basename $OTT_DIR`
+
+
     PWD=`pwd`
-    cd $OTT_DIR
-    git clone https://github.com/ott-lang/ott.git ./ott
-    cd ott
+    cd $OTT_ROOT
+    git clone https://github.com/ott-lang/ott.git $OTT_BASE
+    cd $OTT_BASE
     git reset --hard 50c0ad4
     make world 
 
     cd $PWD
-
+    #export PATH=$OTT_DIR/bin:$PATH
 fi
+
+ELPI_DIR="${ELPI_DIR:-$(pwd)/elpi}"
+if `hash elpi 2> /dev/null`
+then
+    echo "elpi found"
+else
+    echo "Installing elpi ..."
+
+    ELPI_ROOT=`dirname $ELPI_DIR`
+    ELPI_BASE=`basename $ELPI_DIR`
+
+    PWD=`pwd`
+    cd $ELPI_ROOT
+    git clone https://github.com/LPCIC/elpi.git $ELPI_BASE
+    cd $ELPI_BASE
+    make 
+
+    cd $PWD
+    
+    #export PATH=$ELPI_DIR:$PATH
+fi
+
+echo export PATH=$ELPI_DIR:$PATH
+
